@@ -18,6 +18,9 @@ class GameScene: SKScene {
     var downPressed:Bool=false
     var leftPressed:Bool=false
     var rightPressed:Bool=false
+    var zoomInPressed:Bool=false
+    var zoomOutPressed:Bool=false
+    
     
     var myCam=SKCameraNode()
 
@@ -72,6 +75,12 @@ class GameScene: SKScene {
         case 13:
             upPressed=true
             
+        case 27:
+            zoomOutPressed=true
+            
+        case 24:
+            zoomInPressed=true
+            
         
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
@@ -92,6 +101,12 @@ class GameScene: SKScene {
             
         case 13:
             upPressed=false
+            
+        case 27:
+            zoomOutPressed=false
+            
+        case 24:
+            zoomInPressed=false
             
             
         default:
@@ -121,6 +136,15 @@ class GameScene: SKScene {
             myCam.position.y -= 5
         }
     
+        if zoomInPressed
+        {
+            myCam.setScale(myCam.xScale-0.01)
+        }
+        
+        if zoomOutPressed
+        {
+            myCam.setScale(myCam.xScale+0.01)
+        }
         
     } // checkKeys
     
