@@ -38,6 +38,7 @@ class GameScene: SKScene {
     var zoomInPressed:Bool=false
     var zoomOutPressed:Bool=false
     var isSelected:Bool=false
+    var followModeOn:Bool=false
     
     var myCam=SKCameraNode()
 
@@ -60,7 +61,7 @@ class GameScene: SKScene {
     let ELEPHANTHERD:Int=2
     
     let ENTITYHERDSIZE:CGFloat=10
-    let ELEPHANTHERDSIZE:CGFloat=20
+    let ELEPHANTHERDSIZE:CGFloat=10
     
     var msg=MessageClass()
     
@@ -237,7 +238,18 @@ class GameScene: SKScene {
             
         case 2:
             rightPressed=true
-            
+
+        case 3: // F
+            if followModeOn
+            {
+                followModeOn=false
+                msg.sendCustomMessage(message: "Follow mode off")
+            }
+            else
+            {
+                followModeOn=true
+                msg.sendCustomMessage(message: "Follow mode on.")
+            }
         case 13:
             upPressed=true
             
@@ -378,6 +390,10 @@ class GameScene: SKScene {
         {
             selectedSquare.position=selectedEntity!.sprite.position
             selectedSquare.isHidden=false
+            if followModeOn
+            {
+                myCam.position=selectedEntity!.sprite.position
+            }
         } // if
         else
         {
