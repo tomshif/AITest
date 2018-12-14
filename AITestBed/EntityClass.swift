@@ -11,32 +11,32 @@ import SpriteKit
 
 class EntityClass
 {
-    private var scene:SKScene?
+    public var scene:SKScene?
     var sprite=SKSpriteNode(imageNamed: "entity")
-    private var msg:MessageClass?
+    public var msg:MessageClass?
     
-    private var speed:CGFloat=0
-    private var age:CGFloat=1.0
+    public var speed:CGFloat=0
+    public var age:CGFloat=1.0
     
-    private var MAXAGE:CGFloat=30.0
-    private var MAXSPEED:CGFloat=1.0
-    private var TURNRATE:CGFloat=0.1
-    private var TURNFREQ:Double = 0.05
+    public var MAXAGE:CGFloat=30.0
+    public var MAXSPEED:CGFloat=0.8
+    public var TURNRATE:CGFloat=0.15
+    public var TURNFREQ:Double = 0.09
     
-    private var currentState:Int=0
-    private var AICycle:Int=0
+    public var currentState:Int=0
+    public var AICycle:Int=0
     
     
-    private var isTurning:Bool=false
-    private var alive:Bool=true
+    public var isTurning:Bool=false
+    public var alive:Bool=true
     
     
     var hash:String
     var name:String=""
     
-    private var lastWanderTurn=NSDate()
+    public var lastWanderTurn=NSDate()
     
-    private let AGINGVALUE:CGFloat = 0.01
+    public let AGINGVALUE:CGFloat = 0.01
     
     // Constants
     let WANDERSTATE:Int=0
@@ -78,6 +78,11 @@ class EntityClass
     {
         return alive
     } // func isAlive
+    
+    public func removeSprite()
+    {
+        sprite.removeFromParent()
+    }
     
     public func getAgeString() -> String
     {

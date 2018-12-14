@@ -40,18 +40,24 @@ class GameScene: SKScene {
 
     
     var entList=[EntityClass]()
+    var elephantList=[ElephantClass]()
     
     
     var currentCycle:Int=0
     var currentMode:Int=0
     var entityHerdCount:Int=0
+    var elephantHerdCount:Int=0
     
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
+    let ELEPHANTMODE:Int=4
+    
     
     let ENTITYHERD:Int=0
+    let ELEPHANTHERD:Int=2
     
     let ENTITYHERDSIZE:CGFloat=10
+    let ELEPHANTHERDSIZE:CGFloat=10
     
     var msg=MessageClass()
     
@@ -117,6 +123,7 @@ class GameScene: SKScene {
         addChild(centerPoint)
         
         selectedSquare.isHidden=true
+        selectedSquare.name="selectedSquare"
         addChild(selectedSquare)
         
         
@@ -132,7 +139,7 @@ class GameScene: SKScene {
             
             for node in nodes(at: pos)
             {
-                if (node.name?.contains("Entity"))!
+                if (node.name?.contains("Entity"))! || (node.name?.contains("Elephant"))!
                 {
                     temp=node.name!
                     isSelected=true
@@ -152,14 +159,30 @@ class GameScene: SKScene {
                         break
                     } // if we have a match
                 } // for each entity
+
+                for i in 0..<elephantList.count
+                {
+                    if elephantList[i].name==temp
+                    {
+                        selectedEntity=elephantList[i]
+                        break
+                    } // if we have a match
+                } // for each entity
+                
             }
+    
         } // if we're in select mode
         
         if currentMode==ENTITYMODE
         {
-            spawnHerd(type: 0)
+            spawnHerd(type: ENTITYHERD, loc: pos)
             
         } // if we're in entity spawn mode
+        
+        if currentMode==ELEPHANTMODE
+        {
+            spawnHerd(type: ELEPHANTHERD, loc: pos)
+        }
         
     } // touchDown
     
@@ -204,6 +227,11 @@ class GameScene: SKScene {
         case 24:
             zoomInPressed=true
             
+        case 25:
+            currentMode=ELEPHANTMODE
+            msg.sendCustomMessage(message: "Spawn elephant mode.")
+            selectedEntity=nil
+            isSelected=false
         case 29: // 0
             currentMode=ENTITYMODE
             msg.sendCustomMessage(message: "Spawn entity mode.")
@@ -237,6 +265,28 @@ class GameScene: SKScene {
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
         
+        case 51: // Backspace
+            if currentMode==SELECTMODE && isSelected
+            {
+                var index:Int = -1
+                for i in 0..<entList.count
+                {
+                    if entList[i].name==selectedEntity!.name
+                    {
+                        index=i
+                    } // if it's a match
+                    
+                } // for each entity
+                
+                if index > -1
+                {
+                    entList[index].removeSprite()
+                    entList.remove(at: index)
+                    selectedEntity=nil
+                    isSelected=false
+                }
+                
+            }
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -347,15 +397,16 @@ class GameScene: SKScene {
     } // func updateInfo
     
     
-    func spawnHerd(type: Int)
+    func spawnHerd(type: Int, loc: CGPoint)
     {
         if type==ENTITYHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, pos: CGPoint(x: random(min: -size.width/4, max: size.width/4), y: random(min: -size.height/4, max: size.height/4)), message: msg, number: entityHerdCount)
+                let tempEnt=EntityClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: entityHerdCount)
                 print("Entity\(entityHerdCount)")
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -365,6 +416,24 @@ class GameScene: SKScene {
             } // for each member of the herd
             
         } // if we're spawning EntityClass
+        
+        if type==ELEPHANTHERD
+        {
+            let herdsize=Int(random(min: ELEPHANTHERDSIZE*0.5, max: ELEPHANTHERDSIZE*1.5))
+            
+            for _ in 1...herdsize
+            {
+                
+                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount)
+                print(tempEnt.name)
+                
+                tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                elephantList.append(tempEnt)
+                elephantHerdCount+=1
+                
+            } // for each member of the herd
+            
+        } // if we're spawning ElephantClass
         
     } // func spawnHerd
     
@@ -394,6 +463,19 @@ class GameScene: SKScene {
             } // if something dies
         } // for each entity
         
+        for i in 0..<elephantList.count
+        {
+            let updateReturn=elephantList[i].update(cycle: currentCycle)
+            if updateReturn > -1 && isSelected
+            {
+                if elephantList[i].name==selectedEntity!.name
+                {
+                    isSelected=false
+                    selectedEntity=nil
+                } // if the selected entity dies
+            } // if something dies
+        } // for each elephant
+        
         // clean up entList
         for i in 0..<entList.count
         {
@@ -402,8 +484,17 @@ class GameScene: SKScene {
                 entList.remove(at: i)
                 break
             }
-        }
+        } // for each entity
         
+        // clean up entList
+        for i in 0..<elephantList.count
+        {
+            if !elephantList[i].isAlive()
+            {
+                elephantList.remove(at: i)
+                break
+            }
+        } // for each entity
 
         
     } // update
