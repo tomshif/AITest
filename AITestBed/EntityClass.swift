@@ -26,6 +26,7 @@ class EntityClass
     private var currentState:Int=0
     private var AICycle:Int=0
     
+    
     private var isTurning:Bool=false
     private var alive:Bool=true
     
@@ -56,8 +57,8 @@ class EntityClass
         age=random(min: 1.0, max: MAXAGE*0.7)
         msg=message
         scene=theScene
-        sprite.name=String(format:"Entity%03d", number)
-        name=String(format:"Entity%03d", number)
+        sprite.name=String(format:"Entity%04d", number)
+        name=String(format:"Entity%04d", number)
         hash=UUID().uuidString
         sprite.position=pos
         sprite.setScale(0.1)

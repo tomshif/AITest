@@ -40,7 +40,18 @@ class GameScene: SKScene {
 
     
     var entList=[EntityClass]()
+    
+    
     var currentCycle:Int=0
+    var currentMode:Int=0
+    var entityHerdCount:Int=0
+    
+    let SELECTMODE:Int=0
+    let ENTITYMODE:Int=2
+    
+    let ENTITYHERD:Int=0
+    
+    let ENTITYHERDSIZE:CGFloat=10
     
     var msg=MessageClass()
     
@@ -102,14 +113,8 @@ class GameScene: SKScene {
         infoBG.addChild(infoState)
         
         centerPoint.fillColor=NSColor.black
+        centerPoint.name="CenterPoint"
         addChild(centerPoint)
-
-        for i in 1...10
-        {
-            let tempEnt=EntityClass(theScene: self, pos: CGPoint(x: random(min: -size.width/2, max: size.width/2), y: random(min: -size.height/2, max: size.height/2)), message: msg, number: i)
-            entList.append(tempEnt)
-            
-        }
         
         selectedSquare.isHidden=true
         addChild(selectedSquare)
@@ -120,32 +125,41 @@ class GameScene: SKScene {
     
     func touchDown(atPoint pos : CGPoint) {
 
-        var temp:String=""
-        isSelected=false
-        
-        for node in nodes(at: pos)
+        if currentMode==SELECTMODE
         {
-            if (node.name?.contains("Entity"))!
+            var temp:String=""
+            isSelected=false
+            
+            for node in nodes(at: pos)
             {
-                temp=node.name!
-                isSelected=true
-            } // if we have a match
-
-        } // for each node
-       
-        
-        
-        if isSelected
-        {
-            for i in 0..<entList.count
-            {
-                if entList[i].name==temp
+                if (node.name?.contains("Entity"))!
                 {
-                    selectedEntity=entList[i]
-                    break
+                    temp=node.name!
+                    isSelected=true
                 } // if we have a match
-            } // for each entity
-        }
+
+            } // for each node
+           
+            
+            
+            if isSelected
+            {
+                for i in 0..<entList.count
+                {
+                    if entList[i].name==temp
+                    {
+                        selectedEntity=entList[i]
+                        break
+                    } // if we have a match
+                } // for each entity
+            }
+        } // if we're in select mode
+        
+        if currentMode==ENTITYMODE
+        {
+            spawnHerd(type: 0)
+            
+        } // if we're in entity spawn mode
         
     } // touchDown
     
@@ -190,6 +204,13 @@ class GameScene: SKScene {
         case 24:
             zoomInPressed=true
             
+        case 29: // 0
+            currentMode=ENTITYMODE
+            msg.sendCustomMessage(message: "Spawn entity mode.")
+            selectedEntity=nil
+            isSelected=false
+            
+            
         case 34: // I
             if infoBG.isHidden
             {
@@ -199,6 +220,10 @@ class GameScene: SKScene {
             {
                 infoBG.isHidden=true
             }
+            
+        case 35: // P
+            currentMode=SELECTMODE
+            msg.sendCustomMessage(message: "Select mode.")
             
         case 46:
             if msgBG.isHidden
@@ -288,7 +313,7 @@ class GameScene: SKScene {
         {
             selectedSquare.isHidden=true
             
-        } // if
+        } // else
         
     } // updateSelected
     
@@ -320,6 +345,28 @@ class GameScene: SKScene {
         
         
     } // func updateInfo
+    
+    
+    func spawnHerd(type: Int)
+    {
+        if type==ENTITYHERD
+        {
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            for _ in 1...herdsize
+            {
+                
+                let tempEnt=EntityClass(theScene: self, pos: CGPoint(x: random(min: -size.width/4, max: size.width/4), y: random(min: -size.height/4, max: size.height/4)), message: msg, number: entityHerdCount)
+                print("Entity\(entityHerdCount)")
+                
+                tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                entList.append(tempEnt)
+                entityHerdCount+=1
+                
+            } // for each member of the herd
+            
+        } // if we're spawning EntityClass
+        
+    } // func spawnHerd
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered

@@ -53,6 +53,12 @@ class MessageClass
         } // switch
     } // func sendMessage()
     
+    public func sendCustomMessage(message: String)
+    {
+        unreadQueue.append(message)
+        
+    } // sendCustomMessage
+    
     public func readNextMessage() -> String
     {
         if unreadQueue.count > 0
