@@ -238,8 +238,6 @@ class GameScene: SKScene {
         case 24:
             zoomInPressed=false
             
-
-            
         default:
             break
         }
