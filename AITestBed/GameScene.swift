@@ -301,7 +301,7 @@ class GameScene: SKScene {
             infoBG.isHidden=false
             
             infoTitle.text=selectedEntity!.name
-            infoAge.text=String(format: "Age: \(selectedEntity!.getAgeString()) - %2.2f / %2.2f", selectedEntity!.getAge(), selectedEntity!.getMaxAge())
+            infoAge.text=String(format: "Age: \(selectedEntity!.getAgeString()) - %2.1f / %2.1f", selectedEntity!.getAge(), selectedEntity!.getMaxAge())
                 
                 
             infoState.text="State: \(selectedEntity!.getCurrentStateString())"

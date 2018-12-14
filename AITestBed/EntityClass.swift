@@ -18,12 +18,10 @@ class EntityClass
     private var speed:CGFloat=0
     private var age:CGFloat=1.0
     
-    
     private var MAXAGE:CGFloat=30.0
     private var MAXSPEED:CGFloat=1.0
     private var TURNRATE:CGFloat=0.1
     private var TURNFREQ:Double = 0.05
-    
     
     private var currentState:Int=0
     private var AICycle:Int=0
@@ -37,7 +35,7 @@ class EntityClass
     
     private var lastWanderTurn=NSDate()
     
-    private let AGINGVALUE:CGFloat = 0.01
+    private let AGINGVALUE:CGFloat = 0.0001
     
     // Constants
     let WANDERSTATE:Int=0
