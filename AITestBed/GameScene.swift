@@ -21,6 +21,9 @@ class GameScene: SKScene {
     let infoTitle=SKLabelNode(fontNamed: "Arial")
     let infoAge=SKLabelNode(fontNamed: "Arial")
     let infoState=SKLabelNode(fontNamed: "Arial")
+    let infoLeader=SKLabelNode(fontNamed: "Arial")
+    let infoGender=SKLabelNode(fontNamed: "Arial")
+    
     
     let msgLabel=SKLabelNode(fontNamed: "Arial")
     
@@ -57,7 +60,7 @@ class GameScene: SKScene {
     let ELEPHANTHERD:Int=2
     
     let ENTITYHERDSIZE:CGFloat=10
-    let ELEPHANTHERDSIZE:CGFloat=10
+    let ELEPHANTHERDSIZE:CGFloat=20
     
     var msg=MessageClass()
     
@@ -118,12 +121,29 @@ class GameScene: SKScene {
         infoState.position.y=infoBG.size.height*0.1
         infoBG.addChild(infoState)
         
+        infoLeader.zPosition=101
+        infoLeader.fontColor=NSColor.yellow
+        infoLeader.fontSize=26
+        infoLeader.text="InfoLeader"
+        infoLeader.name="InfoLeader"
+        infoLeader.position.y = 0
+        infoBG.addChild(infoLeader)
+        
+        infoGender.zPosition=101
+        infoGender.fontColor=NSColor.yellow
+        infoGender.fontSize=26
+        infoGender.text="InfoGender"
+        infoGender.name="InfoGender"
+        infoGender.position.y = -infoBG.size.height*0.1
+        infoBG.addChild(infoGender)
+        
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
         addChild(centerPoint)
         
         selectedSquare.isHidden=true
         selectedSquare.name="selectedSquare"
+        selectedSquare.zPosition=50
         addChild(selectedSquare)
         
         
@@ -378,6 +398,15 @@ class GameScene: SKScene {
                 
                 
             infoState.text="State: \(selectedEntity!.getCurrentStateString())"
+            infoLeader.text="Leader: \(selectedEntity!.isHerdLeader)"
+            if selectedEntity!.isMale
+            {
+                infoGender.text="Gender: Male"
+            }
+            else
+            {
+                infoGender.text="Gender: Female"
+            }
             
         } // if something is selected
         else
@@ -421,10 +450,17 @@ class GameScene: SKScene {
         {
             let herdsize=Int(random(min: ELEPHANTHERDSIZE*0.5, max: ELEPHANTHERDSIZE*1.5))
             
-            for _ in 1...herdsize
+            let herdLeader=ElephantClass(theScene: self, pos: loc, message: msg, number: elephantHerdCount, isLeader: true)
+            herdLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            elephantList.append(herdLeader)
+            
+            
+            elephantHerdCount+=1
+            
+            for _ in 1..<herdsize
             {
                 
-                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount)
+                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: herdLeader)
                 print(tempEnt.name)
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)

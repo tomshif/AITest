@@ -22,6 +22,9 @@ class EntityClass
     public var MAXSPEED:CGFloat=0.8
     public var TURNRATE:CGFloat=0.15
     public var TURNFREQ:Double = 0.09
+    public var MINSCALE:CGFloat = 0.5
+    public var MAXSCALE:CGFloat = 1.0
+    
     
     public var currentState:Int=0
     public var AICycle:Int=0
@@ -29,6 +32,9 @@ class EntityClass
     
     public var isTurning:Bool=false
     public var alive:Bool=true
+    internal var isHerdLeader:Bool=false
+    internal var isMale:Bool=false
+    
     
     
     var hash:String
@@ -36,7 +42,7 @@ class EntityClass
     
     public var lastWanderTurn=NSDate()
     
-    public let AGINGVALUE:CGFloat = 0.01
+    public let AGINGVALUE:CGFloat = 0.001
     
     // Constants
     let WANDERSTATE:Int=0
@@ -64,9 +70,22 @@ class EntityClass
         sprite.setScale(0.1)
         scene?.addChild(sprite)
         
+        let ageRatio=age/(MAXAGE*0.4)
+        var scale:CGFloat=ageRatio
+        if scale < MINSCALE
+        {
+            scale=MINSCALE
+        }
+        sprite.setScale(scale)
+        
+        
+ 
+        
+        
+        
     } // init
     
-    private func updateGraphics()
+    public func updateGraphics()
     {
         let dx=cos(sprite.zRotation)*speed
         let dy=sin(sprite.zRotation)*speed
@@ -106,23 +125,23 @@ class EntityClass
         }
     } // func getAge
     
-    func getAge() -> CGFloat
+    internal func getAge() -> CGFloat
     {
         return age
     } // getAge
     
-    func getMaxAge() -> CGFloat
+    internal func getMaxAge() -> CGFloat
     {
         return MAXAGE
     } // getMaxAge
     
-    func getCurrentState() -> Int
+    internal func getCurrentState() -> Int
     {
         return currentState
         
     } // getCurrentState
     
-    func getCurrentStateString() -> String
+    internal func getCurrentStateString() -> String
     {
         switch currentState
         {
@@ -138,7 +157,7 @@ class EntityClass
         
     } // getCurrentStateString
     
-    private func ageEntity() -> Bool
+    public func ageEntity() -> Bool
     {
         age += AGINGVALUE
         if age > MAXAGE
@@ -150,11 +169,25 @@ class EntityClass
         } // if we die of old age
         else
         {
+            let ageRatio=age/(MAXAGE*0.5)
+            var scale:CGFloat=ageRatio
+            if scale < MINSCALE
+            {
+                scale=MINSCALE
+            }
+            if scale > MAXSCALE
+            {
+                scale = MAXSCALE
+            }
+            sprite.setScale(scale)
+            
+            
+            
             return true
         } // if we're still alive
     } // func ageEntity
     
-    private func wander()
+    public func wander()
     {
         // check for speed up
         let speedChance=random(min: 0, max: 1.0)
@@ -187,7 +220,7 @@ class EntityClass
         } // if we're not turning
     } // func wander
     
-    func update(cycle: Int) -> Int
+    internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
         
