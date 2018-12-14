@@ -2,8 +2,8 @@
 //  EntityClass.swift
 //  EntityClassTest
 //
-//  Created by Tom Shiflet on 12/12/18.
-//  Copyright © 2018 Tom Shiflet. All rights reserved.
+//  Created by Tom Shiflet on 12/13/18.
+//  Copyright © 2018 Liberty Game Dev. All rights reserved.
 //
 
 import Foundation
@@ -35,7 +35,7 @@ class EntityClass
     
     private var lastWanderTurn=NSDate()
     
-    private let AGINGVALUE:CGFloat = 0.0001
+    private let AGINGVALUE:CGFloat = 0.01
     
     // Constants
     let WANDERSTATE:Int=0
