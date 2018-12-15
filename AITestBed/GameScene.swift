@@ -11,6 +11,8 @@ import GameplayKit
 
 class GameScene: SKScene {
     
+    var map=MapClass()
+    
     var centerPoint=SKShapeNode(circleOfRadius: 10)
     
     var infoBG=SKSpriteNode(imageNamed: "informationBG")
@@ -23,6 +25,8 @@ class GameScene: SKScene {
     let infoState=SKLabelNode(fontNamed: "Arial")
     let infoLeader=SKLabelNode(fontNamed: "Arial")
     let infoGender=SKLabelNode(fontNamed: "Arial")
+    let infoHunger=SKLabelNode(fontNamed: "Arial")
+    let infoThirst=SKLabelNode(fontNamed: "Arial")
     
     
     let msgLabel=SKLabelNode(fontNamed: "Arial")
@@ -45,7 +49,7 @@ class GameScene: SKScene {
     
     var entList=[EntityClass]()
     var elephantList=[ElephantClass]()
-    
+    //var zoneList=[ZoneClass]()
     
     var currentCycle:Int=0
     var currentMode:Int=0
@@ -55,13 +59,16 @@ class GameScene: SKScene {
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
     let ELEPHANTMODE:Int=4
+    let FOODZONEMODE:Int=10
+    let WATERZONEMODE:Int=12
+    
     
     
     let ENTITYHERD:Int=0
     let ELEPHANTHERD:Int=2
     
     let ENTITYHERDSIZE:CGFloat=10
-    let ELEPHANTHERDSIZE:CGFloat=10
+    let ELEPHANTHERDSIZE:CGFloat=6
     
     var msg=MessageClass()
     
@@ -138,6 +145,22 @@ class GameScene: SKScene {
         infoGender.position.y = -infoBG.size.height*0.1
         infoBG.addChild(infoGender)
         
+        infoHunger.zPosition=101
+        infoHunger.fontColor=NSColor.yellow
+        infoHunger.fontSize=26
+        infoHunger.text="infoHunger"
+        infoHunger.name="infoHunger"
+        infoHunger.position.y = -infoBG.size.height*0.2
+        infoBG.addChild(infoHunger)
+        
+        infoThirst.zPosition=101
+        infoThirst.fontColor=NSColor.yellow
+        infoThirst.fontSize=26
+        infoThirst.text="infoThirst"
+        infoThirst.name="infoThirst"
+        infoThirst.position.y = -infoBG.size.height*0.3
+        infoBG.addChild(infoThirst)
+        
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
         addChild(centerPoint)
@@ -168,8 +191,6 @@ class GameScene: SKScene {
 
             } // for each node
            
-            
-            
             if isSelected
             {
                 for i in 0..<entList.count
@@ -203,6 +224,18 @@ class GameScene: SKScene {
         if currentMode==ELEPHANTMODE
         {
             spawnHerd(type: ELEPHANTHERD, loc: pos)
+        }
+        
+        if currentMode==FOODZONEMODE
+        {
+            let tempZone=ZoneClass(zoneType: ZoneType.FOODZONE, pos: pos, theScene: self)
+            map.zoneList.append(tempZone)
+        }
+        
+        if currentMode==WATERZONEMODE
+        {
+            let tempZone=ZoneClass(zoneType: ZoneType.WATERZONE, pos: pos, theScene: self)
+            map.zoneList.append(tempZone)
         }
         
     } // touchDown
@@ -253,13 +286,27 @@ class GameScene: SKScene {
         case 13:
             upPressed=true
             
+            
+        case 22: // 6
+            currentMode=FOODZONEMODE
+            msg.sendCustomMessage(message: "Spawn food zone mode.")
+            selectedEntity=nil
+            isSelected=false
+            
         case 27:
             zoomOutPressed=true
             
         case 24:
             zoomInPressed=true
             
-        case 25:
+        case 23: // 5
+            currentMode=WATERZONEMODE
+            msg.sendCustomMessage(message: "Spawn water zone mode.")
+            selectedEntity=nil
+            isSelected=false
+
+            
+        case 25: // 9
             currentMode=ELEPHANTMODE
             msg.sendCustomMessage(message: "Spawn elephant mode.")
             selectedEntity=nil
@@ -293,6 +340,34 @@ class GameScene: SKScene {
             else
             {
                 msgBG.isHidden=true
+            }
+            
+        case 48: // <tab>
+            if isSelected
+            {
+                if selectedEntity!.name.contains("Elephant")
+                {
+                    
+                    var index:Int = -1
+                    // find the entity
+                    for i in 0..<elephantList.count
+                    {
+                        if selectedEntity!.name==elephantList[i].name
+                        {
+                            
+                            index=i+1
+                        } // if
+                        
+                    } // for each elephant
+                    
+                    if index >= elephantList.count-1
+                    {
+                        index=0
+                    }
+                    
+                    selectedEntity=elephantList[index]
+                    
+                }
             }
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
@@ -424,6 +499,9 @@ class GameScene: SKScene {
                 infoGender.text="Gender: Female"
             }
             
+            infoHunger.text=String(format: "Hunger: %2.3f", selectedEntity!.hunger)
+            infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
+            
         } // if something is selected
         else
         {
@@ -466,7 +544,7 @@ class GameScene: SKScene {
         {
             let herdsize=Int(random(min: ELEPHANTHERDSIZE*0.5, max: ELEPHANTHERDSIZE*1.5))
             
-            let herdLeader=ElephantClass(theScene: self, pos: loc, message: msg, number: elephantHerdCount, isLeader: true)
+            let herdLeader=ElephantClass(theScene: self, pos: loc, message: msg, number: elephantHerdCount, isLeader: true, theMap: map)
             herdLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
             elephantList.append(herdLeader)
             
@@ -476,7 +554,7 @@ class GameScene: SKScene {
             for _ in 1..<herdsize
             {
                 
-                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: herdLeader)
+                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: herdLeader, theMap: map)
                 print(tempEnt.name)
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)

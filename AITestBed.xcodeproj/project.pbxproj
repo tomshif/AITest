@@ -18,6 +18,8 @@
 		F4FA4D9F21C31AEF0062BDE2 /* EntityClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4D9E21C31AEF0062BDE2 /* EntityClass.swift */; };
 		F4FA4DA321C31B300062BDE2 /* MessageClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA221C31B300062BDE2 /* MessageClass.swift */; };
 		F4FA4DA521C31B370062BDE2 /* random.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA421C31B370062BDE2 /* random.swift */; };
+		F4FA4DA821C46EED0062BDE2 /* ZoneClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA721C46EED0062BDE2 /* ZoneClass.swift */; };
+		F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA921C49B950062BDE2 /* MapClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		F4FA4D9E21C31AEF0062BDE2 /* EntityClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityClass.swift; sourceTree = "<group>"; };
 		F4FA4DA221C31B300062BDE2 /* MessageClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageClass.swift; sourceTree = "<group>"; };
 		F4FA4DA421C31B370062BDE2 /* random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = random.swift; sourceTree = "<group>"; };
+		F4FA4DA721C46EED0062BDE2 /* ZoneClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneClass.swift; sourceTree = "<group>"; };
+		F4FA4DA921C49B950062BDE2 /* MapClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +97,8 @@
 			children = (
 				F4FA4DA221C31B300062BDE2 /* MessageClass.swift */,
 				F4FA4DA421C31B370062BDE2 /* random.swift */,
+				F4FA4DA721C46EED0062BDE2 /* ZoneClass.swift */,
+				F4FA4DA921C49B950062BDE2 /* MapClass.swift */,
 			);
 			path = "Support Classes";
 			sourceTree = "<group>";
@@ -180,10 +186,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */,
 				F4714FB021C408970097ECA6 /* ElephantClass.swift in Sources */,
 				F4FA4DA521C31B370062BDE2 /* random.swift in Sources */,
 				F4FA4D9121C30A8B0062BDE2 /* ViewController.swift in Sources */,
 				F4FA4D8F21C30A8B0062BDE2 /* GameScene.swift in Sources */,
+				F4FA4DA821C46EED0062BDE2 /* ZoneClass.swift in Sources */,
 				F4FA4D8921C30A8B0062BDE2 /* AppDelegate.swift in Sources */,
 				F4FA4DA321C31B300062BDE2 /* MessageClass.swift in Sources */,
 				F4FA4D9F21C31AEF0062BDE2 /* EntityClass.swift in Sources */,

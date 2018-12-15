@@ -17,6 +17,9 @@ class EntityClass
     
     public var speed:CGFloat=0
     public var age:CGFloat=1.0
+    internal var hunger:CGFloat=1.0
+    internal var thirst:CGFloat=1.0
+    
     
     public var MAXAGE:CGFloat=30.0
     public var MAXSPEED:CGFloat=0.8
@@ -34,7 +37,8 @@ class EntityClass
     public var alive:Bool=true
     internal var isHerdLeader:Bool=false
     internal var isMale:Bool=false
-    
+    internal var isEating:Bool=false
+    internal var isDrinking:Bool=false
     
     
     var hash:String
@@ -42,7 +46,7 @@ class EntityClass
     
     public var lastWanderTurn=NSDate()
     
-    public let AGINGVALUE:CGFloat = 0.001
+    public let AGINGVALUE:CGFloat = 0.0001
     
     // Constants
     let WANDERSTATE:Int=0
@@ -194,11 +198,21 @@ class EntityClass
         if speedChance > 0.75
         {
             speed+=0.1
-            if speed > MAXSPEED*0.5
+            if isEating || isDrinking
             {
-                speed=MAXSPEED*0.5
-            }
-        }
+                if speed > MAXSPEED*0.25
+                {
+                    speed=MAXSPEED*0.25
+                }
+            } // if we're eating or drinking
+            else
+            {
+                if speed > MAXSPEED*0.5
+                {
+                    speed=MAXSPEED*0.5
+                }
+            } // if we're not eating or drinking
+        } // if we speed up
         else if speedChance > 0.5
         {
             speed -= 0.1
