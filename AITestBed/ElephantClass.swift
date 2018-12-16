@@ -448,6 +448,7 @@ class ElephantClass:EntityClass
         else
         {
             msg!.sendCustomMessage(message: "Error finding water zone")
+            print("Error finding water zone")
             return tempPoint
             
         }
@@ -535,10 +536,57 @@ class ElephantClass:EntityClass
         {
             thirst=1.0
         }
+        
+        // Check to make sure our herd leader is still alive and if not, find a new one
+        
+        /*
+        if herdLeader != nil
+        {
+            if !herdLeader!.isAlive()
+            {
+                findAlpha()
+            }
+            
+        }
+        */
+        
+        
+        
         return ret
         
         
     } // updateStats()
+    
+
+    
+    func findAlpha() -> Bool
+    {
+        var ret:Bool=false
+        // Find a suitable male within range
+        if map != nil
+        {
+            for i in 0..<map!.elephantList.count
+            {
+                if getDistToEntity(ent: map!.elephantList[i]) < 500 && map!.elephantList[i].isMale && (map!.elephantList[i].getAge()/map!.elephantList[i].getMaxAge()) > 0.5
+                {
+                    herdLeader=map!.elephantList[i]
+                    map!.elephantList[i].isHerdLeader=true
+                    ret = true
+                    msg?.sendMessage(type: 22, from: name)
+                    
+                } // if we found one
+                else
+                {
+                    print("Could not find new alpha.")
+                }
+                
+            } // for each elephant
+        } // Check map is valid
+
+        
+        return ret
+        
+    } // func findAlpha()
     
     override func update(cycle: Int) -> Int {
         var ret:Int = -1

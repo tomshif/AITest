@@ -12,5 +12,7 @@ import SpriteKit
 class MapClass
 {
     var zoneList=[ZoneClass]()
+    var entList=[EntityClass]()
+    var elephantList=[ElephantClass]()
     
 } // MapClass

@@ -191,6 +191,16 @@ class EntityClass
         } // if we're still alive
     } // func ageEntity
     
+    public func getDistToEntity(ent: EntityClass) -> CGFloat
+    {
+        let dx=ent.sprite.position.x-sprite.position.x
+        let dy=ent.sprite.position.y-sprite.position.y
+        let dist=hypot(dy, dx)
+        return dist
+        
+        
+    } // getDistToEntity
+    
     public func wander()
     {
         // check for speed up

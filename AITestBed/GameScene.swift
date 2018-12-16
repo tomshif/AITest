@@ -27,6 +27,7 @@ class GameScene: SKScene {
     let infoGender=SKLabelNode(fontNamed: "Arial")
     let infoHunger=SKLabelNode(fontNamed: "Arial")
     let infoThirst=SKLabelNode(fontNamed: "Arial")
+    let infoHerdLeader=SKLabelNode(fontNamed: "Arial")
     
     
     let msgLabel=SKLabelNode(fontNamed: "Arial")
@@ -47,8 +48,7 @@ class GameScene: SKScene {
     var myCam=SKCameraNode()
 
     
-    var entList=[EntityClass]()
-    var elephantList=[ElephantClass]()
+
     //var zoneList=[ZoneClass]()
     
     var currentCycle:Int=0
@@ -161,6 +161,14 @@ class GameScene: SKScene {
         infoThirst.position.y = -infoBG.size.height*0.3
         infoBG.addChild(infoThirst)
         
+        infoHerdLeader.zPosition=101
+        infoHerdLeader.fontColor=NSColor.yellow
+        infoHerdLeader.fontSize=26
+        infoHerdLeader.text="infoHerdLeader"
+        infoHerdLeader.name="infoHerdLeader"
+        infoHerdLeader.position.y = -infoBG.size.height*0.4
+        infoBG.addChild(infoHerdLeader)
+        
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
         addChild(centerPoint)
@@ -183,7 +191,7 @@ class GameScene: SKScene {
             
             for node in nodes(at: pos)
             {
-                if (node.name?.contains("Entity"))! || (node.name?.contains("Elephant"))!
+                if (node.name?.contains("Entity"))! || (node.name?.contains("Elephant"))! || (node.name?.contains("infoHunger"))!
                 {
                     temp=node.name!
                     isSelected=true
@@ -193,23 +201,28 @@ class GameScene: SKScene {
            
             if isSelected
             {
-                for i in 0..<entList.count
+                for i in 0..<map.entList.count
                 {
-                    if entList[i].name==temp
+                    if map.entList[i].name==temp
                     {
-                        selectedEntity=entList[i]
+                        selectedEntity=map.entList[i]
                         break
                     } // if we have a match
                 } // for each entity
 
-                for i in 0..<elephantList.count
+                for i in 0..<map.elephantList.count
                 {
-                    if elephantList[i].name==temp
+                    if map.elephantList[i].name==temp
                     {
-                        selectedEntity=elephantList[i]
+                        selectedEntity=map.elephantList[i]
                         break
                     } // if we have a match
                 } // for each entity
+                
+                if temp=="infoHunger"
+                {
+                    selectedEntity!.hunger=0.25
+                }
                 
             }
     
@@ -350,9 +363,9 @@ class GameScene: SKScene {
                     
                     var index:Int = -1
                     // find the entity
-                    for i in 0..<elephantList.count
+                    for i in 0..<map.elephantList.count
                     {
-                        if selectedEntity!.name==elephantList[i].name
+                        if selectedEntity!.name==map.elephantList[i].name
                         {
                             
                             index=i+1
@@ -360,12 +373,12 @@ class GameScene: SKScene {
                         
                     } // for each elephant
                     
-                    if index >= elephantList.count-1
+                    if index >= map.elephantList.count-1
                     {
                         index=0
                     }
                     
-                    selectedEntity=elephantList[index]
+                    selectedEntity=map.elephantList[index]
                     
                 }
             }
@@ -376,19 +389,35 @@ class GameScene: SKScene {
             if currentMode==SELECTMODE && isSelected
             {
                 var index:Int = -1
-                for i in 0..<entList.count
+                for i in 0..<map.entList.count
                 {
-                    if entList[i].name==selectedEntity!.name
+                    if map.entList[i].name==selectedEntity!.name
                     {
                         index=i
                     } // if it's a match
                     
                 } // for each entity
                 
-                if index > -1
+                for i in 0..<map.elephantList.count
                 {
-                    entList[index].removeSprite()
-                    entList.remove(at: index)
+                    if map.elephantList[i].name==selectedEntity!.name
+                    {
+                        index=i
+                    } // if it's a match
+                    
+                }
+                
+                if index > -1 && selectedEntity!.name.contains("Entity")
+                {
+                    map.entList[index].removeSprite()
+                    map.entList.remove(at: index)
+                    selectedEntity=nil
+                    isSelected=false
+                }
+                else if index > -1 && selectedEntity!.name.contains("Elephant")
+                {
+                    map.elephantList[index].removeSprite()
+                    map.elephantList.remove(at: index)
                     selectedEntity=nil
                     isSelected=false
                 }
@@ -501,7 +530,15 @@ class GameScene: SKScene {
             
             infoHunger.text=String(format: "Hunger: %2.3f", selectedEntity!.hunger)
             infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
-            
+            if selectedEntity!.name.contains("Elephant") && selectedEntity!.isHerdLeader==false
+            {
+                let leader=selectedEntity as! ElephantClass
+                infoHerdLeader.text="Herd Leader: \(leader.herdLeader!.name)"
+            }
+            else
+            {
+                infoHerdLeader.text="Herd Leader: Self"
+            }
         } // if something is selected
         else
         {
@@ -533,7 +570,7 @@ class GameScene: SKScene {
                 print("Entity\(entityHerdCount)")
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                entList.append(tempEnt)
+                map.entList.append(tempEnt)
                 entityHerdCount+=1
                 
             } // for each member of the herd
@@ -546,19 +583,19 @@ class GameScene: SKScene {
             
             let herdLeader=ElephantClass(theScene: self, pos: loc, message: msg, number: elephantHerdCount, isLeader: true, theMap: map)
             herdLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-            elephantList.append(herdLeader)
+            map.elephantList.append(herdLeader)
             
-            
+            let leaderIndex=map.elephantList.count-1
             elephantHerdCount+=1
             
             for _ in 1..<herdsize
             {
                 
-                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: herdLeader, theMap: map)
+                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: map.elephantList[leaderIndex], theMap: map)
                 print(tempEnt.name)
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                elephantList.append(tempEnt)
+                map.elephantList.append(tempEnt)
                 elephantHerdCount+=1
                 
             } // for each member of the herd
@@ -580,12 +617,12 @@ class GameScene: SKScene {
         {
             currentCycle=0
         }
-        for i in 0..<entList.count
+        for i in 0..<map.entList.count
         {
-            let updateReturn=entList[i].update(cycle: currentCycle)
+            let updateReturn=map.entList[i].update(cycle: currentCycle)
             if updateReturn > -1 && isSelected
             {
-                if entList[i].name==selectedEntity!.name
+                if map.entList[i].name==selectedEntity!.name
                 {
                     isSelected=false
                     selectedEntity=nil
@@ -593,12 +630,12 @@ class GameScene: SKScene {
             } // if something dies
         } // for each entity
         
-        for i in 0..<elephantList.count
+        for i in 0..<map.elephantList.count
         {
-            let updateReturn=elephantList[i].update(cycle: currentCycle)
+            let updateReturn=map.elephantList[i].update(cycle: currentCycle)
             if updateReturn > -1 && isSelected
             {
-                if elephantList[i].name==selectedEntity!.name
+                if map.elephantList[i].name==selectedEntity!.name
                 {
                     isSelected=false
                     selectedEntity=nil
@@ -607,21 +644,21 @@ class GameScene: SKScene {
         } // for each elephant
         
         // clean up entList
-        for i in 0..<entList.count
+        for i in 0..<map.entList.count
         {
-            if !entList[i].isAlive()
+            if !map.entList[i].isAlive()
             {
-                entList.remove(at: i)
+                map.entList.remove(at: i)
                 break
             }
         } // for each entity
         
         // clean up entList
-        for i in 0..<elephantList.count
+        for i in 0..<map.elephantList.count
         {
-            if !elephantList[i].isAlive()
+            if !map.elephantList[i].isAlive()
             {
-                elephantList.remove(at: i)
+                map.elephantList.remove(at: i)
                 break
             }
         } // for each entity
