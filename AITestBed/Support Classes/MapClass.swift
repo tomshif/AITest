@@ -15,4 +15,31 @@ class MapClass
     var entList=[EntityClass]()
     var elephantList=[ElephantClass]()
     
+    func clearAll()
+    {
+
+        for zone in zoneList
+        {
+            zone.sprite.removeFromParent()
+        }
+        
+        for ent in entList
+        {
+            ent.sprite.removeFromParent()
+        }
+        
+        for ele in elephantList
+        {
+            ele.sprite.removeFromParent()
+        }
+        
+        zoneList.removeAll()
+        entList.removeAll()
+        elephantList.removeAll()
+
+        
+    
+    } // func removeAll
+    
+    
 } // MapClass

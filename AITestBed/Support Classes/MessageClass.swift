@@ -82,6 +82,12 @@ class MessageClass
         } // if there are no messages
     } // readNextMessage
     
+    public func clearAll()
+    {
+        unreadQueue.removeAll()
+        archiveQueue.removeAll()
+    }
+    
     public func readArchivedMessage(index: Int) -> String
     {
         if archiveQueue.count > index

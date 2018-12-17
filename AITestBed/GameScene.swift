@@ -61,6 +61,8 @@ class GameScene: SKScene {
     let ELEPHANTMODE:Int=4
     let FOODZONEMODE:Int=10
     let WATERZONEMODE:Int=12
+    let OBSTACLEMODE:Int=14
+    let RESTZONEMODE:Int=16
     
     
     
@@ -68,7 +70,7 @@ class GameScene: SKScene {
     let ELEPHANTHERD:Int=2
     
     let ENTITYHERDSIZE:CGFloat=10
-    let ELEPHANTHERDSIZE:CGFloat=6
+    let ELEPHANTHERDSIZE:CGFloat=10
     
     var msg=MessageClass()
     
@@ -251,6 +253,23 @@ class GameScene: SKScene {
             map.zoneList.append(tempZone)
         }
         
+        if currentMode==RESTZONEMODE
+        {
+            let tempZone=ZoneClass(zoneType: ZoneType.RESTZONE, pos: pos, theScene: self)
+            map.zoneList.append(tempZone)
+        }
+        
+        if currentMode==OBSTACLEMODE
+        {
+            let obRect=CGSize(width: 128, height: 128)
+            let obstacle=SKShapeNode(rectOf: obRect, cornerRadius: 5)
+            obstacle.position=pos
+            obstacle.zPosition = -5
+            obstacle.fillColor=NSColor.blue
+            obstacle.name="Water"
+            addChild(obstacle)
+        }
+        
     } // touchDown
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -300,11 +319,7 @@ class GameScene: SKScene {
             upPressed=true
             
             
-        case 22: // 6
-            currentMode=FOODZONEMODE
-            msg.sendCustomMessage(message: "Spawn food zone mode.")
-            selectedEntity=nil
-            isSelected=false
+
             
         case 27:
             zoomOutPressed=true
@@ -318,12 +333,24 @@ class GameScene: SKScene {
             selectedEntity=nil
             isSelected=false
 
+        case 22: // 6
+            currentMode=FOODZONEMODE
+            msg.sendCustomMessage(message: "Spawn food zone mode.")
+            selectedEntity=nil
+            isSelected=false
+            
+        case 26:
+            currentMode=RESTZONEMODE
+            msg.sendCustomMessage(message: "Spawn rest zone mode.")
+            selectedEntity=nil
+            isSelected=false
             
         case 25: // 9
             currentMode=ELEPHANTMODE
             msg.sendCustomMessage(message: "Spawn elephant mode.")
             selectedEntity=nil
             isSelected=false
+            
         case 29: // 0
             currentMode=ENTITYMODE
             msg.sendCustomMessage(message: "Spawn entity mode.")
@@ -344,6 +371,11 @@ class GameScene: SKScene {
         case 35: // P
             currentMode=SELECTMODE
             msg.sendCustomMessage(message: "Select mode.")
+            
+            
+        case 37: // L
+            currentMode=OBSTACLEMODE
+            msg.sendCustomMessage(message: "Spawn obstacle mode.")
             
         case 46:
             if msgBG.isHidden
@@ -416,13 +448,33 @@ class GameScene: SKScene {
                 }
                 else if index > -1 && selectedEntity!.name.contains("Elephant")
                 {
-                    map.elephantList[index].removeSprite()
+                    map.elephantList[index].die()
                     map.elephantList.remove(at: index)
                     selectedEntity=nil
                     isSelected=false
                 }
                 
-            }
+                for i in 0 ..< map.elephantList.count
+                {
+                    print(map.elephantList[i].name)
+                }
+                
+            } // if we're in select mode
+            
+        case 53: // esc
+            map.clearAll()
+            for node in self.children
+            {
+                if node.name!=="Water"
+                {
+                    node.removeFromParent()
+                }
+            } // for each node
+            msg.clearAll()
+            isSelected=false
+            selectedEntity=nil
+            
+            
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -532,8 +584,16 @@ class GameScene: SKScene {
             infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
             if selectedEntity!.name.contains("Elephant") && selectedEntity!.isHerdLeader==false
             {
-                let leader=selectedEntity as! ElephantClass
-                infoHerdLeader.text="Herd Leader: \(leader.herdLeader!.name)"
+                let eleph=selectedEntity as! ElephantClass
+                if eleph.herdLeader != nil
+                {
+                    infoHerdLeader.text="Herd Leader: \(eleph.herdLeader!.name)"
+                }
+                else
+                {
+                    infoHerdLeader.text="Herd Leader: None"
+                }
+                
             }
             else
             {

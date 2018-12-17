@@ -39,6 +39,7 @@ class EntityClass
     internal var isMale:Bool=false
     internal var isEating:Bool=false
     internal var isDrinking:Bool=false
+    internal var isResting:Bool=false
     
     
     var hash:String
@@ -107,6 +108,16 @@ class EntityClass
         sprite.removeFromParent()
     }
     
+    public func die()
+    {
+        alive=false
+        removeSprite()
+        
+        // remove all reference pointers
+        
+        
+    }
+    
     public func getAgeString() -> String
     {
         let ageRatio = age/MAXAGE
@@ -127,7 +138,7 @@ class EntityClass
         {
             return "Baby"
         }
-    } // func getAge
+    } // func getAgeString
     
     internal func getAge() -> CGFloat
     {

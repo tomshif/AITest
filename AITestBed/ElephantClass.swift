@@ -16,6 +16,7 @@ class ElephantClass:EntityClass
     public var herdLeader:ElephantClass?
     private var map:MapClass?
     
+    internal var lastObstacleCheck:Int=0
     
 
     internal var FOLLOWDIST:CGFloat=150
@@ -27,8 +28,8 @@ class ElephantClass:EntityClass
     private var gotoPoint:CGPoint=CGPoint(x: 0, y: 0)
     private var tempPoint:CGPoint=CGPoint(x: 0, y: 0)
     
-    private var METABOLISM:CGFloat=0.00001
-    private var WATERUSAGE:CGFloat=0.000015
+    private var METABOLISM:CGFloat=0.000015
+    private var WATERUSAGE:CGFloat=0.00001
     
     
     override init(theScene: SKScene, pos: CGPoint, message: MessageClass, number: Int)
@@ -110,6 +111,23 @@ class ElephantClass:EntityClass
         thirst=0.26
         
     } // leader init
+    
+    override func die()
+    {
+        super.die()
+        
+        // remove references as herd leader
+        for i in 0 ..< map!.elephantList.count
+        {
+            if map!.elephantList[i].herdLeader != nil
+            {
+                if map!.elephantList[i].herdLeader!.name == name
+                {
+                    map!.elephantList[i].herdLeader = nil
+                }
+            }
+        } // for each elephant
+    } // func die
     
     func goTo()
     {
@@ -201,6 +219,7 @@ class ElephantClass:EntityClass
         // check for obstacle in front at three different distances
         let obstacle = checkObstacle(direction: sprite.zRotation)
         // if there is something in front, check to 45 degrees left/right to see if it's clear
+        
         if obstacle && !isAvoidingObstacle
         {
             isAvoidingObstacle=true
@@ -313,6 +332,7 @@ class ElephantClass:EntityClass
                 } // for each node
             } // if we have nodes to check
         } // for each distance to check
+        lastObstacleCheck=0
         return obstacle
         
     } // func checkObstacle
@@ -340,33 +360,90 @@ class ElephantClass:EntityClass
     {
         if herdLeader != nil
         {
-            speed=random(min: MAXSPEED*0.7, max: MAXSPEED*1.0)
-            let dx=herdLeader!.sprite.position.x-sprite.position.x
-            let dy=herdLeader!.sprite.position.y-sprite.position.y
-            var angle=atan2(dy, dx)
-            var angleDiff = angle-sprite.zRotation
+            if !isAvoidingObstacle
+            {
+                speed=MAXSPEED
+                let dx=herdLeader!.sprite.position.x-sprite.position.x
+                let dy=herdLeader!.sprite.position.y-sprite.position.y
+                var angle=atan2(dy, dx)
+                var angleDiff = angle-sprite.zRotation
+                
+                if angle < 0
+                {
+                    angle+=CGFloat.pi*2
+                }
+                
+                if angleDiff > CGFloat.pi*2
+                {
+                    angleDiff -= CGFloat.pi*2
+                }
+                if angleDiff < -CGFloat.pi*2
+                {
+                    angleDiff += CGFloat.pi*2
+                }
+                
+                if (angleDiff > 0.3 && angleDiff < CGFloat.pi) || angleDiff < -CGFloat.pi
+                {
+                    // turning left
+                    sprite.zRotation += TURNRATE
+                    
+                } // if turn left
+                else if (angleDiff < -0.3 && angleDiff > -CGFloat.pi) || angleDiff > CGFloat.pi
+                {
+                    // we need to turn right
+                    sprite.zRotation -= TURNRATE
+                    
+                } // else if turn right
+            } // if we're not avoiding an obstacle
+            else
+            {
+                let dx=tempPoint.x-sprite.position.x
+                let dy=tempPoint.y-sprite.position.y
+                let dist = hypot(dy, dx)
+                var angle=atan2(dy, dx)
+                var angleDiff = angle-sprite.zRotation
+                speed=MAXSPEED*0.4
+                if angle < 0
+                {
+                    angle+=CGFloat.pi*2
+                }
+                
+                if angleDiff > CGFloat.pi*2
+                {
+                    angleDiff -= CGFloat.pi*2
+                }
+                if angleDiff < -CGFloat.pi*2
+                {
+                    angleDiff += CGFloat.pi*2
+                }
+                
+                if (angleDiff > 0.3 && angleDiff < CGFloat.pi) || angleDiff < -CGFloat.pi
+                {
+                    // turning left
+                    sprite.zRotation += TURNRATE
+                }
+                else if (angleDiff < -0.3 && angleDiff > -CGFloat.pi) || angleDiff > CGFloat.pi
+                {
+                    // we need to turn right
+                    sprite.zRotation -= TURNRATE
+                }
+                
+                
+                // if we're at our destination go back to going straight to point
+                if dist < 25
+                {
+                    isAvoidingObstacle=false
+                }
+            } // else if we are avoiding an obstacle
             
-            if angle < 0
+            // check for obstacle in front at three different distances
+            let obstacle = checkObstacle(direction: sprite.zRotation)
+            // if there is something in front, check to 45 degrees left/right to see if it's clear
+            if obstacle && !isAvoidingObstacle
             {
-                angle+=CGFloat.pi*2
-            }
-            if angleDiff > CGFloat.pi*2
-            {
-                angleDiff -= CGFloat.pi*2
-            }
-            if angleDiff < -CGFloat.pi*2
-            {
-                angleDiff += CGFloat.pi*2
-            }
-            
-            if (angleDiff > 0.3 && angleDiff < CGFloat.pi) || angleDiff < -CGFloat.pi
-            {
-                sprite.zRotation+=TURNRATE
-            }
-            else if (angleDiff < -0.3 && angleDiff > -CGFloat.pi) || angleDiff > CGFloat.pi
-            {
-                sprite.zRotation -= TURNRATE
-            }
+                isAvoidingObstacle=true
+                avoidObstacle()
+            } // if we have an obstacle
             
             
         }
@@ -478,6 +555,104 @@ class ElephantClass:EntityClass
         return dist
     } // func getDistanceToWaterZone
     
+    override func wander()
+    {
+        if !isAvoidingObstacle
+        {
+            // check for speed up
+            let speedChance=random(min: 0, max: 1.0)
+            if speedChance > 0.75
+            {
+                speed+=0.1
+                if speed > MAXSPEED*0.5
+                {
+                    speed=MAXSPEED*0.5
+                }
+            }
+            else if speedChance > 0.5
+            {
+                speed -= 0.1
+                if speed < 0
+                {
+                    speed=0
+                }
+            }
+            if !isTurning
+            {
+                //check to see if it's time to turn
+                let turnDelta = -lastWanderTurn.timeIntervalSinceNow
+                if turnDelta > TURNFREQ
+                {
+                    let turn=random(min: -TURNRATE, max: TURNRATE)
+                    sprite.zRotation+=turn
+                    lastWanderTurn=NSDate()
+                }
+            } // if we're not turning
+        } // if we're not avoiding an obstacle
+        else
+        {
+            let dx=tempPoint.x-sprite.position.x
+            let dy=tempPoint.y-sprite.position.y
+            let dist = hypot(dy, dx)
+            var angle=atan2(dy, dx)
+            var angleDiff = angle-sprite.zRotation
+            speed=MAXSPEED*0.4
+            if angle < 0
+            {
+                angle+=CGFloat.pi*2
+            }
+            
+            if angleDiff > CGFloat.pi*2
+            {
+                angleDiff -= CGFloat.pi*2
+            }
+            if angleDiff < -CGFloat.pi*2
+            {
+                angleDiff += CGFloat.pi*2
+            }
+            
+            if (angleDiff > 0.3 && angleDiff < CGFloat.pi) || angleDiff < -CGFloat.pi
+            {
+                // turning left
+                sprite.zRotation += TURNRATE
+            }
+            else if (angleDiff < -0.3 && angleDiff > -CGFloat.pi) || angleDiff > CGFloat.pi
+            {
+                // we need to turn right
+                sprite.zRotation -= TURNRATE
+            }
+            
+            
+            // if we're at our destination go back to going straight to point
+            if dist < 25
+            {
+                isAvoidingObstacle=false
+            }
+        } // if we are avoiding an obstacle
+        
+        
+        // check for obstacle in front at three different distances
+        
+        var obstacle:Bool=false
+        if lastObstacleCheck > 5
+        {
+            obstacle = checkObstacle(direction: sprite.zRotation)
+        } // if it's time to check for obstacles
+        else
+        {
+            lastObstacleCheck+=1
+        }
+        // if there is something in front, check to 45 degrees left/right to see if it's clear
+        if obstacle && !isAvoidingObstacle
+        {
+            isAvoidingObstacle=true
+            avoidObstacle()
+        } // if we have an obstacle
+        
+
+        
+        
+    } // func wander
     
     private func updateStats() -> Int
     {
@@ -539,8 +714,8 @@ class ElephantClass:EntityClass
         
         // Check to make sure our herd leader is still alive and if not, find a new one
         
-        /*
-        if herdLeader != nil
+        
+        if herdLeader != nil && !isHerdLeader
         {
             if !herdLeader!.isAlive()
             {
@@ -548,7 +723,11 @@ class ElephantClass:EntityClass
             }
             
         }
-        */
+        else if herdLeader == nil && !isHerdLeader
+        {
+            findAlpha()
+        }
+        
         
         
         
@@ -589,7 +768,12 @@ class ElephantClass:EntityClass
     } // func findAlpha()
     
     override func update(cycle: Int) -> Int {
+        
         var ret:Int = -1
+        
+        
+        // first check for dead or removed alpha
+        
         
         updateGraphics()
         let statsRet=updateStats()

@@ -20,6 +20,7 @@
 		F4FA4DA521C31B370062BDE2 /* random.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA421C31B370062BDE2 /* random.swift */; };
 		F4FA4DA821C46EED0062BDE2 /* ZoneClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA721C46EED0062BDE2 /* ZoneClass.swift */; };
 		F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4DA921C49B950062BDE2 /* MapClass.swift */; };
+		F4FA4DAD21C5E2B80062BDE2 /* ToDoList.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F4FA4DAC21C5E2B80062BDE2 /* ToDoList.rtf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		F4FA4DA421C31B370062BDE2 /* random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = random.swift; sourceTree = "<group>"; };
 		F4FA4DA721C46EED0062BDE2 /* ZoneClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneClass.swift; sourceTree = "<group>"; };
 		F4FA4DA921C49B950062BDE2 /* MapClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapClass.swift; sourceTree = "<group>"; };
+		F4FA4DAC21C5E2B80062BDE2 /* ToDoList.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ToDoList.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 		F4FA4D8721C30A8B0062BDE2 /* AITestBed */ = {
 			isa = PBXGroup;
 			children = (
+				F4FA4DAB21C5E27E0062BDE2 /* Docs */,
 				F4FA4DA621C31B760062BDE2 /* Misc Files */,
 				F4FA4DA121C31B1A0062BDE2 /* Support Classes */,
 				F4FA4DA021C31B010062BDE2 /* AI Classes */,
@@ -112,6 +115,14 @@
 				F4FA4D9421C30A8C0062BDE2 /* Main.storyboard */,
 			);
 			path = "Misc Files";
+			sourceTree = "<group>";
+		};
+		F4FA4DAB21C5E27E0062BDE2 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				F4FA4DAC21C5E2B80062BDE2 /* ToDoList.rtf */,
+			);
+			path = Docs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,6 +185,7 @@
 			files = (
 				F4FA4D8B21C30A8B0062BDE2 /* GameScene.sks in Resources */,
 				F4FA4D9321C30A8C0062BDE2 /* Assets.xcassets in Resources */,
+				F4FA4DAD21C5E2B80062BDE2 /* ToDoList.rtf in Resources */,
 				F4FA4D8D21C30A8B0062BDE2 /* Actions.sks in Resources */,
 				F4FA4D9621C30A8C0062BDE2 /* Main.storyboard in Resources */,
 			);
