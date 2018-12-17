@@ -414,7 +414,7 @@ class GameScene: SKScene {
                         
                     } // for each elephant
                     
-                    if index >= map.elephantList.count-1
+                    if index > map.elephantList.count-1
                     {
                         index=0
                     }
@@ -621,7 +621,9 @@ class GameScene: SKScene {
             msgBG.removeAllActions()
             msgBG.alpha=1.0
             msgLabel.text=msg.readNextMessage()
-            msgBG.run(SKAction.fadeOut(withDuration: 5.0))
+            let runAction=SKAction.sequence([SKAction.wait(forDuration: 4.0), SKAction.fadeOut(withDuration: 1.0)])
+            msgBG.run(runAction)
+            //msgBG.run(SKAction.fadeOut(withDuration: 5.0))
         }
         
         

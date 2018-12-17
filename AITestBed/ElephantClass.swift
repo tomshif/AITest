@@ -713,7 +713,10 @@ class ElephantClass:EntityClass
         }
         
         // Check to make sure our herd leader is still alive and if not, find a new one
-        
+        if isHerdLeader
+        {
+            herdLeader=nil
+        }
         
         if herdLeader != nil && !isHerdLeader
         {

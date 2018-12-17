@@ -16,13 +16,17 @@ class MapClass
     var elephantList=[ElephantClass]()
     
     private var timeOfDay:CGFloat=200
-    private let TIMESCALE:CGFloat = 0.01
+    private let TIMESCALE:CGFloat = 0.02
+    
+    private var day:Int=1
+    private var year:Int=1
+    
     
     public func getTimeAsString() -> String
     {
         let hour = Int(timeOfDay/60)
         let minute = Int(timeOfDay)%60
-        let temp=String(format: "%02d:%02d",hour, minute)
+        let temp=String(format: "Year: %1d Day: %1d %02d:%02d",year, day, hour, minute)
         return temp
     } // func getTimeAsString
     
@@ -37,7 +41,14 @@ class MapClass
         if timeOfDay > 1440
         {
             timeOfDay=0
-        }
+            day += 1
+        } // if it's a new day
+        
+        if day > 365
+        {
+            day = 1
+            year += 1
+        } // if it's a new year
     } // func timePlus
     
     func clearAll()
