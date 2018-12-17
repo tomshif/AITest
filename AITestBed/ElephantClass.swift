@@ -41,8 +41,8 @@ class ElephantClass:EntityClass
         
         // override variable initial values
         MAXAGE=45.0
-        TURNRATE=0.1
-        TURNFREQ=0.1
+        TURNRATE=0.15
+        TURNFREQ=0.07
         MINSCALE=0.1
         
         
