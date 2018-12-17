@@ -15,6 +15,31 @@ class MapClass
     var entList=[EntityClass]()
     var elephantList=[ElephantClass]()
     
+    private var timeOfDay:CGFloat=200
+    private let TIMESCALE:CGFloat = 0.01
+    
+    public func getTimeAsString() -> String
+    {
+        let hour = Int(timeOfDay/60)
+        let minute = Int(timeOfDay)%60
+        let temp=String(format: "%02d:%02d",hour, minute)
+        return temp
+    } // func getTimeAsString
+    
+    public func getTimeOfDay() -> CGFloat
+    {
+        return timeOfDay
+    } // func getTimeOfDay()
+    
+    public func timePlus()
+    {
+        timeOfDay+=TIMESCALE
+        if timeOfDay > 1440
+        {
+            timeOfDay=0
+        }
+    } // func timePlus
+    
     func clearAll()
     {
 

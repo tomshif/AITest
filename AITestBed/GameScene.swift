@@ -28,6 +28,7 @@ class GameScene: SKScene {
     let infoHunger=SKLabelNode(fontNamed: "Arial")
     let infoThirst=SKLabelNode(fontNamed: "Arial")
     let infoHerdLeader=SKLabelNode(fontNamed: "Arial")
+    let timeLabel=SKLabelNode(fontNamed: "Arial")
     
     
     let msgLabel=SKLabelNode(fontNamed: "Arial")
@@ -84,6 +85,14 @@ class GameScene: SKScene {
         camera=myCam
         myCam.name="myCamera"
         addChild(myCam)
+        
+        timeLabel.position.y = -size.height*0.45
+        timeLabel.zPosition = 100
+        timeLabel.fontSize = 48
+        timeLabel.fontColor=NSColor.black
+        myCam.addChild(timeLabel)
+        
+        
         
         infoBG.zPosition=100
         infoBG.name="infoBG"
@@ -605,6 +614,8 @@ class GameScene: SKScene {
             infoBG.isHidden=true
         }
     
+        timeLabel.text=map.getTimeAsString()
+        
         if msg.getUnreadCount() > 0
         {
             msgBG.removeAllActions()
@@ -612,6 +623,8 @@ class GameScene: SKScene {
             msgLabel.text=msg.readNextMessage()
             msgBG.run(SKAction.fadeOut(withDuration: 5.0))
         }
+        
+        
         
         
     } // func updateInfo
@@ -666,6 +679,8 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        map.timePlus()
         
         checkKeys()
         updateInfo()
