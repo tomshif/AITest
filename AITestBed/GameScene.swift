@@ -18,7 +18,7 @@ class GameScene: SKScene {
     var infoBG=SKSpriteNode(imageNamed: "informationBG")
     var msgBG=SKSpriteNode(imageNamed: "messageBG")
     let selectedSquare=SKSpriteNode(imageNamed: "selectedSquare")
-    
+    let bgGrid=SKSpriteNode(imageNamed: "bgGrid01")
     
     let infoTitle=SKLabelNode(fontNamed: "Arial")
     let infoAge=SKLabelNode(fontNamed: "Arial")
@@ -70,6 +70,10 @@ class GameScene: SKScene {
     let ENTITYHERD:Int=0
     let ELEPHANTHERD:Int=2
     
+    let MAPHEIGHT:Int=32
+    let MAPWIDTH:Int=32
+    
+    
     let ENTITYHERDSIZE:CGFloat=10
     let ELEPHANTHERDSIZE:CGFloat=10
     
@@ -86,10 +90,13 @@ class GameScene: SKScene {
         myCam.name="myCamera"
         addChild(myCam)
         
+        drawBGGrid()
+        
         timeLabel.position.y = -size.height*0.45
         timeLabel.zPosition = 100
         timeLabel.fontSize = 48
         timeLabel.fontColor=NSColor.black
+        timeLabel.name="timeLabel"
         myCam.addChild(timeLabel)
         
         
@@ -126,7 +133,7 @@ class GameScene: SKScene {
         
         infoAge.zPosition=101
         infoAge.fontColor=NSColor.yellow
-        infoAge.fontSize=26
+        infoAge.fontSize=22
         infoAge.text="infoAge"
         infoAge.name="InfoAge"
         infoAge.position.y=infoBG.size.height*0.2
@@ -134,50 +141,50 @@ class GameScene: SKScene {
         
         infoState.zPosition=101
         infoState.fontColor=NSColor.yellow
-        infoState.fontSize=26
+        infoState.fontSize=22
         infoState.text="InfoState"
         infoState.name="InfoState"
-        infoState.position.y=infoBG.size.height*0.1
+        infoState.position.y=infoBG.size.height*0.15
         infoBG.addChild(infoState)
         
         infoLeader.zPosition=101
         infoLeader.fontColor=NSColor.yellow
-        infoLeader.fontSize=26
+        infoLeader.fontSize=22
         infoLeader.text="InfoLeader"
         infoLeader.name="InfoLeader"
-        infoLeader.position.y = 0
+        infoLeader.position.y = infoBG.size.height*0.1
         infoBG.addChild(infoLeader)
         
         infoGender.zPosition=101
         infoGender.fontColor=NSColor.yellow
-        infoGender.fontSize=26
+        infoGender.fontSize=22
         infoGender.text="InfoGender"
         infoGender.name="InfoGender"
-        infoGender.position.y = -infoBG.size.height*0.1
+        infoGender.position.y = infoBG.size.height*0.05
         infoBG.addChild(infoGender)
         
         infoHunger.zPosition=101
         infoHunger.fontColor=NSColor.yellow
-        infoHunger.fontSize=26
+        infoHunger.fontSize=22
         infoHunger.text="infoHunger"
         infoHunger.name="infoHunger"
-        infoHunger.position.y = -infoBG.size.height*0.2
+        infoHunger.position.y = 0
         infoBG.addChild(infoHunger)
         
         infoThirst.zPosition=101
         infoThirst.fontColor=NSColor.yellow
-        infoThirst.fontSize=26
+        infoThirst.fontSize=22
         infoThirst.text="infoThirst"
         infoThirst.name="infoThirst"
-        infoThirst.position.y = -infoBG.size.height*0.3
+        infoThirst.position.y = -infoBG.size.height*0.05
         infoBG.addChild(infoThirst)
         
         infoHerdLeader.zPosition=101
         infoHerdLeader.fontColor=NSColor.yellow
-        infoHerdLeader.fontSize=26
+        infoHerdLeader.fontSize=22
         infoHerdLeader.text="infoHerdLeader"
         infoHerdLeader.name="infoHerdLeader"
-        infoHerdLeader.position.y = -infoBG.size.height*0.4
+        infoHerdLeader.position.y = -infoBG.size.height*0.1
         infoBG.addChild(infoHerdLeader)
         
         centerPoint.fillColor=NSColor.black
@@ -192,6 +199,26 @@ class GameScene: SKScene {
         
     } // didMove
     
+    func drawBGGrid()
+    {
+        
+        let blx = -bgGrid.size.width*CGFloat(MAPWIDTH)/2
+        let bly = -bgGrid.size.height*CGFloat(MAPHEIGHT)/2
+        for y in 0..<MAPHEIGHT
+        {
+            for x in 0..<MAPWIDTH
+            {
+                let grid=bgGrid.copy() as! SKSpriteNode
+                grid.position.x = blx+CGFloat(x)*grid.size.width
+                grid.position.y = bly+CGFloat(y)*grid.size.height
+                grid.zPosition = -1500
+                grid.name="bgGrid"
+                addChild(grid)
+                
+            } // for each x
+            
+        } // for each y
+    }
     
     func touchDown(atPoint pos : CGPoint) {
 

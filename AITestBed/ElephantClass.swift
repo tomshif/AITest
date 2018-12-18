@@ -27,10 +27,13 @@ class ElephantClass:EntityClass
     
     private var gotoPoint:CGPoint=CGPoint(x: 0, y: 0)
     private var tempPoint:CGPoint=CGPoint(x: 0, y: 0)
+    private var homePoint:CGPoint=CGPoint(x: 0, y: 0)
     
-    private var METABOLISM:CGFloat=0.000015
+    
+    
+    private var METABOLISM:CGFloat=0.0000125
     private var WATERUSAGE:CGFloat=0.00001
-    
+    private var HOMEDISTANCE:CGFloat=1000
     
     override init(theScene: SKScene, pos: CGPoint, message: MessageClass, number: Int)
     {
@@ -79,6 +82,7 @@ class ElephantClass:EntityClass
         TURNFREQ=0.4
         MAXSPEED=0.6
         
+    
         sprite.name=String(format:"Elephant%04d", number)
         name=String(format:"Elephant%04d", number)
         
@@ -108,7 +112,6 @@ class ElephantClass:EntityClass
         
         MAXAGE=random(min: MAXAGE*1.0, max: MAXAGE*1.4)
         age=random(min: MAXAGE*0.5, max: MAXAGE*0.7)
-        thirst=0.26
         
     } // leader init
     
@@ -166,7 +169,7 @@ class ElephantClass:EntityClass
             
             
             // if we're at our destination go back to wandering
-            if dist < 100
+            if dist < 200
             {
                 currentState=WANDERSTATE
             }
@@ -321,7 +324,7 @@ class ElephantClass:EntityClass
             {
                 for theNodes in nodes!
                 {
-                    if theNodes.name=="Water"
+                    if theNodes.name!.contains("Water")
                     {
                         //print("Water in front of me!")
                         obstacle=true
@@ -700,6 +703,7 @@ class ElephantClass:EntityClass
         
         if hunger <= 0
         {
+            die()
             ret = 4
         }
         
@@ -770,6 +774,30 @@ class ElephantClass:EntityClass
         
     } // func findAlpha()
     
+    func checkHomeDist() -> CGFloat
+    {
+        let dx=homePoint.x-sprite.position.x
+        let dy=homePoint.y-sprite.position.y
+        let dist = hypot(dy, dx)
+        return dist
+    } // func checkHomeDist
+    
+    private func goNearHome(dist: CGFloat)
+    {
+        currentState=GOTOSTATE
+        
+        let dx=homePoint.x-sprite.position.x
+        let dy=homePoint.y-sprite.position.y
+        let angle=atan2(dy, dx)
+        
+        let howFar=random(min: 0.3, max: 0.8)
+        let xP=cos(angle)*(dist*howFar)
+        let yP=sin(angle)*(dist*howFar)
+        
+        gotoPoint=CGPoint(x: xP+sprite.position.x, y: yP+sprite.position.y)
+        
+    } // goNearHome
+    
     override func update(cycle: Int) -> Int {
         
         var ret:Int = -1
@@ -790,12 +818,19 @@ class ElephantClass:EntityClass
         {
             if !ageEntity()
             {
+                die()
                 ret=2
             } // we're able to age
         } // if we're alive
         let dist = getDistanceToLeader()
         if cycle==AICycle
         {
+            let homeDistance=checkHomeDist()
+            if homeDistance > HOMEDISTANCE && isHerdLeader
+            {
+                goNearHome(dist: homeDistance)
+            } // if we're too far from home
+            
             if currentState==WANDERSTATE
             {
                 if dist > FOLLOWDIST + followDistVariable
