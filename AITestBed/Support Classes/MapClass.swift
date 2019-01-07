@@ -35,6 +35,7 @@ class MapClass
         return timeOfDay
     } // func getTimeOfDay()
     
+    
     public func timePlus()
     {
         timeOfDay+=TIMESCALE
