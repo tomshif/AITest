@@ -9,6 +9,8 @@
 import Foundation
 import SpriteKit
 
+
+
 class EntityClass
 {
     public var scene:SKScene?
