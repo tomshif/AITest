@@ -586,7 +586,7 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: entityHerdCount)
+                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: entityHerdCount)
                 print("Entity\(entityHerdCount)")
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
