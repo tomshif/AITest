@@ -14,6 +14,7 @@ class EntityClass
     public var scene:SKScene?
     var sprite=SKSpriteNode(imageNamed: "entity")
     public var msg:MessageClass?
+    public var map:MapClass?
     
     public var speed:CGFloat=0
     public var age:CGFloat=1.0
@@ -62,19 +63,21 @@ class EntityClass
         scene?.addChild(sprite)
     } // init()
     
-    init(theScene:SKScene, pos: CGPoint, message: MessageClass, number: Int)
+    init(theScene:SKScene, theMap: MapClass, pos: CGPoint, message: MessageClass, number: Int)
     {
 
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4)
         age=random(min: 1.0, max: MAXAGE*0.7)
         msg=message
         scene=theScene
+        map=theMap
         sprite.name=String(format:"Entity%04d", number)
         name=String(format:"Entity%04d", number)
         hash=UUID().uuidString
         sprite.position=pos
         sprite.setScale(0.1)
         scene?.addChild(sprite)
+    
         
         let ageRatio=age/(MAXAGE*0.4)
         var scale:CGFloat=ageRatio
