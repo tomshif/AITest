@@ -55,11 +55,10 @@ class GameScene: SKScene {
     var currentCycle:Int=0
     var currentMode:Int=0
     var entityHerdCount:Int=0
-    var elephantHerdCount:Int=0
+
     
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
-    let ELEPHANTMODE:Int=4
     let FOODZONEMODE:Int=10
     let WATERZONEMODE:Int=12
     let OBSTACLEMODE:Int=14
@@ -68,14 +67,14 @@ class GameScene: SKScene {
     
     
     let ENTITYHERD:Int=0
-    let ELEPHANTHERD:Int=2
+
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
     
     
     let ENTITYHERDSIZE:CGFloat=10
-    let ELEPHANTHERDSIZE:CGFloat=10
+
     
     var msg=MessageClass()
     
@@ -229,7 +228,7 @@ class GameScene: SKScene {
             
             for node in nodes(at: pos)
             {
-                if (node.name?.contains("Entity"))! || (node.name?.contains("Elephant"))! || (node.name?.contains("infoHunger"))!
+                if (node.name?.contains("Entity"))! || (node.name?.contains("infoHunger"))!
                 {
                     temp=node.name!
                     isSelected=true
@@ -247,22 +246,8 @@ class GameScene: SKScene {
                         break
                     } // if we have a match
                 } // for each entity
-
-                for i in 0..<map.elephantList.count
-                {
-                    if map.elephantList[i].name==temp
-                    {
-                        selectedEntity=map.elephantList[i]
-                        break
-                    } // if we have a match
-                } // for each entity
                 
-                if temp=="infoHunger"
-                {
-                    selectedEntity!.hunger=0.25
-                }
-                
-            }
+            } // if we have something selected
     
         } // if we're in select mode
         
@@ -272,28 +257,24 @@ class GameScene: SKScene {
             
         } // if we're in entity spawn mode
         
-        if currentMode==ELEPHANTMODE
-        {
-            spawnHerd(type: ELEPHANTHERD, loc: pos)
-        }
         
         if currentMode==FOODZONEMODE
         {
             let tempZone=ZoneClass(zoneType: ZoneType.FOODZONE, pos: pos, theScene: self)
             map.zoneList.append(tempZone)
-        }
+        } // if we're spawning food zones
         
         if currentMode==WATERZONEMODE
         {
             let tempZone=ZoneClass(zoneType: ZoneType.WATERZONE, pos: pos, theScene: self)
             map.zoneList.append(tempZone)
-        }
+        } // if we're spawnin water zones
         
         if currentMode==RESTZONEMODE
         {
             let tempZone=ZoneClass(zoneType: ZoneType.RESTZONE, pos: pos, theScene: self)
             map.zoneList.append(tempZone)
-        }
+        } // if we're spawning rest zones
         
         if currentMode==OBSTACLEMODE
         {
@@ -304,7 +285,7 @@ class GameScene: SKScene {
             obstacle.fillColor=NSColor.blue
             obstacle.name="Water"
             addChild(obstacle)
-        }
+        } // if we're spawning obstacles
         
     } // touchDown
     
@@ -318,15 +299,15 @@ class GameScene: SKScene {
     
     override func mouseDown(with event: NSEvent) {
         self.touchDown(atPoint: event.location(in: self))
-    }
+    } // mouseDown
     
     override func mouseDragged(with event: NSEvent) {
         self.touchMoved(toPoint: event.location(in: self))
-    }
+    } // mouseDragged
     
     override func mouseUp(with event: NSEvent) {
         self.touchUp(atPoint: event.location(in: self))
-    }
+    } // mouseUp
     
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
@@ -354,9 +335,6 @@ class GameScene: SKScene {
         case 13:
             upPressed=true
             
-            
-
-            
         case 27:
             zoomOutPressed=true
             
@@ -381,11 +359,6 @@ class GameScene: SKScene {
             selectedEntity=nil
             isSelected=false
             
-        case 25: // 9
-            currentMode=ELEPHANTMODE
-            msg.sendCustomMessage(message: "Spawn elephant mode.")
-            selectedEntity=nil
-            isSelected=false
             
         case 29: // 0
             currentMode=ENTITYMODE
@@ -426,29 +399,9 @@ class GameScene: SKScene {
         case 48: // <tab>
             if isSelected
             {
-                if selectedEntity!.name.contains("Elephant")
-                {
-                    
-                    var index:Int = -1
-                    // find the entity
-                    for i in 0..<map.elephantList.count
-                    {
-                        if selectedEntity!.name==map.elephantList[i].name
-                        {
-                            
-                            index=i+1
-                        } // if
-                        
-                    } // for each elephant
-                    
-                    if index > map.elephantList.count-1
-                    {
-                        index=0
-                    }
-                    
-                    selectedEntity=map.elephantList[index]
-                    
-                }
+                // To Do:
+                // tab step through each entity in order
+                
             }
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
@@ -466,14 +419,6 @@ class GameScene: SKScene {
                     
                 } // for each entity
                 
-                for i in 0..<map.elephantList.count
-                {
-                    if map.elephantList[i].name==selectedEntity!.name
-                    {
-                        index=i
-                    } // if it's a match
-                    
-                }
                 
                 if index > -1 && selectedEntity!.name.contains("Entity")
                 {
@@ -482,18 +427,7 @@ class GameScene: SKScene {
                     selectedEntity=nil
                     isSelected=false
                 }
-                else if index > -1 && selectedEntity!.name.contains("Elephant")
-                {
-                    map.elephantList[index].die()
-                    map.elephantList.remove(at: index)
-                    selectedEntity=nil
-                    isSelected=false
-                }
-                
-                for i in 0 ..< map.elephantList.count
-                {
-                    print(map.elephantList[i].name)
-                }
+
                 
             } // if we're in select mode
             
@@ -513,7 +447,7 @@ class GameScene: SKScene {
             
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
+        } // switch
     } // keyDown
     
     override func keyUp(with event: NSEvent) {
@@ -539,7 +473,7 @@ class GameScene: SKScene {
             
         default:
             break
-        }
+        } // switch
     } // keyUp
     
     func checkKeys()
@@ -618,23 +552,7 @@ class GameScene: SKScene {
             
             infoHunger.text=String(format: "Hunger: %2.3f", selectedEntity!.hunger)
             infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
-            if selectedEntity!.name.contains("Elephant") && selectedEntity!.isHerdLeader==false
-            {
-                let eleph=selectedEntity as! ElephantClass
-                if eleph.herdLeader != nil
-                {
-                    infoHerdLeader.text="Herd Leader: \(eleph.herdLeader!.name)"
-                }
-                else
-                {
-                    infoHerdLeader.text="Herd Leader: None"
-                }
-                
-            }
-            else
-            {
-                infoHerdLeader.text="Herd Leader: Self"
-            }
+            
         } // if something is selected
         else
         {
@@ -651,7 +569,7 @@ class GameScene: SKScene {
             let runAction=SKAction.sequence([SKAction.wait(forDuration: 4.0), SKAction.fadeOut(withDuration: 1.0)])
             msgBG.run(runAction)
             //msgBG.run(SKAction.fadeOut(withDuration: 5.0))
-        }
+        } // if we have unread messages
         
         
         
@@ -679,30 +597,7 @@ class GameScene: SKScene {
             
         } // if we're spawning EntityClass
         
-        if type==ELEPHANTHERD
-        {
-            let herdsize=Int(random(min: ELEPHANTHERDSIZE*0.5, max: ELEPHANTHERDSIZE*1.5))
-            
-            let herdLeader=ElephantClass(theScene: self, pos: loc, message: msg, number: elephantHerdCount, isLeader: true, theMap: map)
-            herdLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-            map.elephantList.append(herdLeader)
-            
-            let leaderIndex=map.elephantList.count-1
-            elephantHerdCount+=1
-            
-            for _ in 1..<herdsize
-            {
-                
-                let tempEnt=ElephantClass(theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: elephantHerdCount, leader: map.elephantList[leaderIndex], theMap: map)
-                print(tempEnt.name)
-                
-                tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                map.elephantList.append(tempEnt)
-                elephantHerdCount+=1
-                
-            } // for each member of the herd
-            
-        } // if we're spawning ElephantClass
+       
         
     } // func spawnHerd
     
@@ -734,19 +629,6 @@ class GameScene: SKScene {
             } // if something dies
         } // for each entity
         
-        for i in 0..<map.elephantList.count
-        {
-            let updateReturn=map.elephantList[i].update(cycle: currentCycle)
-            if updateReturn > -1 && isSelected
-            {
-                if map.elephantList[i].name==selectedEntity!.name
-                {
-                    isSelected=false
-                    selectedEntity=nil
-                } // if the selected entity dies
-            } // if something dies
-        } // for each elephant
-        
         // clean up entList
         for i in 0..<map.entList.count
         {
@@ -756,17 +638,6 @@ class GameScene: SKScene {
                 break
             }
         } // for each entity
-        
-        // clean up entList
-        for i in 0..<map.elephantList.count
-        {
-            if !map.elephantList[i].isAlive()
-            {
-                map.elephantList.remove(at: i)
-                break
-            }
-        } // for each entity
-
         
     } // update
 } // GameScene

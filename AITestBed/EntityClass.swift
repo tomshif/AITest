@@ -60,7 +60,8 @@ class EntityClass
         sprite.position=CGPoint(x: 0, y: 0)
         sprite.setScale(0.1)
         scene?.addChild(sprite)
-    }
+    } // init()
+    
     init(theScene:SKScene, pos: CGPoint, message: MessageClass, number: Int)
     {
 
