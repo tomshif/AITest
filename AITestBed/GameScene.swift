@@ -55,19 +55,21 @@ class GameScene: SKScene {
     var currentCycle:Int=0
     var currentMode:Int=0
     var entityHerdCount:Int=0
-
+    var saddlecatHerdCount:Int=0
+    
     
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
+    let SADDLECATMODE:Int=4
     let FOODZONEMODE:Int=10
     let WATERZONEMODE:Int=12
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
     
     
-    
     let ENTITYHERD:Int=0
-
+    let SADDLECATHERD:Int=2
+    
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
@@ -228,7 +230,7 @@ class GameScene: SKScene {
             
             for node in nodes(at: pos)
             {
-                if (node.name?.contains("Entity"))! || (node.name?.contains("infoHunger"))!
+                if (node.name?.contains("ent"))! || (node.name?.contains("infoHunger"))!
                 {
                     temp=node.name!
                     isSelected=true
@@ -257,6 +259,10 @@ class GameScene: SKScene {
             
         } // if we're in entity spawn mode
         
+        if currentMode==SADDLECATMODE
+        {
+            spawnHerd(type: SADDLECATHERD, loc: pos)
+        }
         
         if currentMode==FOODZONEMODE
         {
@@ -350,6 +356,12 @@ class GameScene: SKScene {
         case 22: // 6
             currentMode=FOODZONEMODE
             msg.sendCustomMessage(message: "Spawn food zone mode.")
+            selectedEntity=nil
+            isSelected=false
+         
+        case 25: // 9
+            currentMode=SADDLECATMODE
+            msg.sendCustomMessage(message: "Spawn saddlecat mode.")
             selectedEntity=nil
             isSelected=false
             
@@ -597,6 +609,23 @@ class GameScene: SKScene {
             
         } // if we're spawning EntityClass
         
+        if type==SADDLECATHERD
+        {
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            
+            for _ in 1...herdsize
+            {
+                
+                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: saddlecatHerdCount)
+                print(tempCat.name)
+                
+                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempCat)
+                saddlecatHerdCount+=1
+                
+            } // for each member of the herd
+            
+        }
        
         
     } // func spawnHerd
