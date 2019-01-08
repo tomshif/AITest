@@ -30,7 +30,6 @@ class GameScene: SKScene {
     let infoHerdLeader=SKLabelNode(fontNamed: "Arial")
     let timeLabel=SKLabelNode(fontNamed: "Arial")
     
-    
     let msgLabel=SKLabelNode(fontNamed: "Arial")
     
     var selectedEntity:EntityClass?
@@ -45,6 +44,8 @@ class GameScene: SKScene {
     var zoomOutPressed:Bool=false
     var isSelected:Bool=false
     var followModeOn:Bool=false
+    var isGamePaused:Bool=false
+    
     
     var myCam=SKCameraNode()
 
@@ -66,6 +67,7 @@ class GameScene: SKScene {
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
     
+    var TIMESCALE:CGFloat=1.0
     
     let ENTITYHERD:Int=0
     let SADDLECATHERD:Int=2
@@ -75,10 +77,10 @@ class GameScene: SKScene {
     let MAPWIDTH:Int=32
     
     
-    let ENTITYHERDSIZE:CGFloat=10
+    let ENTITYHERDSIZE:CGFloat=100
 
     
-    var msg=MessageClass()
+    //var msg=MessageClass()
     
     
     
@@ -331,12 +333,12 @@ class GameScene: SKScene {
             if followModeOn
             {
                 followModeOn=false
-                msg.sendCustomMessage(message: "Follow mode off")
+                map.msg.sendCustomMessage(message: "Follow mode off")
             }
             else
             {
                 followModeOn=true
-                msg.sendCustomMessage(message: "Follow mode on.")
+                map.msg.sendCustomMessage(message: "Follow mode on.")
             }
         case 13:
             upPressed=true
@@ -349,34 +351,41 @@ class GameScene: SKScene {
             
         case 23: // 5
             currentMode=WATERZONEMODE
-            msg.sendCustomMessage(message: "Spawn water zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn water zone mode.")
             selectedEntity=nil
             isSelected=false
 
         case 22: // 6
             currentMode=FOODZONEMODE
-            msg.sendCustomMessage(message: "Spawn food zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn food zone mode.")
             selectedEntity=nil
             isSelected=false
          
         case 25: // 9
             currentMode=SADDLECATMODE
-            msg.sendCustomMessage(message: "Spawn saddlecat mode.")
+            map.msg.sendCustomMessage(message: "Spawn saddlecat mode.")
             selectedEntity=nil
             isSelected=false
             
         case 26:
             currentMode=RESTZONEMODE
-            msg.sendCustomMessage(message: "Spawn rest zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn rest zone mode.")
             selectedEntity=nil
             isSelected=false
             
             
         case 29: // 0
             currentMode=ENTITYMODE
-            msg.sendCustomMessage(message: "Spawn entity mode.")
+            map.msg.sendCustomMessage(message: "Spawn entity mode.")
             selectedEntity=nil
             isSelected=false
+            
+        case 30: // [
+            map.increaseTimeScale()
+        
+            
+        case 33: // ]
+            map.decreaseTimeScale()
             
             
         case 34: // I
@@ -391,12 +400,12 @@ class GameScene: SKScene {
             
         case 35: // P
             currentMode=SELECTMODE
-            msg.sendCustomMessage(message: "Select mode.")
+            map.msg.sendCustomMessage(message: "Select mode.")
             
             
         case 37: // L
             currentMode=OBSTACLEMODE
-            msg.sendCustomMessage(message: "Spawn obstacle mode.")
+            map.msg.sendCustomMessage(message: "Spawn obstacle mode.")
             
         case 46:
             if msgBG.isHidden
@@ -411,9 +420,23 @@ class GameScene: SKScene {
         case 48: // <tab>
             if isSelected
             {
-                // To Do:
-                // tab step through each entity in order
-                
+
+                var index:Int = -1
+                for i in 0..<map.entList.count
+                {
+                    if map.entList[i].name==selectedEntity!.name
+                    {
+                        index=i
+                    } // if it's a match
+                    
+                } // for each entity
+                index+=1
+                if index > map.entList.count-1
+                {
+                    index=0
+                }
+                selectedEntity=map.entList[index]
+                myCam.position=selectedEntity!.sprite.position
             }
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
@@ -452,7 +475,7 @@ class GameScene: SKScene {
                     node.removeFromParent()
                 }
             } // for each node
-            msg.clearAll()
+            map.msg.clearAll()
             isSelected=false
             selectedEntity=nil
             
@@ -571,13 +594,13 @@ class GameScene: SKScene {
             infoBG.isHidden=true
         }
     
-        timeLabel.text=map.getTimeAsString()
+        timeLabel.text="\(map.getTimeAsString()) - timeScale: \(map.getTimeScale())"
         
-        if msg.getUnreadCount() > 0
+        if map.msg.getUnreadCount() > 0
         {
             msgBG.removeAllActions()
             msgBG.alpha=1.0
-            msgLabel.text=msg.readNextMessage()
+            msgLabel.text=map.msg.readNextMessage()
             let runAction=SKAction.sequence([SKAction.wait(forDuration: 4.0), SKAction.fadeOut(withDuration: 1.0)])
             msgBG.run(runAction)
             //msgBG.run(SKAction.fadeOut(withDuration: 5.0))
@@ -598,7 +621,7 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: entityHerdCount)
+                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
                 print("Entity\(entityHerdCount)")
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -616,7 +639,7 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: saddlecatHerdCount)
+                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: saddlecatHerdCount)
                 print(tempCat.name)
                 
                 tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -633,41 +656,45 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        map.timePlus()
-        
-        checkKeys()
-        updateInfo()
-        updateSelected()
-        
-        
-        currentCycle+=1
-        if currentCycle > 2
+        if !isGamePaused
         {
-            currentCycle=0
-        }
-        for i in 0..<map.entList.count
-        {
-            let updateReturn=map.entList[i].update(cycle: currentCycle)
-            if updateReturn > -1 && isSelected
+            map.timePlus()
+            
+            checkKeys()
+            updateInfo()
+            updateSelected()
+            
+            
+            currentCycle+=1
+            if currentCycle > 3
             {
-                if map.entList[i].name==selectedEntity!.name
-                {
-                    isSelected=false
-                    selectedEntity=nil
-                } // if the selected entity dies
-            } // if something dies
-        } // for each entity
-        
-        // clean up entList
-        for i in 0..<map.entList.count
-        {
-            if !map.entList[i].isAlive()
-            {
-                map.entList.remove(at: i)
-                break
+                currentCycle=0
             }
-        } // for each entity
-        
+            
+            for i in 0..<map.entList.count
+            {
+                let updateReturn=map.entList[i].update(cycle: currentCycle)
+                if updateReturn > -1 && isSelected
+                {
+                    if map.entList[i].name==selectedEntity!.name
+                    {
+                        isSelected=false
+                        selectedEntity=nil
+                    } // if the selected entity dies
+                } // if something dies
+            } // for each entity
+            
+            // clean up entList
+            for i in 0..<map.entList.count
+            {
+                if !map.entList[i].isAlive()
+                {
+                    map.entList.remove(at: i)
+                    break
+                }
+            } // for each entity
+            
+        } // if we're not paused
     } // update
 } // GameScene
 
