@@ -13,6 +13,8 @@ class MapClass
 {
     var zoneList=[ZoneClass]()
     var entList=[EntityClass]()
+    var birdList=[BirdClass]()
+    
     var msg=MessageClass()
     
     

@@ -632,6 +632,7 @@ class GameScene: SKScene {
             
         } // if we're spawning EntityClass
         
+        /*
         if type==SADDLECATHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
@@ -649,8 +650,20 @@ class GameScene: SKScene {
             } // for each member of the herd
             
         }
-       
+         */
         
+       if type==SADDLECATHERD
+       {
+            let tempLeaderBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: true, ldr: nil)
+            map.birdList.append(tempLeaderBird)
+            for _ in 1...10
+            {
+                let tempBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: false, ldr: tempLeaderBird)
+                tempBird.sprite.zRotation=random(min:0,max:CGFloat.pi*2)
+                map.birdList.append(tempBird)
+                
+            }
+        }
     } // func spawnHerd
     
     override func update(_ currentTime: TimeInterval) {
@@ -684,7 +697,16 @@ class GameScene: SKScene {
                 } // if something dies
             } // for each entity
             
+            // update birds
+            for i in 0..<map.birdList.count
+            {
+                map.birdList[i].update(cycle: currentCycle)
+            }
+            
+            
             // clean up entList
+            
+            
             for i in 0..<map.entList.count
             {
                 if !map.entList[i].isAlive()
