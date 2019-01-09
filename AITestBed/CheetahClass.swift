@@ -1,21 +1,19 @@
 //
-//  SaddlecatClass.swift
+//  CheetahClass.swift
 //  AITestBed
 //
-//  Created by Tom Shiflet on 1/7/19.
+//  Created by Game Design Shared on 1/7/19.
 //  Copyright © 2019 Liberty Game Dev. All rights reserved.
 //
 
 import Foundation
 import SpriteKit
-
-class SaddlecatClass:EntityClass
+class CheetahClass:EntityClass
 {
-    
     override init()
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "saddleCat")
+        sprite=SKSpriteNode(imageNamed: "cheetah")
     } // init
     
     
@@ -27,27 +25,26 @@ class SaddlecatClass:EntityClass
         // set the passed references
         map=theMap
         scene=theScene
-
+        
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "saddleCat")
+        sprite=SKSpriteNode(imageNamed: "cheetah")
         sprite.position=pos
-
-        sprite.name=String(format:"entSaddleCat%04d", number)
-        name=String(format:"entSaddleCat%04d", number)
-        sprite.zPosition=170
+        sprite.name="cheetah"
+        sprite.name=String(format:"entcheetah1#4y", number)
+        name=String(format:"entSaddleCat1#4y", number)
+        sprite.zPosition=120
         
         scene!.addChild(sprite)
-
+        
         // Variable updates
-        MAXSPEED=1.2
-        TURNRATE=0.2
-        TURNFREQ=0.06
-        AICycle=3
+        MAXSPEED=3
+        TURNRATE=1
+        TURNFREQ=0.1
+        AICycle=0
+        MAXAGE=8*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
     } // full init()
-} // class SaddlecatClass
-
-
+} // CheetahClass

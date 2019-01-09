@@ -212,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */,
+				9F668D7521E6894C002A6253 /* ZebraClass.swift in Sources */,
 				F49DC5CF21E6364100CEABC1 /* TestClass.swift in Sources */,
 				F4FA4DA521C31B370062BDE2 /* random.swift in Sources */,
 				F4FA4D9121C30A8B0062BDE2 /* ViewController.swift in Sources */,
