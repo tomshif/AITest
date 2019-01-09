@@ -62,6 +62,9 @@ class GameScene: SKScene {
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
     let SADDLECATMODE:Int=4
+    let SPRINGBOKMODE:Int=6
+    let ZEBRAMODE:Int=8
+    let CHEETAHMODE:Int=9
     let FOODZONEMODE:Int=10
     let WATERZONEMODE:Int=12
     let OBSTACLEMODE:Int=14
@@ -74,7 +77,11 @@ class GameScene: SKScene {
     let ENTITYHERD:Int=0
     let SADDLECATHERD:Int=2
     let BIRDFLOCK:Int=4
-
+    let ZEBRAHERD:Int=6
+    let SPRINGBOKHERD:Int=8
+    let CHEETAHHERD:Int=10
+    
+    
     let BIRDCOUNT:Int=100
     
     let MAPHEIGHT:Int=32
@@ -272,6 +279,21 @@ class GameScene: SKScene {
             spawnHerd(type: SADDLECATHERD, loc: pos)
         }
         
+        if currentMode==ZEBRAMODE
+        {
+            spawnHerd(type: ZEBRAHERD, loc: pos)
+        }
+        
+        if currentMode==CHEETAHMODE
+        {
+            spawnHerd(type: CHEETAHHERD, loc: pos)
+        }
+        
+        if currentMode==SPRINGBOKMODE
+        {
+            spawnHerd(type: SPRINGBOKHERD, loc: pos)
+        }
+        
         if currentMode==BIRDMODE
         {
             spawnHerd(type: BIRDFLOCK, loc: pos)
@@ -361,12 +383,23 @@ class GameScene: SKScene {
         case 13:
             upPressed=true
             
+        case 18:
+            currentMode=SPRINGBOKMODE
+            map.msg.sendCustomMessage(message: "Spawn springbok mode.")
+            selectedEntity=nil
+            isSelected=false
             
         case 19:
-            for _ in 1...100
-            {
-                spawnHerd(type: ENTITYHERD, loc: CGPoint(x: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7), y: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7)))
-            } // for each herd
+            currentMode=ZEBRAMODE
+            map.msg.sendCustomMessage(message: "Spawn zebra mode.")
+            selectedEntity=nil
+            isSelected=false
+            
+        case 20:
+            currentMode=CHEETAHMODE
+            map.msg.sendCustomMessage(message: "Spawn cheetah mode.")
+            selectedEntity=nil
+            isSelected=false
             
         case 27:
             zoomOutPressed=true
@@ -674,8 +707,52 @@ class GameScene: SKScene {
                 
             } // for each member of the herd
             
+        } // if saddlecat
+        
+        if type==CHEETAHHERD
+        {
+            let tempCat=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+            print(tempCat.name)
+            
+            tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            map.entList.append(tempCat)
+            entityHerdCount+=1
         }
         
+        if type==ZEBRAHERD
+        {
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            
+            for _ in 1...herdsize
+            {
+                
+                let tempCat=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                print(tempCat.name)
+                
+                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempCat)
+                entityHerdCount+=1
+                
+            } // for each member of the herd
+        }
+        
+        if type==SPRINGBOKHERD
+        {
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            
+            for _ in 1...herdsize
+            {
+                
+                let tempCat=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                print(tempCat.name)
+                
+                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempCat)
+                entityHerdCount+=1
+                
+            } // for each member of the herd
+            
+        }
         
        if type==BIRDFLOCK
        {

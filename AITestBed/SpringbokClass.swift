@@ -33,8 +33,8 @@ class SpringbokClass:EntityClass
         sprite=SKSpriteNode(imageNamed: "Springbok")
         sprite.position=pos
         sprite.name="Springbok"
-        sprite.name=String(format:"entSpringbok2#5z", number)
-        name=String(format:"entSpringbok2#5z", number)
+        sprite.name=String(format:"entSpringbok%04d", number)
+        name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
         
         scene!.addChild(sprite)

@@ -12,6 +12,8 @@
 		F49DC5CB21E4070300CEABC1 /* SaddlecatClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */; };
 		F49DC5CD21E53F2100CEABC1 /* BirdClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */; };
 		F49DC5CF21E6364100CEABC1 /* TestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5CE21E6364100CEABC1 /* TestClass.swift */; };
+		F49DC5D221E691FE00CEABC1 /* CheetahClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5D021E691FE00CEABC1 /* CheetahClass.swift */; };
+		F49DC5D321E691FE00CEABC1 /* ZebraClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5D121E691FE00CEABC1 /* ZebraClass.swift */; };
 		F4FA4D8921C30A8B0062BDE2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FA4D8821C30A8B0062BDE2 /* AppDelegate.swift */; };
 		F4FA4D8B21C30A8B0062BDE2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F4FA4D8A21C30A8B0062BDE2 /* GameScene.sks */; };
 		F4FA4D8D21C30A8B0062BDE2 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F4FA4D8C21C30A8B0062BDE2 /* Actions.sks */; };
@@ -33,6 +35,8 @@
 		F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaddlecatClass.swift; sourceTree = "<group>"; };
 		F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdClass.swift; sourceTree = "<group>"; };
 		F49DC5CE21E6364100CEABC1 /* TestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestClass.swift; sourceTree = "<group>"; };
+		F49DC5D021E691FE00CEABC1 /* CheetahClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheetahClass.swift; sourceTree = "<group>"; };
+		F49DC5D121E691FE00CEABC1 /* ZebraClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZebraClass.swift; sourceTree = "<group>"; };
 		F4FA4D8521C30A8B0062BDE2 /* AITestBed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AITestBed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4FA4D8821C30A8B0062BDE2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F4FA4D8A21C30A8B0062BDE2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -99,9 +103,11 @@
 			children = (
 				F4FA4D9E21C31AEF0062BDE2 /* EntityClass.swift */,
 				F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */,
+				F49DC5D021E691FE00CEABC1 /* CheetahClass.swift */,
 				F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */,
 				F49DC5CE21E6364100CEABC1 /* TestClass.swift */,
 				9F3B007521E689AD00149E9B /* SpringbokClass.swift */,
+				F49DC5D121E691FE00CEABC1 /* ZebraClass.swift */,
 			);
 			name = "AI Classes";
 			sourceTree = "<group>";
@@ -212,7 +218,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */,
-				9F668D7521E6894C002A6253 /* ZebraClass.swift in Sources */,
 				F49DC5CF21E6364100CEABC1 /* TestClass.swift in Sources */,
 				F4FA4DA521C31B370062BDE2 /* random.swift in Sources */,
 				F4FA4D9121C30A8B0062BDE2 /* ViewController.swift in Sources */,
@@ -221,7 +226,9 @@
 				F4FA4D8F21C30A8B0062BDE2 /* GameScene.swift in Sources */,
 				F4FA4DA821C46EED0062BDE2 /* ZoneClass.swift in Sources */,
 				F4FA4D8921C30A8B0062BDE2 /* AppDelegate.swift in Sources */,
+				F49DC5D321E691FE00CEABC1 /* ZebraClass.swift in Sources */,
 				F49DC5CB21E4070300CEABC1 /* SaddlecatClass.swift in Sources */,
+				F49DC5D221E691FE00CEABC1 /* CheetahClass.swift in Sources */,
 				F4FA4DA321C31B300062BDE2 /* MessageClass.swift in Sources */,
 				F4FA4D9F21C31AEF0062BDE2 /* EntityClass.swift in Sources */,
 			);

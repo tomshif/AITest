@@ -31,8 +31,8 @@ class CheetahClass:EntityClass
         sprite=SKSpriteNode(imageNamed: "cheetah")
         sprite.position=pos
         sprite.name="cheetah"
-        sprite.name=String(format:"entcheetah1#4y", number)
-        name=String(format:"entSaddleCat1#4y", number)
+        sprite.name=String(format:"entCheetah%04d", number)
+        name=String(format:"entCheetah%04d", number)
         sprite.zPosition=120
         
         scene!.addChild(sprite)
