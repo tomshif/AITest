@@ -32,7 +32,7 @@ class SaddlecatClass:EntityClass
         // sprite update
         sprite=SKSpriteNode(imageNamed: "saddleCat")
         sprite.position=pos
-        sprite.name="saddlecat"
+
         sprite.name=String(format:"entSaddleCat%04d", number)
         name=String(format:"entSaddleCat%04d", number)
         sprite.zPosition=170

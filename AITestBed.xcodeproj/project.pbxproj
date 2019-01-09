@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F668D7521E6894C002A6253 /* ZebraClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F668D7421E6894C002A6253 /* ZebraClass.swift */; };
 		F49CB49A21C81A1D002AD2CF /* Key Commands.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F49CB49921C81A1D002AD2CF /* Key Commands.rtf */; };
 		F49DC5CB21E4070300CEABC1 /* SaddlecatClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */; };
 		F49DC5CD21E53F2100CEABC1 /* BirdClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9F668D7421E6894C002A6253 /* ZebraClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZebraClass.swift; sourceTree = "<group>"; };
 		F49CB49921C81A1D002AD2CF /* Key Commands.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Key Commands.rtf"; sourceTree = "<group>"; };
 		F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaddlecatClass.swift; sourceTree = "<group>"; };
 		F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdClass.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */,
 				F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */,
 				F49DC5CE21E6364100CEABC1 /* TestClass.swift */,
+				9F668D7421E6894C002A6253 /* ZebraClass.swift */,
 			);
 			name = "AI Classes";
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FA4DAA21C49B950062BDE2 /* MapClass.swift in Sources */,
+				9F668D7521E6894C002A6253 /* ZebraClass.swift in Sources */,
 				F49DC5CF21E6364100CEABC1 /* TestClass.swift in Sources */,
 				F4FA4DA521C31B370062BDE2 /* random.swift in Sources */,
 				F4FA4D9121C30A8B0062BDE2 /* ViewController.swift in Sources */,
