@@ -15,6 +15,8 @@ class MapClass
     var entList=[EntityClass]()
     var birdList=[BirdClass]()
     
+    public var mapBorder:CGFloat=0
+    
     var msg=MessageClass()
     
     

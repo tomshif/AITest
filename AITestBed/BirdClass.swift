@@ -17,13 +17,15 @@ class BirdClass
     
     private var map:MapClass?
     private var scene:SKScene?
+    private var leader:BirdClass?
     
     private var isLeader:Bool=false
-    private var leader:BirdClass?
+
+    public var isAlive:Bool=true
     
     private let MAXSPEED:CGFloat=5.0
     private var speed:CGFloat=2.5
-    private let TURNRATE:CGFloat=0.2
+    private let TURNRATE:CGFloat=0.3
     private let TURNFREQ:Double=0.01
     private let FOLLOWDIST:CGFloat=100
     private var animationCycle:Int=1
@@ -44,7 +46,8 @@ class BirdClass
         
         
         sprite.position=pos
-        
+        sprite.name="ambBird"
+        sprite.setScale(random(min: 0.5, max: 0.8))
         isLeader=isLdr
         sprite.zPosition=10
         scene!.addChild(sprite)
@@ -92,7 +95,6 @@ class BirdClass
         let turnDelta = -lastWanderTurn.timeIntervalSinceNow
         if turnDelta > TURNFREQ/Double(map!.getTimeScale())
         {
-            print("Bird turning")
             let turn=random(min: -TURNRATE, max: TURNRATE)
             sprite.zRotation+=turn
             lastWanderTurn=NSDate()
@@ -179,6 +181,16 @@ class BirdClass
         
     } // func updateGraphics
     
+    private func checkMapEdge()
+    {
+        if sprite.position.x > map!.mapBorder || sprite.position.x < -map!.mapBorder || sprite.position.y > map!.mapBorder || sprite.position.y < -map!.mapBorder
+        {
+            sprite.removeFromParent()
+            isAlive=false
+            
+        } // if we're off the map
+    }
+    
     public func update(cycle: Int) -> Bool
     {
         // Return false if the bird is well off the screen and should be removed
@@ -210,6 +222,7 @@ class BirdClass
                 
             } // if not leader
       
+            checkMapEdge()
         } // if it's our animation cycle
         if sprite.zRotation > CGFloat.pi*2
         {
