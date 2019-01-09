@@ -75,14 +75,14 @@ class GameScene: SKScene {
     let SADDLECATHERD:Int=2
     let BIRDFLOCK:Int=4
 
-    let BIRDCOUNT:Int=50
+    let BIRDCOUNT:Int=100
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
     
     
     let ENTITYHERDSIZE:CGFloat=10
-
+    let BIRDFLOCKSIZE:Int=20
     
     //var msg=MessageClass()
     
@@ -681,7 +681,8 @@ class GameScene: SKScene {
             let tempLeaderBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: true, ldr: nil)
             tempLeaderBird.sprite.zRotation=random(min:0, max:CGFloat.pi*2)
             map.birdList.append(tempLeaderBird)
-            for _ in 1...10
+            let birdNum=Int(random(min: 1, max: CGFloat(BIRDFLOCKSIZE)))
+            for _ in 1...birdNum
             {
                 let tempBird=BirdClass(theMap: map, theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), isLdr: false, ldr: tempLeaderBird)
                 tempBird.sprite.zRotation=random(min:0,max:CGFloat.pi*2)
@@ -694,10 +695,15 @@ class GameScene: SKScene {
     
     func checkAmbientSpawns()
     {
+        
         if map.birdList.count < BIRDCOUNT
         {
+            let chance=random(min: 0, max: 1.0)
+            if chance > 0.98
+            {
             spawnHerd(type: BIRDFLOCK, loc: CGPoint(x: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6), y: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6)))
-        }
+            } // chance
+        } // if we have too few birds
         
     } // func checkAmbientSpawns
     
