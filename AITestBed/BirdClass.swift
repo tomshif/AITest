@@ -92,7 +92,6 @@ class BirdClass
         let turnDelta = -lastWanderTurn.timeIntervalSinceNow
         if turnDelta > TURNFREQ/Double(map!.getTimeScale())
         {
-            print("Bird turning")
             let turn=random(min: -TURNRATE, max: TURNRATE)
             sprite.zRotation+=turn
             lastWanderTurn=NSDate()
