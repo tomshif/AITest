@@ -26,7 +26,7 @@ class BirdClass
     private let MAXSPEED:CGFloat=5.0
     private var speed:CGFloat=2.5
     private let TURNRATE:CGFloat=0.5
-    private let TURNFREQ:Double=0.01
+    private let TURNFREQ:Double=0.08
     private let FOLLOWDIST:CGFloat=50
     private var followDistVar:CGFloat=0
     private var animationCycle:Int=1
