@@ -30,7 +30,6 @@ class GameScene: SKScene {
     let infoHerdLeader=SKLabelNode(fontNamed: "Arial")
     let timeLabel=SKLabelNode(fontNamed: "Arial")
     
-    
     let msgLabel=SKLabelNode(fontNamed: "Arial")
     
     var selectedEntity:EntityClass?
@@ -45,6 +44,8 @@ class GameScene: SKScene {
     var zoomOutPressed:Bool=false
     var isSelected:Bool=false
     var followModeOn:Bool=false
+    var isGamePaused:Bool=false
+    
     
     var myCam=SKCameraNode()
 
@@ -55,28 +56,35 @@ class GameScene: SKScene {
     var currentCycle:Int=0
     var currentMode:Int=0
     var entityHerdCount:Int=0
-
+    var saddlecatHerdCount:Int=0
+    
     
     let SELECTMODE:Int=0
     let ENTITYMODE:Int=2
+    let SADDLECATMODE:Int=4
     let FOODZONEMODE:Int=10
     let WATERZONEMODE:Int=12
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
+    let BIRDMODE:Int=18
     
     
+    var TIMESCALE:CGFloat=1.0
     
     let ENTITYHERD:Int=0
+    let SADDLECATHERD:Int=2
+    let BIRDFLOCK:Int=4
 
+    let BIRDCOUNT:Int=100
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
     
     
     let ENTITYHERDSIZE:CGFloat=10
-
+    let BIRDFLOCKSIZE:Int=20
     
-    var msg=MessageClass()
+    //var msg=MessageClass()
     
     
     
@@ -84,6 +92,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor=NSColor.white
+        map.mapBorder=CGFloat(MAPWIDTH)*256/2
         
         camera=myCam
         myCam.name="myCamera"
@@ -92,7 +101,7 @@ class GameScene: SKScene {
         drawBGGrid()
         
         timeLabel.position.y = -size.height*0.45
-        timeLabel.zPosition = 100
+        timeLabel.zPosition = 540
         timeLabel.fontSize = 48
         timeLabel.fontColor=NSColor.black
         timeLabel.name="timeLabel"
@@ -100,20 +109,20 @@ class GameScene: SKScene {
         
         
         
-        infoBG.zPosition=100
+        infoBG.zPosition=500
         infoBG.name="infoBG"
         infoBG.position.x=size.width/2-infoBG.size.width/2
         infoBG.position.y=size.height/2-infoBG.size.height/2
         myCam.addChild(infoBG)
         
-        msgBG.zPosition=100
+        msgBG.zPosition=500
         msgBG.name="msgBG"
         msgBG.position.x = -size.width/2+msgBG.size.width/2
         msgBG.position.y = -size.height/2+msgBG.size.height/2
         msgBG.alpha=0.0
         myCam.addChild(msgBG)
         
-        msgLabel.zPosition=101
+        msgLabel.zPosition=540
         msgLabel.text=""
         msgLabel.name="MsgLabel"
         msgLabel.fontSize=24
@@ -123,14 +132,14 @@ class GameScene: SKScene {
         msgBG.addChild(msgLabel)
         
         
-        infoTitle.zPosition=101
+        infoTitle.zPosition=540
         infoTitle.fontColor=NSColor.yellow
         infoTitle.text="Entity000"
         infoTitle.name="InfoTitle"
         infoTitle.position.y=infoBG.size.height*0.40
         infoBG.addChild(infoTitle)
         
-        infoAge.zPosition=101
+        infoAge.zPosition=540
         infoAge.fontColor=NSColor.yellow
         infoAge.fontSize=22
         infoAge.text="infoAge"
@@ -138,7 +147,7 @@ class GameScene: SKScene {
         infoAge.position.y=infoBG.size.height*0.2
         infoBG.addChild(infoAge)
         
-        infoState.zPosition=101
+        infoState.zPosition=540
         infoState.fontColor=NSColor.yellow
         infoState.fontSize=22
         infoState.text="InfoState"
@@ -146,7 +155,7 @@ class GameScene: SKScene {
         infoState.position.y=infoBG.size.height*0.15
         infoBG.addChild(infoState)
         
-        infoLeader.zPosition=101
+        infoLeader.zPosition=540
         infoLeader.fontColor=NSColor.yellow
         infoLeader.fontSize=22
         infoLeader.text="InfoLeader"
@@ -154,7 +163,7 @@ class GameScene: SKScene {
         infoLeader.position.y = infoBG.size.height*0.1
         infoBG.addChild(infoLeader)
         
-        infoGender.zPosition=101
+        infoGender.zPosition=540
         infoGender.fontColor=NSColor.yellow
         infoGender.fontSize=22
         infoGender.text="InfoGender"
@@ -162,7 +171,7 @@ class GameScene: SKScene {
         infoGender.position.y = infoBG.size.height*0.05
         infoBG.addChild(infoGender)
         
-        infoHunger.zPosition=101
+        infoHunger.zPosition=540
         infoHunger.fontColor=NSColor.yellow
         infoHunger.fontSize=22
         infoHunger.text="infoHunger"
@@ -170,7 +179,7 @@ class GameScene: SKScene {
         infoHunger.position.y = 0
         infoBG.addChild(infoHunger)
         
-        infoThirst.zPosition=101
+        infoThirst.zPosition=540
         infoThirst.fontColor=NSColor.yellow
         infoThirst.fontSize=22
         infoThirst.text="infoThirst"
@@ -178,7 +187,7 @@ class GameScene: SKScene {
         infoThirst.position.y = -infoBG.size.height*0.05
         infoBG.addChild(infoThirst)
         
-        infoHerdLeader.zPosition=101
+        infoHerdLeader.zPosition=540
         infoHerdLeader.fontColor=NSColor.yellow
         infoHerdLeader.fontSize=22
         infoHerdLeader.text="infoHerdLeader"
@@ -188,6 +197,7 @@ class GameScene: SKScene {
         
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
+        centerPoint.zPosition=2
         addChild(centerPoint)
         
         selectedSquare.isHidden=true
@@ -210,7 +220,7 @@ class GameScene: SKScene {
                 let grid=bgGrid.copy() as! SKSpriteNode
                 grid.position.x = blx+CGFloat(x)*grid.size.width
                 grid.position.y = bly+CGFloat(y)*grid.size.height
-                grid.zPosition = -1500
+                grid.zPosition = 0
                 grid.name="bgGrid"
                 addChild(grid)
                 
@@ -228,7 +238,7 @@ class GameScene: SKScene {
             
             for node in nodes(at: pos)
             {
-                if (node.name?.contains("Entity"))! || (node.name?.contains("infoHunger"))!
+                if (node.name?.contains("ent"))! || (node.name?.contains("infoHunger"))!
                 {
                     temp=node.name!
                     isSelected=true
@@ -257,6 +267,15 @@ class GameScene: SKScene {
             
         } // if we're in entity spawn mode
         
+        if currentMode==SADDLECATMODE
+        {
+            spawnHerd(type: SADDLECATHERD, loc: pos)
+        }
+        
+        if currentMode==BIRDMODE
+        {
+            spawnHerd(type: BIRDFLOCK, loc: pos)
+        }
         
         if currentMode==FOODZONEMODE
         {
@@ -325,15 +344,29 @@ class GameScene: SKScene {
             if followModeOn
             {
                 followModeOn=false
-                msg.sendCustomMessage(message: "Follow mode off")
+                map.msg.sendCustomMessage(message: "Follow mode off")
             }
             else
             {
                 followModeOn=true
-                msg.sendCustomMessage(message: "Follow mode on.")
+                map.msg.sendCustomMessage(message: "Follow mode on.")
             }
+            
+        case 11:
+            currentMode=BIRDMODE
+            map.msg.sendCustomMessage(message: "Spawn bird flock mode.")
+            selectedEntity=nil
+            isSelected=false
+            
         case 13:
             upPressed=true
+            
+            
+        case 19:
+            for _ in 1...100
+            {
+                spawnHerd(type: ENTITYHERD, loc: CGPoint(x: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7), y: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7)))
+            } // for each herd
             
         case 27:
             zoomOutPressed=true
@@ -343,28 +376,41 @@ class GameScene: SKScene {
             
         case 23: // 5
             currentMode=WATERZONEMODE
-            msg.sendCustomMessage(message: "Spawn water zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn water zone mode.")
             selectedEntity=nil
             isSelected=false
 
         case 22: // 6
             currentMode=FOODZONEMODE
-            msg.sendCustomMessage(message: "Spawn food zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn food zone mode.")
+            selectedEntity=nil
+            isSelected=false
+         
+        case 25: // 9
+            currentMode=SADDLECATMODE
+            map.msg.sendCustomMessage(message: "Spawn saddlecat mode.")
             selectedEntity=nil
             isSelected=false
             
         case 26:
             currentMode=RESTZONEMODE
-            msg.sendCustomMessage(message: "Spawn rest zone mode.")
+            map.msg.sendCustomMessage(message: "Spawn rest zone mode.")
             selectedEntity=nil
             isSelected=false
             
             
         case 29: // 0
             currentMode=ENTITYMODE
-            msg.sendCustomMessage(message: "Spawn entity mode.")
+            map.msg.sendCustomMessage(message: "Spawn entity mode.")
             selectedEntity=nil
             isSelected=false
+            
+        case 30: // [
+            map.increaseTimeScale()
+        
+            
+        case 33: // ]
+            map.decreaseTimeScale()
             
             
         case 34: // I
@@ -379,12 +425,12 @@ class GameScene: SKScene {
             
         case 35: // P
             currentMode=SELECTMODE
-            msg.sendCustomMessage(message: "Select mode.")
+            map.msg.sendCustomMessage(message: "Select mode.")
             
             
         case 37: // L
             currentMode=OBSTACLEMODE
-            msg.sendCustomMessage(message: "Spawn obstacle mode.")
+            map.msg.sendCustomMessage(message: "Spawn obstacle mode.")
             
         case 46:
             if msgBG.isHidden
@@ -399,9 +445,23 @@ class GameScene: SKScene {
         case 48: // <tab>
             if isSelected
             {
-                // To Do:
-                // tab step through each entity in order
-                
+
+                var index:Int = -1
+                for i in 0..<map.entList.count
+                {
+                    if map.entList[i].name==selectedEntity!.name
+                    {
+                        index=i
+                    } // if it's a match
+                    
+                } // for each entity
+                index+=1
+                if index > map.entList.count-1
+                {
+                    index=0
+                }
+                selectedEntity=map.entList[index]
+                myCam.position=selectedEntity!.sprite.position
             }
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
@@ -440,7 +500,7 @@ class GameScene: SKScene {
                     node.removeFromParent()
                 }
             } // for each node
-            msg.clearAll()
+            map.msg.clearAll()
             isSelected=false
             selectedEntity=nil
             
@@ -559,13 +619,13 @@ class GameScene: SKScene {
             infoBG.isHidden=true
         }
     
-        timeLabel.text=map.getTimeAsString()
+        timeLabel.text="\(map.getTimeAsString()) - timeScale: \(map.getTimeScale())"
         
-        if msg.getUnreadCount() > 0
+        if map.msg.getUnreadCount() > 0
         {
             msgBG.removeAllActions()
             msgBG.alpha=1.0
-            msgLabel.text=msg.readNextMessage()
+            msgLabel.text=map.msg.readNextMessage()
             let runAction=SKAction.sequence([SKAction.wait(forDuration: 4.0), SKAction.fadeOut(withDuration: 1.0)])
             msgBG.run(runAction)
             //msgBG.run(SKAction.fadeOut(withDuration: 5.0))
@@ -586,7 +646,7 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), message: msg, number: entityHerdCount)
+                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
                 print("Entity\(entityHerdCount)")
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -597,48 +657,116 @@ class GameScene: SKScene {
             
         } // if we're spawning EntityClass
         
-       
+        
+        if type==SADDLECATHERD
+        {
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            
+            for _ in 1...herdsize
+            {
+                
+                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: saddlecatHerdCount)
+                print(tempCat.name)
+                
+                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempCat)
+                saddlecatHerdCount+=1
+                
+            } // for each member of the herd
+            
+        }
+        
+        
+       if type==BIRDFLOCK
+       {
+            let tempLeaderBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: true, ldr: nil)
+            tempLeaderBird.sprite.zRotation=random(min:0, max:CGFloat.pi*2)
+            map.birdList.append(tempLeaderBird)
+            let birdNum=Int(random(min: 1, max: CGFloat(BIRDFLOCKSIZE)))
+            for _ in 1...birdNum
+            {
+                let tempBird=BirdClass(theMap: map, theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), isLdr: false, ldr: tempLeaderBird)
+                tempBird.sprite.zRotation=random(min:0,max:CGFloat.pi*2)
+                map.birdList.append(tempBird)
+                
+            } // for each bird in the flock
+        } // if we're spawning a bird
         
     } // func spawnHerd
+    
+    func checkAmbientSpawns()
+    {
+        
+        if map.birdList.count < BIRDCOUNT
+        {
+            let chance=random(min: 0, max: 1.0)
+            if chance > 0.98
+            {
+            spawnHerd(type: BIRDFLOCK, loc: CGPoint(x: random(min: -map.mapBorder*0.8, max: map.mapBorder*0.8), y: random(min: -map.mapBorder*0.8, max: map.mapBorder*0.8)))
+            } // chance
+        } // if we have too few birds
+        
+    } // func checkAmbientSpawns
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        map.timePlus()
-        
-        checkKeys()
-        updateInfo()
-        updateSelected()
-        
-        
-        currentCycle+=1
-        if currentCycle > 2
+        if !isGamePaused
         {
-            currentCycle=0
-        }
-        for i in 0..<map.entList.count
-        {
-            let updateReturn=map.entList[i].update(cycle: currentCycle)
-            if updateReturn > -1 && isSelected
+            map.timePlus()
+            
+            checkKeys()
+            updateInfo()
+            updateSelected()
+            checkAmbientSpawns()
+            
+            currentCycle+=1
+            if currentCycle > 3
             {
-                if map.entList[i].name==selectedEntity!.name
-                {
-                    isSelected=false
-                    selectedEntity=nil
-                } // if the selected entity dies
-            } // if something dies
-        } // for each entity
-        
-        // clean up entList
-        for i in 0..<map.entList.count
-        {
-            if !map.entList[i].isAlive()
-            {
-                map.entList.remove(at: i)
-                break
+                currentCycle=0
             }
-        } // for each entity
-        
+            
+            for i in 0..<map.entList.count
+            {
+                let updateReturn=map.entList[i].update(cycle: currentCycle)
+                if updateReturn > -1 && isSelected
+                {
+                    if map.entList[i].name==selectedEntity!.name
+                    {
+                        isSelected=false
+                        selectedEntity=nil
+                    } // if the selected entity dies
+                } // if something dies
+            } // for each entity
+            
+            // update birds
+            for i in 0..<map.birdList.count
+            {
+                map.birdList[i].update(cycle: currentCycle)
+            }
+            
+            
+            
+            // clean up entList
+            for i in 0..<map.entList.count
+            {
+                if !map.entList[i].isAlive()
+                {
+                    map.entList.remove(at: i)
+                    break
+                }
+            } // for each entity
+            
+            for i in 0..<map.birdList.count
+            {
+                if !map.birdList[i].isAlive
+                {
+                    map.birdList.remove(at: i)
+                    break
+                }
+            }
+            
+        } // if we're not paused
     } // update
 } // GameScene
 

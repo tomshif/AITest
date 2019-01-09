@@ -9,11 +9,12 @@
 import Foundation
 import SpriteKit
 
+
+
 class EntityClass
 {
     public var scene:SKScene?
     var sprite=SKSpriteNode(imageNamed: "entity")
-    public var msg:MessageClass?
     public var map:MapClass?
     
     public var speed:CGFloat=0
@@ -22,9 +23,9 @@ class EntityClass
     internal var thirst:CGFloat=1.0
     
     
-    public var MAXAGE:CGFloat=30.0
+    public var MAXAGE:CGFloat=25920.0   // In game time minutes -- One year = 8640
     public var MAXSPEED:CGFloat=0.8
-    public var TURNRATE:CGFloat=0.15
+    public var TURNRATE:CGFloat=0.35
     public var TURNFREQ:Double = 0.09
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
@@ -63,19 +64,20 @@ class EntityClass
         scene?.addChild(sprite)
     } // init()
     
-    init(theScene:SKScene, theMap: MapClass, pos: CGPoint, message: MessageClass, number: Int)
+    init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int)
     {
 
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4)
         age=random(min: 1.0, max: MAXAGE*0.7)
-        msg=message
         scene=theScene
         map=theMap
-        sprite.name=String(format:"Entity%04d", number)
-        name=String(format:"Entity%04d", number)
+        sprite.name=String(format:"entEntity%04d", number)
+        name=String(format:"entEntity%04d", number)
         hash=UUID().uuidString
         sprite.position=pos
         sprite.setScale(0.1)
+        sprite.zPosition=160
+        
         scene?.addChild(sprite)
     
         
@@ -96,8 +98,8 @@ class EntityClass
     
     public func updateGraphics()
     {
-        let dx=cos(sprite.zRotation)*speed
-        let dy=sin(sprite.zRotation)*speed
+        let dx=cos(sprite.zRotation)*speed*map!.getTimeScale()
+        let dy=sin(sprite.zRotation)*speed*map!.getTimeScale()
         sprite.position.x+=dx
         sprite.position.y+=dy
     } // func updateGraphics
@@ -178,10 +180,10 @@ class EntityClass
     
     public func ageEntity() -> Bool
     {
-        age += AGINGVALUE
+        age += map!.getTimeInterval()*map!.getTimeScale()
         if age > MAXAGE
         {
-            msg!.sendMessage(type: 8, from: name)
+            map!.msg.sendMessage(type: 8, from: name)
             sprite.removeFromParent()
             alive=false
             return false
@@ -246,11 +248,12 @@ class EntityClass
                 speed=0
             }
         }
-        if !isTurning
+        
+        if !isTurning && speed > MAXSPEED*0.1
         {
             //check to see if it's time to turn
             let turnDelta = -lastWanderTurn.timeIntervalSinceNow
-            if turnDelta > TURNFREQ
+            if turnDelta > TURNFREQ/Double(map!.getTimeScale())
             {
                 let turn=random(min: -TURNRATE, max: TURNRATE)
                 sprite.zRotation+=turn
@@ -270,7 +273,7 @@ class EntityClass
             if !ageEntity()
             {
                 ret=2
-            } // we're able to age
+            } // we're able to age, if we die, set return death code
         } // if we're alive
         if cycle==AICycle
         {
@@ -279,6 +282,7 @@ class EntityClass
                     wander()
             }
             
+            // fix it if our rotation is more than pi*2 or less than 0
             if sprite.zRotation > CGFloat.pi*2
             {
                 sprite.zRotation -= CGFloat.pi*2
