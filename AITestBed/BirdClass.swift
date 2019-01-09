@@ -20,14 +20,15 @@ class BirdClass
     private var leader:BirdClass?
     
     private var isLeader:Bool=false
-
+    private var isPursuing:Bool=false
     public var isAlive:Bool=true
     
     private let MAXSPEED:CGFloat=5.0
     private var speed:CGFloat=2.5
-    private let TURNRATE:CGFloat=0.3
+    private let TURNRATE:CGFloat=0.5
     private let TURNFREQ:Double=0.01
-    private let FOLLOWDIST:CGFloat=100
+    private let FOLLOWDIST:CGFloat=50
+    private var followDistVar:CGFloat=0
     private var animationCycle:Int=1
     
     public var lastWanderTurn=NSDate()
@@ -51,6 +52,7 @@ class BirdClass
         isLeader=isLdr
         sprite.zPosition=10
         scene!.addChild(sprite)
+        followDistVar=random(min: FOLLOWDIST*0.5, max: FOLLOWDIST*5.5)
         if !isLdr && ldr != nil
         {
             leader=ldr
@@ -191,11 +193,23 @@ class BirdClass
         } // if we're off the map
     }
     
+    private func checkLeaderStatus()
+    {
+        if !isLeader && leader!.isAlive==false
+        {
+            let removeAction=SKAction.run {
+                self.isAlive=false
+            }
+            let remove=SKAction.sequence([SKAction.fadeOut(withDuration: 0.25), SKAction.removeFromParent(), removeAction])
+            sprite.run(remove)
+        }
+    }
+    
     public func update(cycle: Int) -> Bool
     {
         // Return false if the bird is well off the screen and should be removed
         updateGraphics()
-        if cycle==2
+        if cycle==2 && isAlive
         {
             animationCycle+=1
             if animationCycle > 200
@@ -206,14 +220,32 @@ class BirdClass
             if isLeader
             {
                 leaderFly()
-                
+                let rand=random(min: 0.0, max: 1.0)
+                if rand > 0.9985
+                {
+                    sprite.removeFromParent()
+                    isAlive=false
+                }
             } // if is leader
             else
             {
+                checkLeaderStatus()
                 let dist = getDistToLeader()
-                if dist > FOLLOWDIST
+                if dist > FOLLOWDIST+followDistVar
+                {
+                    isPursuing=true
+                    speed=MAXSPEED*1.5
+                }
+                if dist < FOLLOWDIST+followDistVar/2
+                {
+                    isPursuing=false
+                    speed=MAXSPEED*1.0
+                }
+                
+                if isPursuing
                 {
                     pursue()
+                    
                 }
                 else
                 {
