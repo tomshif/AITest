@@ -101,7 +101,7 @@ class GameScene: SKScene {
         drawBGGrid()
         
         timeLabel.position.y = -size.height*0.45
-        timeLabel.zPosition = 100
+        timeLabel.zPosition = 540
         timeLabel.fontSize = 48
         timeLabel.fontColor=NSColor.black
         timeLabel.name="timeLabel"
@@ -109,20 +109,20 @@ class GameScene: SKScene {
         
         
         
-        infoBG.zPosition=100
+        infoBG.zPosition=500
         infoBG.name="infoBG"
         infoBG.position.x=size.width/2-infoBG.size.width/2
         infoBG.position.y=size.height/2-infoBG.size.height/2
         myCam.addChild(infoBG)
         
-        msgBG.zPosition=100
+        msgBG.zPosition=500
         msgBG.name="msgBG"
         msgBG.position.x = -size.width/2+msgBG.size.width/2
         msgBG.position.y = -size.height/2+msgBG.size.height/2
         msgBG.alpha=0.0
         myCam.addChild(msgBG)
         
-        msgLabel.zPosition=101
+        msgLabel.zPosition=540
         msgLabel.text=""
         msgLabel.name="MsgLabel"
         msgLabel.fontSize=24
@@ -132,14 +132,14 @@ class GameScene: SKScene {
         msgBG.addChild(msgLabel)
         
         
-        infoTitle.zPosition=101
+        infoTitle.zPosition=540
         infoTitle.fontColor=NSColor.yellow
         infoTitle.text="Entity000"
         infoTitle.name="InfoTitle"
         infoTitle.position.y=infoBG.size.height*0.40
         infoBG.addChild(infoTitle)
         
-        infoAge.zPosition=101
+        infoAge.zPosition=540
         infoAge.fontColor=NSColor.yellow
         infoAge.fontSize=22
         infoAge.text="infoAge"
@@ -147,7 +147,7 @@ class GameScene: SKScene {
         infoAge.position.y=infoBG.size.height*0.2
         infoBG.addChild(infoAge)
         
-        infoState.zPosition=101
+        infoState.zPosition=540
         infoState.fontColor=NSColor.yellow
         infoState.fontSize=22
         infoState.text="InfoState"
@@ -155,7 +155,7 @@ class GameScene: SKScene {
         infoState.position.y=infoBG.size.height*0.15
         infoBG.addChild(infoState)
         
-        infoLeader.zPosition=101
+        infoLeader.zPosition=540
         infoLeader.fontColor=NSColor.yellow
         infoLeader.fontSize=22
         infoLeader.text="InfoLeader"
@@ -163,7 +163,7 @@ class GameScene: SKScene {
         infoLeader.position.y = infoBG.size.height*0.1
         infoBG.addChild(infoLeader)
         
-        infoGender.zPosition=101
+        infoGender.zPosition=540
         infoGender.fontColor=NSColor.yellow
         infoGender.fontSize=22
         infoGender.text="InfoGender"
@@ -171,7 +171,7 @@ class GameScene: SKScene {
         infoGender.position.y = infoBG.size.height*0.05
         infoBG.addChild(infoGender)
         
-        infoHunger.zPosition=101
+        infoHunger.zPosition=540
         infoHunger.fontColor=NSColor.yellow
         infoHunger.fontSize=22
         infoHunger.text="infoHunger"
@@ -179,7 +179,7 @@ class GameScene: SKScene {
         infoHunger.position.y = 0
         infoBG.addChild(infoHunger)
         
-        infoThirst.zPosition=101
+        infoThirst.zPosition=540
         infoThirst.fontColor=NSColor.yellow
         infoThirst.fontSize=22
         infoThirst.text="infoThirst"
@@ -187,7 +187,7 @@ class GameScene: SKScene {
         infoThirst.position.y = -infoBG.size.height*0.05
         infoBG.addChild(infoThirst)
         
-        infoHerdLeader.zPosition=101
+        infoHerdLeader.zPosition=540
         infoHerdLeader.fontColor=NSColor.yellow
         infoHerdLeader.fontSize=22
         infoHerdLeader.text="infoHerdLeader"
@@ -197,6 +197,7 @@ class GameScene: SKScene {
         
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
+        centerPoint.zPosition=2
         addChild(centerPoint)
         
         selectedSquare.isHidden=true
@@ -219,7 +220,7 @@ class GameScene: SKScene {
                 let grid=bgGrid.copy() as! SKSpriteNode
                 grid.position.x = blx+CGFloat(x)*grid.size.width
                 grid.position.y = bly+CGFloat(y)*grid.size.height
-                grid.zPosition = -1500
+                grid.zPosition = 0
                 grid.name="bgGrid"
                 addChild(grid)
                 
@@ -701,7 +702,7 @@ class GameScene: SKScene {
             let chance=random(min: 0, max: 1.0)
             if chance > 0.98
             {
-            spawnHerd(type: BIRDFLOCK, loc: CGPoint(x: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6), y: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6)))
+            spawnHerd(type: BIRDFLOCK, loc: CGPoint(x: random(min: -map.mapBorder*0.8, max: map.mapBorder*0.8), y: random(min: -map.mapBorder*0.8, max: map.mapBorder*0.8)))
             } // chance
         } // if we have too few birds
         

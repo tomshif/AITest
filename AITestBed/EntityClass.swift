@@ -76,6 +76,8 @@ class EntityClass
         hash=UUID().uuidString
         sprite.position=pos
         sprite.setScale(0.1)
+        sprite.zPosition=160
+        
         scene?.addChild(sprite)
     
         

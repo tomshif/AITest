@@ -48,9 +48,10 @@ class BirdClass
         
         sprite.position=pos
         sprite.name="ambBird"
-        sprite.setScale(random(min: 0.5, max: 0.8))
+        sprite.setScale(random(min: 0.45, max: 0.7))
         isLeader=isLdr
-        sprite.zPosition=10
+        sprite.zPosition=220
+        
         scene!.addChild(sprite)
         followDistVar=random(min: FOLLOWDIST*0.5, max: FOLLOWDIST*5.5)
         if !isLdr && ldr != nil
@@ -205,7 +206,7 @@ class BirdClass
         }
     }
     
-    public func update(cycle: Int) -> Bool
+    public func update(cycle: Int)
     {
         // Return false if the bird is well off the screen and should be removed
         updateGraphics()
@@ -266,7 +267,6 @@ class BirdClass
         }
 
         
-        return true
         
     } // func update
     

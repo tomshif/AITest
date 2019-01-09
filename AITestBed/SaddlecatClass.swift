@@ -35,14 +35,16 @@ class SaddlecatClass:EntityClass
         sprite.name="saddlecat"
         sprite.name=String(format:"entSaddleCat%04d", number)
         name=String(format:"entSaddleCat%04d", number)
+        sprite.zPosition=170
+        
         scene!.addChild(sprite)
 
         // Variable updates
         MAXSPEED=1.2
-        TURNRATE=0.25
-        TURNFREQ=0.11
+        TURNRATE=0.2
+        TURNFREQ=0.06
         AICycle=3
-        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4)
+        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
     } // full init()

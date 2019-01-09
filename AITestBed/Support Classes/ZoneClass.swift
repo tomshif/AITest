@@ -39,7 +39,7 @@ class ZoneClass
     {
         scene=theScene
         sprite.position=pos
-        sprite.zPosition = -2
+        sprite.zPosition = 10
         sprite.name="FoodZone"
         scene?.addChild(sprite)
         
