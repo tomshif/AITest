@@ -66,18 +66,22 @@ class GameScene: SKScene {
     let WATERZONEMODE:Int=12
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
+    let BIRDMODE:Int=18
+    
     
     var TIMESCALE:CGFloat=1.0
     
     let ENTITYHERD:Int=0
     let SADDLECATHERD:Int=2
-    
+    let BIRDFLOCK:Int=4
+
+    let BIRDCOUNT:Int=50
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
     
     
-    let ENTITYHERDSIZE:CGFloat=100
+    let ENTITYHERDSIZE:CGFloat=10
 
     
     //var msg=MessageClass()
@@ -88,6 +92,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor=NSColor.white
+        map.mapBorder=CGFloat(MAPWIDTH)*256/2
         
         camera=myCam
         myCam.name="myCamera"
@@ -266,6 +271,11 @@ class GameScene: SKScene {
             spawnHerd(type: SADDLECATHERD, loc: pos)
         }
         
+        if currentMode==BIRDMODE
+        {
+            spawnHerd(type: BIRDFLOCK, loc: pos)
+        }
+        
         if currentMode==FOODZONEMODE
         {
             let tempZone=ZoneClass(zoneType: ZoneType.FOODZONE, pos: pos, theScene: self)
@@ -340,8 +350,22 @@ class GameScene: SKScene {
                 followModeOn=true
                 map.msg.sendCustomMessage(message: "Follow mode on.")
             }
+            
+        case 11:
+            currentMode=BIRDMODE
+            map.msg.sendCustomMessage(message: "Spawn bird flock mode.")
+            selectedEntity=nil
+            isSelected=false
+            
         case 13:
             upPressed=true
+            
+            
+        case 19:
+            for _ in 1...100
+            {
+                spawnHerd(type: ENTITYHERD, loc: CGPoint(x: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7), y: random(min: -map.mapBorder*0.7, max: map.mapBorder*0.7)))
+            } // for each herd
             
         case 27:
             zoomOutPressed=true
@@ -632,7 +656,7 @@ class GameScene: SKScene {
             
         } // if we're spawning EntityClass
         
-        /*
+        
         if type==SADDLECATHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
@@ -650,21 +674,32 @@ class GameScene: SKScene {
             } // for each member of the herd
             
         }
-         */
         
-       if type==SADDLECATHERD
+        
+       if type==BIRDFLOCK
        {
             let tempLeaderBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: true, ldr: nil)
+            tempLeaderBird.sprite.zRotation=random(min:0, max:CGFloat.pi*2)
             map.birdList.append(tempLeaderBird)
             for _ in 1...10
             {
-                let tempBird=BirdClass(theMap: map, theScene: self, pos: loc, isLdr: false, ldr: tempLeaderBird)
+                let tempBird=BirdClass(theMap: map, theScene: self, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), isLdr: false, ldr: tempLeaderBird)
                 tempBird.sprite.zRotation=random(min:0,max:CGFloat.pi*2)
                 map.birdList.append(tempBird)
                 
-            }
-        }
+            } // for each bird in the flock
+        } // if we're spawning a bird
+        
     } // func spawnHerd
+    
+    func checkAmbientSpawns()
+    {
+        if map.birdList.count < BIRDCOUNT
+        {
+            spawnHerd(type: BIRDFLOCK, loc: CGPoint(x: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6), y: random(min: -map.mapBorder*0.6, max: map.mapBorder*0.6)))
+        }
+        
+    } // func checkAmbientSpawns
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
@@ -676,7 +711,7 @@ class GameScene: SKScene {
             checkKeys()
             updateInfo()
             updateSelected()
-            
+            checkAmbientSpawns()
             
             currentCycle+=1
             if currentCycle > 3
@@ -704,9 +739,8 @@ class GameScene: SKScene {
             }
             
             
+            
             // clean up entList
-            
-            
             for i in 0..<map.entList.count
             {
                 if !map.entList[i].isAlive()
@@ -715,6 +749,15 @@ class GameScene: SKScene {
                     break
                 }
             } // for each entity
+            
+            for i in 0..<map.birdList.count
+            {
+                if !map.birdList[i].isAlive
+                {
+                    map.birdList.remove(at: i)
+                    break
+                }
+            }
             
         } // if we're not paused
     } // update
