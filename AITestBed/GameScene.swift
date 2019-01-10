@@ -99,7 +99,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor=NSColor.white
-        map.mapBorder=CGFloat(MAPWIDTH)*256/2
+        map.mapBorder=CGFloat(MAPWIDTH)*256/2-(128)
         
         camera=myCam
         myCam.name="myCamera"
