@@ -71,6 +71,7 @@ class GameScene: SKScene {
     let RESTZONEMODE:Int=16
     let BIRDMODE:Int=18
     
+    let MAXUPDATECYCLES:Int=3
     
     var TIMESCALE:CGFloat=1.0
     
@@ -798,7 +799,7 @@ class GameScene: SKScene {
             checkAmbientSpawns()
             
             currentCycle+=1
-            if currentCycle > 3
+            if currentCycle > MAXUPDATECYCLES
             {
                 currentCycle=0
             }
@@ -823,25 +824,9 @@ class GameScene: SKScene {
             }
             
             
+            map.cleanUpEntities()
             
-            // clean up entList
-            for i in 0..<map.entList.count
-            {
-                if !map.entList[i].isAlive()
-                {
-                    map.entList.remove(at: i)
-                    break
-                }
-            } // for each entity
-            
-            for i in 0..<map.birdList.count
-            {
-                if !map.birdList[i].isAlive
-                {
-                    map.birdList.remove(at: i)
-                    break
-                }
-            }
+
             
         } // if we're not paused
     } // update

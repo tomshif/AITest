@@ -30,6 +30,8 @@ class BirdClass
     private let FOLLOWDIST:CGFloat=50
     private var followDistVar:CGFloat=0
     private var animationCycle:Int=1
+    private let UPDATECYCLE:Int=2
+    
     
     public var lastWanderTurn=NSDate()
     
@@ -208,9 +210,10 @@ class BirdClass
     
     public func update(cycle: Int)
     {
-        // Return false if the bird is well off the screen and should be removed
+
         updateGraphics()
-        if cycle==2 && isAlive
+        
+        if cycle==UPDATECYCLE && isAlive
         {
             animationCycle+=1
             if animationCycle > 200

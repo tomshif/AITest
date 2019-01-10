@@ -39,6 +39,29 @@ class MapClass
     } // func getTimeAsString
 
     
+    public func cleanUpEntities()
+    {
+        // clean up entList
+        for i in 0..<entList.count
+        {
+            if !entList[i].isAlive()
+            {
+                entList.remove(at: i)
+                break
+            }
+        } // for each entity
+        
+        for i in 0..<birdList.count
+        {
+            if !birdList[i].isAlive
+            {
+                birdList.remove(at: i)
+                break
+            }
+        } // for each bird
+    } // func cleanUpEntities
+    
+    
     public func getTimeInterval() -> CGFloat
     {
         return TIMEINT
