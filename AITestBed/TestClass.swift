@@ -40,7 +40,7 @@ class TestClass:EntityClass
         
         // Variable updates
         MAXSPEED=1.2
-        TURNRATE=0.1
+        TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
@@ -74,7 +74,7 @@ class TestClass:EntityClass
         
         // Variable updates
         MAXSPEED=1.2
-        TURNRATE=0.1
+        TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
