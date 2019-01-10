@@ -440,11 +440,16 @@ class GameScene: SKScene {
             isSelected=false
             
         case 30: // [
-            map.increaseTimeScale()
-        
+            if !map.increaseTimeScale()
+            {
+                map.msg.sendCustomMessage(message: "16x - Maximum time acceleration.")
+            }
             
         case 33: // ]
-            map.decreaseTimeScale()
+            if !map.decreaseTimeScale()
+            {
+                map.msg.sendCustomMessage(message: "1x - Minimum time acceleration.")
+            }
             
             
         case 34: // I
