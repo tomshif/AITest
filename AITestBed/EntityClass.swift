@@ -257,8 +257,13 @@ class EntityClass
             }
         } // if we slow down
         
-        if !isTurning && speed > MAXSPEED*0.1
+        if !isTurning
         {
+            if speed < 0.1
+            {
+                speed = 0.1
+            }
+            
             //check to see if it's time to turn
             let turnDelta = -lastWanderTurn.timeIntervalSinceNow
             if turnDelta > TURNFREQ/Double(map!.getTimeScale())
@@ -266,7 +271,7 @@ class EntityClass
                 turnToAngle=sprite.zRotation + random(min: -CGFloat.pi, max: CGFloat.pi)
                 
                 // Adjust turn to angle to be 0-pi*2
-                if turnToAngle > CGFloat.pi*2
+                if turnToAngle >= CGFloat.pi*2
                 {
                     turnToAngle -= CGFloat.pi*2
                 }
@@ -292,7 +297,7 @@ class EntityClass
         
         if isTurning
         {
-            if abs(turnToAngle-sprite.zRotation) < TURNRATE*2
+            if abs(turnToAngle-sprite.zRotation) < TURNRATE*2*speed
             {
                 sprite.zRotation=turnToAngle
                 isTurning=false
@@ -316,13 +321,13 @@ class EntityClass
             if angleDiff < CGFloat.pi || angleDiff < -CGFloat.pi
             {
                 // turning left
-                sprite.zRotation += TURNRATE
+                sprite.zRotation += TURNRATE*speed
                 
             } // if turn left
             else if angleDiff > -CGFloat.pi || angleDiff > CGFloat.pi
             {
                 // we need to turn right
-                sprite.zRotation -= TURNRATE
+                sprite.zRotation -= TURNRATE*speed
                 
             } // else if turn right
 
