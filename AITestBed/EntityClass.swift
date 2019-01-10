@@ -21,12 +21,12 @@ class EntityClass
     public var age:CGFloat=1.0
     internal var hunger:CGFloat=1.0
     internal var thirst:CGFloat=1.0
-    
+    internal var turnToAngle:CGFloat=0.0
     
     public var MAXAGE:CGFloat=25920.0   // In game time minutes -- One year = 8640
     public var MAXSPEED:CGFloat=0.8
-    public var TURNRATE:CGFloat=0.35
-    public var TURNFREQ:Double = 0.09
+    public var TURNRATE:CGFloat=0.02
+    public var TURNFREQ:Double = 0.5
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
     
@@ -43,6 +43,8 @@ class EntityClass
     internal var isDrinking:Bool=false
     internal var isResting:Bool=false
     
+    
+    public var herdLeader:EntityClass?
     
     var hash:String
     var name:String=""
@@ -246,8 +248,14 @@ class EntityClass
             if speed < 0
             {
                 speed=0
+
+            } // if speed drops below zero
+            
+            if isTurning && speed < 0.1
+            {
+                speed = 0.1
             }
-        }
+        } // if we slow down
         
         if !isTurning && speed > MAXSPEED*0.1
         {
@@ -255,17 +263,81 @@ class EntityClass
             let turnDelta = -lastWanderTurn.timeIntervalSinceNow
             if turnDelta > TURNFREQ/Double(map!.getTimeScale())
             {
-                let turn=random(min: -TURNRATE, max: TURNRATE)
-                sprite.zRotation+=turn
-                lastWanderTurn=NSDate()
-            }
-        } // if we're not turning
+                print("Starting turn")
+                turnToAngle=sprite.zRotation + random(min: -CGFloat.pi, max: CGFloat.pi)
+                
+                // Adjust turn to angle to be 0-pi*2
+                if turnToAngle > CGFloat.pi*2
+                {
+                    turnToAngle -= CGFloat.pi*2
+                }
+                if turnToAngle < 0
+                {
+                    turnToAngle += CGFloat.pi*2
+                }
+                isTurning=true
+            } // if it's time to turn
+        } // if we're not turning but moving
+
+        
+        
     } // func wander
+    
+    public func checkTurning() -> Bool
+    {
+        return isTurning
+    }
+    
+    internal func doTurn()
+    {
+        
+        if isTurning
+        {
+            if abs(turnToAngle-sprite.zRotation) < TURNRATE*2
+            {
+                sprite.zRotation=turnToAngle
+                isTurning=false
+                lastWanderTurn=NSDate()
+                print("Finished turn")
+            } // if we can stop turning
+        }
+        
+        if isTurning
+        {
+            var angleDiff = turnToAngle-sprite.zRotation
+            
+            if angleDiff > CGFloat.pi*2
+            {
+                angleDiff -= CGFloat.pi*2
+            }
+            if angleDiff < 0
+            {
+                angleDiff += CGFloat.pi*2
+            }
+            
+            if angleDiff < CGFloat.pi || angleDiff < -CGFloat.pi
+            {
+                // turning left
+                sprite.zRotation += TURNRATE
+                
+            } // if turn left
+            else if angleDiff > -CGFloat.pi || angleDiff > CGFloat.pi
+            {
+                // we need to turn right
+                sprite.zRotation -= TURNRATE
+                
+            } // else if turn right
+
+            
+        }// if we're turning
+        
+    } // func doTurn
     
     internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
         
+        doTurn()
         updateGraphics()
         
         if alive

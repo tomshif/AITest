@@ -28,8 +28,11 @@ class GameScene: SKScene {
     let infoHunger=SKLabelNode(fontNamed: "Arial")
     let infoThirst=SKLabelNode(fontNamed: "Arial")
     let infoHerdLeader=SKLabelNode(fontNamed: "Arial")
-    let timeLabel=SKLabelNode(fontNamed: "Arial")
+    let infoTurning=SKLabelNode(fontNamed: "Arial")
+    let infoHeading=SKLabelNode(fontNamed: "Arial")
     
+    
+    let timeLabel=SKLabelNode(fontNamed: "Arial")
     let msgLabel=SKLabelNode(fontNamed: "Arial")
     
     var selectedEntity:EntityClass?
@@ -104,6 +107,8 @@ class GameScene: SKScene {
         
         camera=myCam
         myCam.name="myCamera"
+        myCam.zPosition=999999999
+        
         addChild(myCam)
         
         drawBGGrid()
@@ -202,6 +207,22 @@ class GameScene: SKScene {
         infoHerdLeader.name="infoHerdLeader"
         infoHerdLeader.position.y = -infoBG.size.height*0.1
         infoBG.addChild(infoHerdLeader)
+        
+        infoTurning.zPosition=540
+        infoTurning.fontColor=NSColor.yellow
+        infoTurning.fontSize=22
+        infoTurning.text="infoTurning"
+        infoTurning.name="infoTurning"
+        infoTurning.position.y = -infoBG.size.height*0.15
+        infoBG.addChild(infoTurning)
+        
+        infoHeading.zPosition=540
+        infoHeading.fontColor=NSColor.yellow
+        infoHeading.fontSize=22
+        infoHeading.text="infoHeading"
+        infoHeading.name="infoHeading"
+        infoHeading.position.y = -infoBG.size.height*0.20
+        infoBG.addChild(infoHeading)
         
         centerPoint.fillColor=NSColor.black
         centerPoint.name="CenterPoint"
@@ -384,28 +405,28 @@ class GameScene: SKScene {
         case 13:
             upPressed=true
             
-        case 18:
+        case 18: // 1
             currentMode=SPRINGBOKMODE
             map.msg.sendCustomMessage(message: "Spawn springbok mode.")
             selectedEntity=nil
             isSelected=false
             
-        case 19:
+        case 19: // 2
             currentMode=ZEBRAMODE
             map.msg.sendCustomMessage(message: "Spawn zebra mode.")
             selectedEntity=nil
             isSelected=false
             
-        case 20:
+        case 20: // 3
             currentMode=CHEETAHMODE
             map.msg.sendCustomMessage(message: "Spawn cheetah mode.")
             selectedEntity=nil
             isSelected=false
             
-        case 27:
+        case 27: // -
             zoomOutPressed=true
             
-        case 24:
+        case 24: // +
             zoomInPressed=true
             
         case 23: // 5
@@ -426,7 +447,7 @@ class GameScene: SKScene {
             selectedEntity=nil
             isSelected=false
             
-        case 26:
+        case 26: // 7
             currentMode=RESTZONEMODE
             map.msg.sendCustomMessage(message: "Spawn rest zone mode.")
             selectedEntity=nil
@@ -500,8 +521,11 @@ class GameScene: SKScene {
                     index=0
                 }
                 selectedEntity=map.entList[index]
-                myCam.position=selectedEntity!.sprite.position
-            }
+                if (!myCam.contains(selectedEntity!.sprite))
+                {
+                    myCam.position=selectedEntity!.sprite.position
+                }
+            } // if something is selected
         case 49:
             myCam.position=CGPoint(x: 0, y: 0)
         
@@ -519,13 +543,14 @@ class GameScene: SKScene {
                 } // for each entity
                 
                 
-                if index > -1 && selectedEntity!.name.contains("Entity")
+                if index > -1 && selectedEntity!.name.contains("ent")
                 {
-                    map.entList[index].removeSprite()
-                    map.entList.remove(at: index)
+                    map.msg.sendMessage(type: map.msg.DEATH_DISEASE, from: selectedEntity!.name)
+                    selectedEntity!.die()
                     selectedEntity=nil
                     isSelected=false
-                }
+                    
+                } // if we have something to delete and it's an entity
 
                 
             } // if we're in select mode
@@ -651,6 +676,12 @@ class GameScene: SKScene {
             
             infoHunger.text=String(format: "Hunger: %2.3f", selectedEntity!.hunger)
             infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
+            infoTurning.text="isTurning: \(selectedEntity!.checkTurning())"
+            infoHeading.text=String(format: "Heading: %2.3f",selectedEntity!.sprite.zRotation)
+            if selectedEntity!.herdLeader==nil
+            {
+                infoHerdLeader.text="Herd Leader: None"
+            }
             
         } // if something is selected
         else
@@ -717,13 +748,13 @@ class GameScene: SKScene {
         
         if type==CHEETAHHERD
         {
-            let tempCat=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
-            print(tempCat.name)
+            let tempCheetah=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+            print(tempCheetah.name)
             
-            tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-            map.entList.append(tempCat)
+            tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            map.entList.append(tempCheetah)
             entityHerdCount+=1
-        }
+        } // if we're spawning a Cheetah (single)
         
         if type==ZEBRAHERD
         {
@@ -732,15 +763,15 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempCat=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
-                print(tempCat.name)
+                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                print(tempZebra.name)
                 
-                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                map.entList.append(tempCat)
+                tempZebra.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempZebra)
                 entityHerdCount+=1
                 
             } // for each member of the herd
-        }
+        } // if we're spawning a Zebra herd
         
         if type==SPRINGBOKHERD
         {
@@ -749,16 +780,16 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempCat=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
-                print(tempCat.name)
+                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                print(tempSpringbok.name)
                 
-                tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                map.entList.append(tempCat)
+                tempSpringbok.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(tempSpringbok)
                 entityHerdCount+=1
                 
             } // for each member of the herd
             
-        }
+        } // if we're spawning a Springbok herd
         
        if type==BIRDFLOCK
        {
@@ -773,7 +804,7 @@ class GameScene: SKScene {
                 map.birdList.append(tempBird)
                 
             } // for each bird in the flock
-        } // if we're spawning a bird
+        } // if we're spawning a bird flock
         
     } // func spawnHerd
     
