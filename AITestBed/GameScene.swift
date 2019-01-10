@@ -682,6 +682,10 @@ class GameScene: SKScene {
             {
                 infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
             }
+            else
+            {
+                infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
+            }
             
         } // if something is selected
         else
@@ -713,11 +717,18 @@ class GameScene: SKScene {
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
 
+            let tempLeader=TestClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+            print(tempLeader.name)
+            
+            tempLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            map.entList.append(tempLeader)
+            entityHerdCount+=1
+            
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
-                print("Entity\(entityHerdCount)")
+                let tempEnt=TestClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, ldr: tempLeader)
+                print(tempEnt.name)
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
                 map.entList.append(tempEnt)
