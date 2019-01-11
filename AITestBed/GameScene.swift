@@ -356,12 +356,27 @@ class GameScene: SKScene {
         {
             if map.entList.count > 0
             {
-                map.entList[0].changeMode(mode: map.entList[0].GOTOSTATE, loc: pos)
+                if isSelected
+                {
+                    if selectedEntity!.isHerdLeader
+                    {
+                        selectedEntity!.changeMode(mode: map.entList[0].GOTOSTATE, loc: pos)
+                    }
+                    else
+                    {
+                        map.msg.sendCustomMessage(message: "Selected entity not herd leader.")
+                    }
+                }
+                else
+                {
+                    map.msg.sendCustomMessage(message: "Must select entity to use Go To mode.")
+                }
+
                 
             } // if we have an entity
             else
             {
-                map.msg.sendCustomMessage(message: "No entity in list.")
+                map.msg.sendCustomMessage(message: "No entities in list.")
             }
         }
     } // touchDown
@@ -413,7 +428,7 @@ class GameScene: SKScene {
             
         case 5: // G
             currentMode=GOTOMODE
-            map.msg.sendCustomMessage(message: "Goto Mode for Entity0000")
+            map.msg.sendCustomMessage(message: "Goto Mode")
             
         case 11:
             currentMode=BIRDMODE
