@@ -48,10 +48,11 @@ class TestClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=0.6
+        MAXSPEED=1.2
         TURNRATE=0.15
-        TURNFREQ=1.8
+        TURNFREQ=0.8
         AICycle=3
+        WANDERANGLE=CGFloat.pi/6
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         currentState=WANDERSTATE
@@ -86,6 +87,7 @@ class TestClass:EntityClass
         TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
+        WANDERANGLE=CGFloat.pi/6
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         followDistVar=random(min: 1, max: FOLLOWDIST)
@@ -192,6 +194,7 @@ class TestClass:EntityClass
                     if dist < 50
                     {
                         currentState=RESTSTATE
+                        isResting=true
                     }
                     else
                     {
@@ -209,6 +212,7 @@ class TestClass:EntityClass
             if !isHerdLeader && !herdLeader!.isResting
             {
                 wander()
+
             }
             if isResting
             {
@@ -221,6 +225,9 @@ class TestClass:EntityClass
         else
         {
             currentState=WANDERSTATE
+            isResting=false
+            isEating=false
+            isDrinking=false
         }
         
         
@@ -303,7 +310,7 @@ class TestClass:EntityClass
         if cycle==AICycle
         {
             // first decide what to do 
-            //decideWhatToDo()
+            decideWhatToDo()
             
             if currentState==WANDERSTATE
             {
@@ -338,6 +345,19 @@ class TestClass:EntityClass
                 {
                     speed=0
                 }
+                if !isHerdLeader && herdLeader != nil
+                {
+                    let ldrDist=getDistToEntity(ent: herdLeader!)
+                    if !isResting && !isHerdLeader && ldrDist>FOLLOWDIST
+                    {
+                        pursue()
+                    }
+                    if !isResting && herdLeader!.isResting
+                    {
+                        isResting=true
+                    }
+                }
+                
             } // if we're in rest state
 
             if currentState==GOTOSTATE

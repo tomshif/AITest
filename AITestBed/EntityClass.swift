@@ -29,7 +29,7 @@ class EntityClass
     public var TURNFREQ:Double = 0.5
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
-    private var WANDERANGLE:CGFloat=CGFloat.pi/4
+    internal var WANDERANGLE:CGFloat=CGFloat.pi/4
     
     public var currentState:Int=0
     public var AICycle:Int=0
@@ -179,6 +179,8 @@ class EntityClass
         case 2:
             return "Go to"
             
+        case 8:
+            return "Rest"
         default:
             return "Other (error)"
         } // switch
