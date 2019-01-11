@@ -10,6 +10,15 @@ import Foundation
 import SpriteKit
 class CheetahClass:EntityClass
 {
+    var MAXHERD:Int = 1
+    var MAXCHILD:Int = 2
+    var isPregnant:Bool = false
+    var isChasing:Bool = false
+    var isStarving:Bool = false
+    var isClose:Bool = false
+    var isTravel:Bool = false
+    
+    
     override init()
     {
         super.init()
