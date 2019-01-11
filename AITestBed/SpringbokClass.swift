@@ -11,6 +11,19 @@ import SpriteKit
 
 class SpringbokClass:EntityClass
 {
+    private var isPregnant:Bool=false
+    private var isFleeing:Bool=false
+    private var isClose:Bool=false
+   
+    private var MAXHERD:Int=50
+    private var MINHERD:Int=15
+    private var MAXCHILD:Int=2
+    
+    
+    
+    
+    
+    
     
     override init()
     {
