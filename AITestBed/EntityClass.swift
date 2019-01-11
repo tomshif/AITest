@@ -29,7 +29,7 @@ class EntityClass
     public var TURNFREQ:Double = 0.5
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
-    
+    private var WANDERANGLE:CGFloat=CGFloat.pi/4
     
     public var currentState:Int=0
     public var AICycle:Int=0
@@ -51,11 +51,16 @@ class EntityClass
     
     public var lastWanderTurn=NSDate()
     
-    public let AGINGVALUE:CGFloat = 0.0001
+    
+    internal var gotoPoint=CGPoint(x: 0, y: 0)
     
     // Constants
     let WANDERSTATE:Int=0
     let GOTOSTATE:Int=2
+    let EATSTATE:Int=4
+    let DRINKSTATE:Int=6
+    let RESTSTATE:Int=8
+    
     
     init()
     {
@@ -220,6 +225,12 @@ class EntityClass
         
     } // getDistToEntity
     
+    public func changeMode(mode: Int, loc: CGPoint)
+    {
+        currentState=mode
+        gotoPoint=loc
+    } // func changeMode
+    
     public func wander()
     {
         // check for speed up
@@ -268,7 +279,7 @@ class EntityClass
             let turnDelta = -lastWanderTurn.timeIntervalSinceNow
             if turnDelta > TURNFREQ/Double(map!.getTimeScale())
             {
-                turnToAngle=sprite.zRotation + random(min: -CGFloat.pi, max: CGFloat.pi)
+                turnToAngle=sprite.zRotation + random(min: -WANDERANGLE, max: WANDERANGLE)
                 
                 // Adjust turn to angle to be 0-pi*2
                 if turnToAngle >= CGFloat.pi*2
@@ -282,9 +293,6 @@ class EntityClass
                 isTurning=true
             } // if it's time to turn
         } // if we're not turning but moving
-
-        
-        
     } // func wander
     
     public func checkTurning() -> Bool
@@ -294,7 +302,6 @@ class EntityClass
     
     internal func doTurn()
     {
-        
         if isTurning
         {
             if abs(turnToAngle-sprite.zRotation) < TURNRATE*2*speed
@@ -303,7 +310,9 @@ class EntityClass
                 isTurning=false
                 lastWanderTurn=NSDate()
             } // if we can stop turning
-        }
+        
+        } // if we're turning
+        
         
         if isTurning
         {

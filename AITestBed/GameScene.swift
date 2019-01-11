@@ -73,6 +73,8 @@ class GameScene: SKScene {
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
     let BIRDMODE:Int=18
+    let GOTOMODE:Int=50
+    
     
     let MAXUPDATECYCLES:Int=3
     
@@ -350,6 +352,18 @@ class GameScene: SKScene {
             addChild(obstacle)
         } // if we're spawning obstacles
         
+        if currentMode==GOTOMODE
+        {
+            if map.entList.count > 0
+            {
+                map.entList[0].changeMode(mode: map.entList[0].GOTOSTATE, loc: pos)
+                
+            } // if we have an entity
+            else
+            {
+                map.msg.sendCustomMessage(message: "No entity in list.")
+            }
+        }
     } // touchDown
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -395,6 +409,11 @@ class GameScene: SKScene {
                 followModeOn=true
                 map.msg.sendCustomMessage(message: "Follow mode on.")
             }
+            
+            
+        case 5: // G
+            currentMode=GOTOMODE
+            map.msg.sendCustomMessage(message: "Goto Mode for Entity0000")
             
         case 11:
             currentMode=BIRDMODE
@@ -716,7 +735,7 @@ class GameScene: SKScene {
         if type==ENTITYHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-
+            //let herdsize=1
             let tempLeader=TestClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
             print(tempLeader.name)
             
