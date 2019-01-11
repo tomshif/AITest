@@ -603,6 +603,8 @@ class GameScene: SKScene {
             selectedEntity=nil
             
             
+        case 85: // Numeric keypad 3
+            scatterZone(type: 4)
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         } // switch
@@ -744,6 +746,37 @@ class GameScene: SKScene {
         
     } // func updateInfo
     
+    func scatterZone(type: Int)
+    {
+        for _ in 1...20
+        {
+            var quit:Bool=false
+            var pos=CGPoint()
+            while !quit
+            {
+                quit = true
+                pos=CGPoint(x: random(min: -map.mapBorder, max: map.mapBorder), y: random(min: -map.mapBorder, max: map.mapBorder))
+                if map.zoneList.count > 0
+                {
+                    for i in 0..<map.zoneList.count
+                    {
+                        let dx=map.zoneList[i].sprite.position.x-pos.x
+                        let dy=map.zoneList[i].sprite.position.y-pos.y
+                        let distance = hypot(dy, dx)
+                        if distance < 250
+                        {
+                            quit=false
+                        }
+                    
+                    } // for each zone that already exists
+                } // if we have zones-
+            
+            } // while
+            let tempZone=ZoneClass(zoneType: type, pos: pos, theScene: self)
+            map.zoneList.append(tempZone)
+        }// for each zone
+        
+    } // func scatterZone
     
     func spawnHerd(type: Int, loc: CGPoint)
     {
