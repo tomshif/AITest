@@ -14,9 +14,9 @@ class CheetahClass:EntityClass
     var MAXCHILD:Int = 2
     var isPregnant:Bool = false
     var isChasing:Bool = false
-    var isStarving:Bool = false
-    var isClose:Bool = false
-    var isTravel:Bool = false
+    var isStarving:Bool = false     // I would recommend doing this more as "var lastMeal:Int=0"
+    var isClose:Bool = false        // close to what?
+    var isTravel:Bool = false       // travel?
     
     
     override init()

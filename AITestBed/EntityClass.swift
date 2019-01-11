@@ -51,7 +51,6 @@ class EntityClass
     
     public var lastWanderTurn=NSDate()
     
-    public let AGINGVALUE:CGFloat = 0.0001
     
     // Constants
     let WANDERSTATE:Int=0
@@ -318,13 +317,13 @@ class EntityClass
             if angleDiff < CGFloat.pi || angleDiff < -CGFloat.pi
             {
                 // turning left
-                sprite.zRotation += TURNRATE
+                sprite.zRotation += TURNRATE*speed
                 
             } // if turn left
             else if angleDiff > -CGFloat.pi || angleDiff > CGFloat.pi
             {
                 // we need to turn right
-                sprite.zRotation -= TURNRATE
+                sprite.zRotation -= TURNRATE*speed
                 
             } // else if turn right
 

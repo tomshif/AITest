@@ -19,12 +19,14 @@ class ZebraClass:EntityClass
     
     var isSick:Bool=false
     var isFemale:Bool=false
-    var isChild:Bool=false
+    var isChild:Bool=false  // don't really need these three. We can pull these from the age stat.
     var isMature:Bool=false
     var isOld:Bool=false
+    
     var isPregnant:Bool=false
     var isTranqued:Bool=false
-    var inHerd:Bool=true
+    
+    var inHerd:Bool=true // All zebras will technically be in a herd. Even if the herd is just that one zebra (e.g., if they get separated from their herd or their herd leader dies).
     
     
     override init()

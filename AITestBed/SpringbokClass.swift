@@ -13,7 +13,7 @@ class SpringbokClass:EntityClass
 {
     private var isPregnant:Bool=false
     private var isFleeing:Bool=false
-    private var isClose:Bool=false
+    private var isClose:Bool=false  // is close to what?
    
     private var MAXHERD:Int=50
     private var MINHERD:Int=15
