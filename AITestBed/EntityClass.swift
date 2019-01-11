@@ -29,7 +29,7 @@ class EntityClass
     public var TURNFREQ:Double = 0.5
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
-    
+    private var WANDERANGLE:CGFloat=CGFloat.pi/4
     
     public var currentState:Int=0
     public var AICycle:Int=0
@@ -52,9 +52,15 @@ class EntityClass
     public var lastWanderTurn=NSDate()
     
     
+    internal var gotoPoint=CGPoint(x: 0, y: 0)
+    
     // Constants
     let WANDERSTATE:Int=0
     let GOTOSTATE:Int=2
+    let EATSTATE:Int=4
+    let DRINKSTATE:Int=6
+    let RESTSTATE:Int=8
+    
     
     init()
     {
@@ -290,9 +296,6 @@ class EntityClass
                 isTurning=true
             } // if it's time to turn
         } // if we're not turning but moving
-
-        
-        
     } // func wander
     
     public func checkTurning() -> Bool
@@ -302,7 +305,6 @@ class EntityClass
     
     internal func doTurn()
     {
-        
         if isTurning
         {
             if abs(turnToAngle-sprite.zRotation) < TURNRATE*2*speed

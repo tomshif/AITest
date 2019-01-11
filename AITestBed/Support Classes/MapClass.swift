@@ -20,7 +20,7 @@ class MapClass
     var msg=MessageClass()
     
     
-    private var timeOfDay:CGFloat=300 // time of day in minutes past midnight -- 300 = 5:00am
+    private var timeOfDay:CGFloat=0 // time of day in minutes past midnight -- 300 = 5:00am
     
     private let TIMEINT:CGFloat = 0.2 // Time advance per frame. 0.2 = roughly 5 seconds/hour - 2 minutes/day - 12 minutes/year
     // Time passage will be affected by frame rate, so keeping a framerate near 60fps will be important
