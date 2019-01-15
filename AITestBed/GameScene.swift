@@ -761,6 +761,7 @@ class GameScene: SKScene {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
             let tempZebraLeader=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount,leader: nil)
             map.entList.append(tempZebraLeader)
+            entityHerdCount+=1
             for _ in 1...herdsize
             {
                 
@@ -779,6 +780,7 @@ class GameScene: SKScene {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
             let tempSBLeader=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: nil)
             map.entList.append(tempSBLeader)
+            entityHerdCount+=1
             for _ in 1...herdsize
             {
                 

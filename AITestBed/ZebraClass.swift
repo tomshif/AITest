@@ -17,7 +17,7 @@ class ZebraClass:EntityClass
     var MAXHERD:Int=30
     var MAXCHILDRENBORN:Int=2
     
-    var followDistance:CGFloat=350
+    var followDistance:CGFloat=150
     
     
     
@@ -60,8 +60,8 @@ class ZebraClass:EntityClass
         
         // Variable updates
         MAXSPEED=2.0
-        TURNRATE=0.2
-        TURNFREQ=0.5
+        TURNRATE=0.15
+        TURNFREQ=0.9
         AICycle=1
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -97,8 +97,8 @@ class ZebraClass:EntityClass
         
         // Variable updates
         MAXSPEED=2.0
-        TURNRATE=0.2
-        TURNFREQ=0.5
+        TURNRATE=0.15
+        TURNFREQ=0.9
         AICycle=1
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -112,8 +112,12 @@ class ZebraClass:EntityClass
         {
            angle+=CGFloat.pi*2
         }// if angle is below zero
-        angle=turnToAngle
+        // angle=turnToAngle        // removed by Shiflet -- this is inverted
+                                    // should be the other way around
+        turnToAngle=angle           // added by Shiflet to fix above
         isTurning=true
+        speed=MAXSPEED*0.45     // added by Shiflet to make sure
+                                // that we can catch up
     }//func catch up
     
    override internal func update(cycle: Int) -> Int
@@ -130,17 +134,24 @@ class ZebraClass:EntityClass
                 ret=2
             } // we're able to age, if we die, set return death code
         } // if we're alive
+        
         if cycle==AICycle
         {
             if currentState==WANDERSTATE
             {
-                wander()
+                // wander() -- removed by Shiflet -- should not wander AND have
+                // the opportunity to pursue the herdLeader...should be OR
                 if herdLeader != nil && !isHerdLeader
                 {
-                    if getDistToEntity(ent: herdLeader!)>followDistance
+                    if getDistToEntity(ent: herdLeader!) > followDistance
                     {
+    
                         catchUp()
                     }//if distance to entity is greater than follow distance
+                    else // added by Shiflet -- the OR part
+                    {
+                        wander()
+                    }
                 }
                 else
                 {

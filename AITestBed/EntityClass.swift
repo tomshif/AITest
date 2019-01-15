@@ -270,7 +270,7 @@ class EntityClass
             let turnDelta = -lastWanderTurn.timeIntervalSinceNow
             if turnDelta > TURNFREQ/Double(map!.getTimeScale())
             {
-                print("Starting turn")
+                //print("Starting turn")
                 turnToAngle=sprite.zRotation + random(min: -CGFloat.pi, max: CGFloat.pi)
                 
                 // Adjust turn to angle to be 0-pi*2
@@ -305,7 +305,7 @@ class EntityClass
                 sprite.zRotation=turnToAngle
                 isTurning=false
                 lastWanderTurn=NSDate()
-                print("Finished turn")
+                //print("Finished turn")
             } // if we can stop turning
         }
         
