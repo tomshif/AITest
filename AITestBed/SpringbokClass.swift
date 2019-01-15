@@ -45,9 +45,9 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "Springbok")
+        sprite=SKSpriteNode(imageNamed: "springbokArrow")
         sprite.position=pos
-        sprite.name="Springbok"
+        sprite.name="springbokArrow"
         sprite.name=String(format:"entSpringbok%04d", number)
         name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
