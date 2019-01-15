@@ -135,10 +135,13 @@ class ZebraClass:EntityClass
             if currentState==WANDERSTATE
             {
                 wander()
-                if getDistToEntity(ent: herdLeader!)>followDistance
+                if herdLeader != nil && !isHerdLeader
                 {
-                    catchUp()
-                }//if distance to entity is greater than follow distance
+                    if getDistToEntity(ent: herdLeader!)>followDistance
+                    {
+                        catchUp()
+                    }//if distance to entity is greater than follow distance
+                }
                 else
                 {
                     wander()
