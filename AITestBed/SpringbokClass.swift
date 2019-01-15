@@ -85,7 +85,7 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "Springbok")
+        sprite=SKSpriteNode(imageNamed: "springbokArrow")
         sprite.position=pos
         sprite.name="Springbok"
         sprite.name=String(format:"entSpringbok%04d", number)
@@ -119,10 +119,7 @@ class SpringbokClass:EntityClass
     
     override func update(cycle: Int) -> Int
     {
-        if getDistToEntity(ent: herdLeader!) > followDist
-        {
-            catchUp()
-        }
+
         
         var ret:Int = -1
         
@@ -140,7 +137,21 @@ class SpringbokClass:EntityClass
         {
             if currentState==WANDERSTATE
             {
-                wander()
+                if herdLeader != nil && !isHerdLeader
+                {
+                    if getDistToEntity(ent: herdLeader!) > followDist
+                    {
+                        catchUp()
+                    }
+                    else
+                    {
+                        wander()
+                    }
+                }
+                else
+                {
+                    wander()
+                }
             }
             
             // fix it if our rotation is more than pi*2 or less than 0
