@@ -759,11 +759,12 @@ class GameScene: SKScene {
         if type==ZEBRAHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-            
+            let tempZebraLeader=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount,leader: nil)
+            map.entList.append(tempZebraLeader)
             for _ in 1...herdsize
             {
                 
-                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: tempZebraLeader)
                 print(tempZebra.name)
                 
                 tempZebra.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -776,11 +777,12 @@ class GameScene: SKScene {
         if type==SPRINGBOKHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-            
+            let tempSBLeader=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: nil)
+            map.entList.append(tempSBLeader)
             for _ in 1...herdsize
             {
                 
-                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader:tempSBLeader)
                 print(tempSpringbok.name)
                 
                 tempSpringbok.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
