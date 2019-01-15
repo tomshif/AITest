@@ -17,6 +17,10 @@ class ZebraClass:EntityClass
     var MAXHERD:Int=30
     var MAXCHILDRENBORN:Int=2
     
+    var followDistance:CGFloat=350
+    
+    
+    
     var isSick:Bool=false
     var isFemale:Bool=false
     var isChild:Bool=false  // don't really need these three. We can pull these from the age stat.
@@ -100,4 +104,60 @@ class ZebraClass:EntityClass
         age=random(min: 1.0, max: MAXAGE*0.7)
         
     } // full init()
+    
+    func catchUp()
+    {
+        var angle=getAngleToEntity(ent: herdLeader!)
+        if angle < 0
+        {
+           angle+=CGFloat.pi*2
+        }// if angle is below zero
+        angle=turnToAngle
+        isTurning=true
+    }//func catch up
+    
+   override internal func update(cycle: Int) -> Int
+    {
+        var ret:Int = -1
+        
+        doTurn()
+        updateGraphics()
+        
+        if alive
+        {
+            if !ageEntity()
+            {
+                ret=2
+            } // we're able to age, if we die, set return death code
+        } // if we're alive
+        if cycle==AICycle
+        {
+            if currentState==WANDERSTATE
+            {
+                wander()
+                if getDistToEntity(ent: herdLeader!)>followDistance
+                {
+                    catchUp()
+                }//if distance to entity is greater than follow distance
+                else
+                {
+                    wander()
+                }// else wander
+            }//if current state = wander state
+            
+            // fix it if our rotation is more than pi*2 or less than 0
+            if sprite.zRotation > CGFloat.pi*2
+            {
+                sprite.zRotation -= CGFloat.pi*2
+            }
+            if sprite.zRotation < 0
+            {
+                sprite.zRotation += CGFloat.pi*2
+            }
+            
+        } // if it's our update cycle
+        
+        return ret
+        
+    } // func update
 }// zebra class
