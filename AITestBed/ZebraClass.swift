@@ -63,4 +63,41 @@ class ZebraClass:EntityClass
         age=random(min: 1.0, max: MAXAGE*0.7)
         
     } // full init()
+    
+    init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int, leader:EntityClass?)
+    {
+        super.init()
+        
+        if leader==nil
+        {
+            isHerdLeader=true
+        }// if we dont have a herd leader
+        else
+        {
+            herdLeader=leader
+        }// if we have a herd leader
+        
+        // set the passed references
+        map=theMap
+        scene=theScene
+        
+        
+        // sprite update
+        sprite=SKSpriteNode(imageNamed: "tempZeb")
+        sprite.position=pos
+        sprite.name=String(format:"entZebra%04d", number)
+        name=String(format:"entZebra%04d", number)
+        sprite.zPosition=100
+        
+        scene!.addChild(sprite)
+        
+        // Variable updates
+        MAXSPEED=2.0
+        TURNRATE=0.2
+        TURNFREQ=0.5
+        AICycle=1
+        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
+        age=random(min: 1.0, max: MAXAGE*0.7)
+        
+    } // full init()
 }// zebra class
