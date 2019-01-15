@@ -37,7 +37,7 @@ class ZebraClass:EntityClass
    
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "tempZeb")
+        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
     } // init
    
     override init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int)
@@ -50,7 +50,7 @@ class ZebraClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "tempZeb")
+        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
         sprite.position=pos
         sprite.name=String(format:"entZebra%04d", number)
         name=String(format:"entZebra%04d", number)
@@ -87,7 +87,7 @@ class ZebraClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "tempZeb")
+        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
         sprite.position=pos
         sprite.name=String(format:"entZebra%04d", number)
         name=String(format:"entZebra%04d", number)
