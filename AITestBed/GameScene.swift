@@ -490,7 +490,7 @@ class GameScene: SKScene {
             
         case 29: // 0
             currentMode=ENTITYMODE
-            map.msg.sendCustomMessage(message: "Spawn entity mode.")
+            map.msg.sendCustomMessage(message: "Spawn warthog mode.")
             selectedEntity=nil
             isSelected=false
             

@@ -191,6 +191,7 @@ class TestClass:EntityClass
                 } // if our herd leader is valid
             } // if we're at juvenile stage
             
+            // Baby time!
             if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
             {
                 let babyChance=random(min: 0.0, max: 1.0)
@@ -200,7 +201,7 @@ class TestClass:EntityClass
                     let babyNumber=Int(random(min: 2, max: 5.999999))
                     for _ in 1...babyNumber
                     {
-                        let baby=TestClass(theScene: scene!, theMap: map!, pos: self.sprite.position, number: map!.entityCounter+1, ldr: self, isBaby: true)
+                        let baby=TestClass(theScene: scene!, theMap: map!, pos: self.sprite.position, number: map!.entityCounter, ldr: self, isBaby: true)
                         map!.entList.append(baby)
                         map!.entityCounter+=1
                         
