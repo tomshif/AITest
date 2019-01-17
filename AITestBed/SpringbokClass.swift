@@ -13,7 +13,7 @@ class SpringbokClass:EntityClass
 {
     private var isPregnant:Bool=false
     private var isFleeing:Bool=false
-    private var isClose:Bool=false  // is close to what?
+    private var isCloseToCheetah:Bool=false  // is close to what?
    
     private var MAXHERD:Int=50
     private var MINHERD:Int=15
@@ -57,7 +57,8 @@ class SpringbokClass:EntityClass
         // Variable updates
         MAXSPEED=2.2
         TURNRATE=0.15
-        TURNFREQ=0.8
+        TURNFREQ=1.0
+        WANDERANGLE=CGFloat.pi/8
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
@@ -96,8 +97,9 @@ class SpringbokClass:EntityClass
         
         // Variable updates
         MAXSPEED=2.2
-        TURNRATE=0.02
-        TURNFREQ=0.06
+        TURNRATE=0.15
+        TURNFREQ=1
+        WANDERANGLE=CGFloat.pi/8
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
@@ -114,7 +116,7 @@ class SpringbokClass:EntityClass
         }
         turnToAngle=angle
         isTurning=true
-        speed = MAXSPEED * 0.45
+        speed = herdLeader!.speed * 1.05
     }
     
     override func update(cycle: Int) -> Int
