@@ -59,7 +59,7 @@ class ZebraClass:EntityClass
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
-        WANDERANGLE=CGFloat.pi/12
+        WANDERANGLE=CGFloat.pi/7
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
@@ -97,7 +97,7 @@ class ZebraClass:EntityClass
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
-        WANDERANGLE=CGFloat.pi/12
+        WANDERANGLE=CGFloat.pi/7
         MAXAGE=8640*10
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
