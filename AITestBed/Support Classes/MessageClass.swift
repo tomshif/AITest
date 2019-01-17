@@ -51,6 +51,9 @@ class MessageClass
             let temp="\(from) died of old age."
             unreadQueue.append(temp)
             
+        case 20:
+            let temp="\(from) had a baby!!"
+            unreadQueue.append(temp)
         case 22:
             let temp="\(from) found a new herd leader."
             unreadQueue.append(temp)

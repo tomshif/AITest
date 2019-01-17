@@ -24,6 +24,8 @@ class TestClass:EntityClass
     public static let WATERZONE:Int=2
     public static let RESTZONE:Int=4
     
+    private var lastBabyYear:Int=0
+    
     override init()
     {
         super.init()
@@ -38,13 +40,15 @@ class TestClass:EntityClass
         scene=theScene
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "entity")
+        sprite=SKSpriteNode(imageNamed: "warthogArrow")
         sprite.position=pos
         
-        sprite.name=String(format:"entTest%04d", number)
-        name=String(format:"entTest%04d", number)
+        sprite.name=String(format:"entWarthog%04d", number)
+        name=String(format:"entWarthog%04d", number)
         sprite.zPosition=170
-        
+        sprite.lightingBitMask=1
+        sprite.shadowedBitMask=0
+        sprite.shadowCastBitMask=0
         scene!.addChild(sprite)
         
         // Variable updates
@@ -53,11 +57,13 @@ class TestClass:EntityClass
         TURNFREQ=0.8
         AICycle=3
         WANDERANGLE=CGFloat.pi/6
+        MAXAGE=34560
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         currentState=WANDERSTATE
         followDistVar=random(min: 1, max: FOLLOWDIST)
         isHerdLeader=true
+        isMale=true
         
     } // leader init()
     
@@ -73,13 +79,15 @@ class TestClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "entity")
+        sprite=SKSpriteNode(imageNamed: "warthogArrow")
         sprite.position=pos
         
-        sprite.name=String(format:"entTest%04d", number)
-        name=String(format:"entTest%04d", number)
+        sprite.name=String(format:"entWarthog%04d", number)
+        name=String(format:"entWarthog%04d", number)
         sprite.zPosition=170
-        
+        sprite.lightingBitMask=1
+        sprite.shadowedBitMask=0
+        sprite.shadowCastBitMask=0
         scene!.addChild(sprite)
         
         // Variable updates
@@ -87,16 +95,130 @@ class TestClass:EntityClass
         TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
-        WANDERANGLE=CGFloat.pi/6
+        WANDERANGLE=CGFloat.pi/8
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
-        followDistVar=random(min: 1, max: FOLLOWDIST)
+        followDistVar=random(min: -FOLLOWDIST*0.5, max: FOLLOWDIST*1.5)
+        herdLeader=ldr
+        isHerdLeader=false
+        let chance=random(min: 0.0, max: 1.0)
+        if chance > 0.75
+        {
+            isMale=true
+        }
+        
+    } // full init()
+    
+    init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int, ldr: EntityClass, isBaby: Bool)
+    {
+        super.init()
+        
+        // set the passed references
+        map=theMap
+        scene=theScene
+        
+        
+        // sprite update
+        sprite=SKSpriteNode(imageNamed: "warthogArrow")
+        sprite.position=pos
+        
+        sprite.name=String(format:"entWarthog%04d", number)
+        name=String(format:"entWarthog%04d", number)
+        sprite.zPosition=170
+        scene!.addChild(sprite)
+        
+        // Variable updates
+        MAXSPEED=1.2
+        TURNRATE=0.15
+        TURNFREQ=0.5
+        AICycle=3
+        let chance=random(min: 0.0, max: 1.0)
+        if chance > 0.75
+        {
+            isMale=true
+        }
+        
+        WANDERANGLE=CGFloat.pi/8
+        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
+        if isBaby
+        {
+            age=1
+        }
+        else
+        {
+            age=random(min: 1.0, max: MAXAGE*0.7)
+        }
+        followDistVar=random(min: -FOLLOWDIST*0.5, max: FOLLOWDIST*1.5)
         herdLeader=ldr
         isHerdLeader=false
         
     } // full init()
     
-
+    
+    override func ageEntity() -> Bool
+    {
+        age += map!.getTimeInterval()*map!.getTimeScale()
+        if age > MAXAGE
+        {
+            map!.msg.sendMessage(type: 8, from: name)
+            sprite.removeFromParent()
+            alive=false
+            return false
+        } // if we die of old age
+        else
+        {
+            let ageRatio=age/(MAXAGE*0.5)
+            var scale:CGFloat=ageRatio
+            if scale < MINSCALE
+            {
+                scale=MINSCALE
+            }
+            if scale > MAXSCALE
+            {
+                scale = MAXSCALE
+            }
+            sprite.setScale(scale)
+            
+            if getAgeString() == "Juvenile"
+            {
+                if herdLeader != nil
+                {
+                    if !herdLeader!.isMale && herdLeader!.herdLeader != nil
+                    {
+                        herdLeader=herdLeader!.herdLeader
+                        
+                    } // if momma's our leader and her leader is valid
+                } // if our herd leader is valid
+            } // if we're at juvenile stage
+            
+            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
+            {
+                let babyChance=random(min: 0.0, max: 1.0)
+                if babyChance > 0.999775
+                {
+                    // Hurray! We're having a baby!
+                    let babyNumber=Int(random(min: 2, max: 5.999999))
+                    for _ in 1...babyNumber
+                    {
+                        let baby=TestClass(theScene: scene!, theMap: map!, pos: self.sprite.position, number: map!.entityCounter+1, ldr: self, isBaby: true)
+                        map!.entList.append(baby)
+                        map!.entityCounter+=1
+                        
+                    } // for each baby
+                    lastBabyYear=map!.getYear()
+                    map!.msg.sendMessage(type: 20, from: self.name)
+                    
+                } // if we're having a baby
+                
+                
+                
+            } // if it's dry season and we're female and we're "mature" and we have a herd leader and we haven't had babies this year
+            
+            
+            return true
+        } // if we're still alive
+    }
+    
     
     private func goTo()
     {
@@ -134,14 +256,14 @@ class TestClass:EntityClass
                     
                 } // if speed drops below zero
                 
-
+                
             } // if we slow down
             
         } // if we're still far enough away
         else
         {
-
-                currentState=gotoLastState
+            
+            currentState=gotoLastState
             
         } // if we're close enough
         
@@ -161,7 +283,7 @@ class TestClass:EntityClass
         //print("Angle: \(angleToLeader)")
         turnToAngle=angleToLeader
         isTurning = true
-        speed=MAXSPEED*0.6
+        speed=herdLeader!.speed*1.05
         
         
         
@@ -179,9 +301,9 @@ class TestClass:EntityClass
         {
             currentState=RESTSTATE
             
-
             
-            if !isResting
+            
+            if (!isResting && targetZone == nil) || (!isResting && targetZone!.type != ZoneType.RESTZONE)
             {
                 // Check to see if we're close enough to a rest zone to be resting
                 let tempZone=findZone(type: TestClass.RESTZONE)
@@ -208,18 +330,23 @@ class TestClass:EntityClass
                 } // if we find a zone
                 
             } // if we're not already resting
+            else if getDistanceToZone(zone: targetZone!) < 50
+            {
+                currentState=RESTSTATE
+                isResting=true
+            }
             
             if !isHerdLeader && !herdLeader!.isResting
             {
                 wander()
-
+                
             }
             if isResting
             {
                 speed=0.0
             }
             
-
+            
             
         } // 00:00 - 05:00 or 20:00 - 23:59
         else
@@ -309,7 +436,7 @@ class TestClass:EntityClass
         
         if cycle==AICycle
         {
-            // first decide what to do 
+            // first decide what to do
             decideWhatToDo()
             
             if currentState==WANDERSTATE
@@ -317,7 +444,7 @@ class TestClass:EntityClass
                 if herdLeader != nil && !isHerdLeader
                 {
                     let ldrDist=getDistToEntity(ent: herdLeader!)
-
+                    
                     if ldrDist > FOLLOWDIST+followDistVar
                     {
                         //print("Distance to leader: \(ldrDist)")
@@ -359,7 +486,7 @@ class TestClass:EntityClass
                 }
                 
             } // if we're in rest state
-
+            
             if currentState==GOTOSTATE
             {
                 goTo()
@@ -367,7 +494,7 @@ class TestClass:EntityClass
             
         } // if it's our update cycle
         
-
+        
         
         
         return ret
