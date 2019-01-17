@@ -17,6 +17,13 @@ class MapClass
     
     public var mapBorder:CGFloat=0
     
+    public var BOUNDARY:CGFloat=0   // width/height of map from origin
+    
+    public let TILESIZE:CGFloat=256 // width/height of each ground tile
+    public let MAPWIDTH:CGFloat=256 // this needs to match mapDims in GameScene
+    
+    
+    
     var msg=MessageClass()
     
     
@@ -34,6 +41,11 @@ class MapClass
     private var day:Int=1 // days 1-3 of each year are wet season, days 4-6 are dry season
     private var year:Int=1 
     private let MAXTIMESCALE:CGFloat=16
+    
+    init()
+    {
+        BOUNDARY=(TILESIZE*MAPWIDTH)/2
+    }
     
     public func getTimeAsString() -> String
     {
