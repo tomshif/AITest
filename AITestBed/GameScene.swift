@@ -351,34 +351,7 @@ class GameScene: SKScene {
             obstacle.name="Water"
             addChild(obstacle)
         } // if we're spawning obstacles
-        
-        if currentMode==GOTOMODE
-        {
-            if map.entList.count > 0
-            {
-                if isSelected
-                {
-                    if selectedEntity!.isHerdLeader
-                    {
-                        selectedEntity!.changeMode(mode: map.entList[0].GOTOSTATE, loc: pos)
-                    }
-                    else
-                    {
-                        map.msg.sendCustomMessage(message: "Selected entity not herd leader.")
-                    }
-                }
-                else
-                {
-                    map.msg.sendCustomMessage(message: "Must select entity to use Go To mode.")
-                }
-
-                
-            } // if we have an entity
-            else
-            {
-                map.msg.sendCustomMessage(message: "No entities in list.")
-            }
-        }
+      
     } // touchDown
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -722,10 +695,6 @@ class GameScene: SKScene {
             {
                 infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
             }
-            else
-            {
-                infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
-            }
             
         } // if something is selected
         else
@@ -842,10 +811,14 @@ class GameScene: SKScene {
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
             
+            let tempZebraLeader=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: nil)
+            map.entList.append(tempZebraLeader)
+            map.entityCounter+=1
+            
             for _ in 1...herdsize
             {
                 
-                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: tempZebraLeader)
+                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: tempZebraLeader)
                 print(tempZebra.name)
                 
                 tempZebra.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
@@ -857,12 +830,19 @@ class GameScene: SKScene {
         
         if type==SPRINGBOKHERD
         {
+            let tempSBLeader=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader:nil)
+
+            
+            tempSBLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            map.entList.append(tempSBLeader)
+            map.entityCounter+=1
+            
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
             
             for _ in 1...herdsize
             {
                 
-                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader:tempSBLeader)
+                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader:tempSBLeader)
                 print(tempSpringbok.name)
                 
                 tempSpringbok.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
