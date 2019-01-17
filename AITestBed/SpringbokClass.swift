@@ -96,7 +96,7 @@ class SpringbokClass:EntityClass
         
         // Variable updates
         MAXSPEED=2.2
-        TURNRATE=0.2
+        TURNRATE=0.02
         TURNFREQ=0.06
         AICycle=0
         MAXAGE=7*8640
