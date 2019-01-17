@@ -22,12 +22,14 @@ class MapClass
     public let TILESIZE:CGFloat=256 // width/height of each ground tile
     public let MAPWIDTH:CGFloat=256 // this needs to match mapDims in GameScene
     
+    public var entityCounter:Int=0
+    
     
     
     var msg=MessageClass()
     
     
-    private var timeOfDay:CGFloat=0 // time of day in minutes past midnight -- 300 = 5:00am
+    private var timeOfDay:CGFloat=300 // time of day in minutes past midnight -- 300 = 5:00am
     
     private let TIMEINT:CGFloat = 0.033333
     // TIMEINT equals the amount of game seconds advanced PER FRAME
@@ -40,7 +42,7 @@ class MapClass
     private var timeScale:CGFloat=1.0 // for time acceleration
     private var day:Int=1 // days 1-3 of each year are wet season, days 4-6 are dry season
     private var year:Int=1 
-    private let MAXTIMESCALE:CGFloat=16
+    private let MAXTIMESCALE:CGFloat=128
     
     init()
     {
