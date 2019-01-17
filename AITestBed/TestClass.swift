@@ -59,7 +59,7 @@ class TestClass:EntityClass
         WANDERANGLE=CGFloat.pi/6
         MAXAGE=34560
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
-        age=random(min: 1.0, max: MAXAGE*0.7)
+        age=random(min: MAXAGE*0.4, max: MAXAGE*0.7)
         currentState=WANDERSTATE
         followDistVar=random(min: 1, max: FOLLOWDIST)
         isHerdLeader=true
