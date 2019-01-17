@@ -799,13 +799,40 @@ class GameScene: SKScene {
         
         if type==CHEETAHHERD
         {
-            let tempCheetah=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter)
+            let tempCheetah=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: nil)
             print(tempCheetah.name)
             
             tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
             map.entList.append(tempCheetah)
             map.entityCounter+=1
+            
+            let chance=random(min: 0, max: 1.0)
+            if chance > 0.95
+            {
+                for _ in 1...2
+                {
+                    let cheetahBaby=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: tempCheetah)
+
+                    
+                    tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                    map.entList.append(cheetahBaby)
+                    map.entityCounter+=1
+                    
+                }
+            }
+            else if chance > 0.85
+            {
+                let cheetahBaby=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: tempCheetah)
+                
+                
+                tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+                map.entList.append(cheetahBaby)
+                map.entityCounter+=1
+                
+            }
         } // if we're spawning a Cheetah (single)
+        
+        
         
         if type==ZEBRAHERD
         {
