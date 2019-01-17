@@ -19,7 +19,7 @@ class SpringbokClass:EntityClass
     private var MINHERD:Int=15
     private var MAXCHILD:Int=2
     
-    internal var followDist:CGFloat=450
+    internal var followDist:CGFloat=150
     
     
     
@@ -56,8 +56,8 @@ class SpringbokClass:EntityClass
         
         // Variable updates
         MAXSPEED=2.2
-        TURNRATE=0.2
-        TURNFREQ=0.06
+        TURNRATE=0.15
+        TURNFREQ=0.8
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual

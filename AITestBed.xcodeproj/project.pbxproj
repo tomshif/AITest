@@ -105,9 +105,9 @@
 				F49DC5CA21E4070300CEABC1 /* SaddlecatClass.swift */,
 				F49DC5D021E691FE00CEABC1 /* CheetahClass.swift */,
 				F49DC5CC21E53F2100CEABC1 /* BirdClass.swift */,
-				F49DC5CE21E6364100CEABC1 /* TestClass.swift */,
 				9F3B007521E689AD00149E9B /* SpringbokClass.swift */,
 				F49DC5D121E691FE00CEABC1 /* ZebraClass.swift */,
+				F49DC5CE21E6364100CEABC1 /* TestClass.swift */,
 			);
 			name = "AI Classes";
 			sourceTree = "<group>";

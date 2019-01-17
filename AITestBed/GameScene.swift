@@ -58,7 +58,7 @@ class GameScene: SKScene {
     
     var currentCycle:Int=0
     var currentMode:Int=0
-    var entityHerdCount:Int=0
+    //var entityHerdCount:Int=0
     var saddlecatHerdCount:Int=0
     
     
@@ -73,6 +73,8 @@ class GameScene: SKScene {
     let OBSTACLEMODE:Int=14
     let RESTZONEMODE:Int=16
     let BIRDMODE:Int=18
+    let GOTOMODE:Int=50
+    
     
     let MAXUPDATECYCLES:Int=3
     
@@ -349,7 +351,7 @@ class GameScene: SKScene {
             obstacle.name="Water"
             addChild(obstacle)
         } // if we're spawning obstacles
-        
+      
     } // touchDown
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -395,6 +397,11 @@ class GameScene: SKScene {
                 followModeOn=true
                 map.msg.sendCustomMessage(message: "Follow mode on.")
             }
+            
+            
+        case 5: // G
+            currentMode=GOTOMODE
+            map.msg.sendCustomMessage(message: "Goto Mode")
             
         case 11:
             currentMode=BIRDMODE
@@ -456,7 +463,7 @@ class GameScene: SKScene {
             
         case 29: // 0
             currentMode=ENTITYMODE
-            map.msg.sendCustomMessage(message: "Spawn entity mode.")
+            map.msg.sendCustomMessage(message: "Spawn warthog mode.")
             selectedEntity=nil
             isSelected=false
             
@@ -569,6 +576,8 @@ class GameScene: SKScene {
             selectedEntity=nil
             
             
+        case 85: // Numeric keypad 3
+            scatterZone(type: 4)
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         } // switch
@@ -682,6 +691,10 @@ class GameScene: SKScene {
             {
                 infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
             }
+            else
+            {
+                infoHerdLeader.text="Herd Leader: None"
+            }
             
         } // if something is selected
         else
@@ -706,22 +719,60 @@ class GameScene: SKScene {
         
     } // func updateInfo
     
+    func scatterZone(type: Int)
+    {
+        for _ in 1...20
+        {
+            var quit:Bool=false
+            var pos=CGPoint()
+            while !quit
+            {
+                quit = true
+                pos=CGPoint(x: random(min: -map.mapBorder, max: map.mapBorder), y: random(min: -map.mapBorder, max: map.mapBorder))
+                if map.zoneList.count > 0
+                {
+                    for i in 0..<map.zoneList.count
+                    {
+                        let dx=map.zoneList[i].sprite.position.x-pos.x
+                        let dy=map.zoneList[i].sprite.position.y-pos.y
+                        let distance = hypot(dy, dx)
+                        if distance < 250
+                        {
+                            quit=false
+                        }
+                    
+                    } // for each zone that already exists
+                } // if we have zones-
+            
+            } // while
+            let tempZone=ZoneClass(zoneType: type, pos: pos, theScene: self)
+            map.zoneList.append(tempZone)
+        }// for each zone
+        
+    } // func scatterZone
     
     func spawnHerd(type: Int, loc: CGPoint)
     {
         if type==ENTITYHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-
+            //let herdsize=1
+            let tempLeader=TestClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter)
+            print(tempLeader.name)
+            
+            tempLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
+            map.entList.append(tempLeader)
+            map.entityCounter+=1
+            
             for _ in 1...herdsize
             {
                 
-                let tempEnt=EntityClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
-                print("Entity\(entityHerdCount)")
+                let tempEnt=TestClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, ldr: tempLeader)
+                print(tempEnt.name)
                 
                 tempEnt.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
                 map.entList.append(tempEnt)
-                entityHerdCount+=1
+                map.entityCounter+=1
                 
             } // for each member of the herd
             
@@ -735,12 +786,12 @@ class GameScene: SKScene {
             for _ in 1...herdsize
             {
                 
-                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: saddlecatHerdCount)
+                let tempCat=SaddlecatClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter)
                 print(tempCat.name)
                 
                 tempCat.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
                 map.entList.append(tempCat)
-                saddlecatHerdCount+=1
+                map.entityCounter+=1
                 
             } // for each member of the herd
             
@@ -748,46 +799,55 @@ class GameScene: SKScene {
         
         if type==CHEETAHHERD
         {
-            let tempCheetah=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount)
+            let tempCheetah=CheetahClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter)
             print(tempCheetah.name)
             
             tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
             map.entList.append(tempCheetah)
-            entityHerdCount+=1
+            map.entityCounter+=1
         } // if we're spawning a Cheetah (single)
         
         if type==ZEBRAHERD
         {
             let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-            let tempZebraLeader=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount,leader: nil)
+            
+            let tempZebraLeader=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: nil)
             map.entList.append(tempZebraLeader)
+            map.entityCounter+=1
+            
             for _ in 1...herdsize
             {
                 
-                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: tempZebraLeader)
+                let tempZebra=ZebraClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader: tempZebraLeader)
                 print(tempZebra.name)
                 
                 tempZebra.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
                 map.entList.append(tempZebra)
-                entityHerdCount+=1
+                map.entityCounter+=1
                 
             } // for each member of the herd
         } // if we're spawning a Zebra herd
         
         if type==SPRINGBOKHERD
         {
-            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
-            let tempSBLeader=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader: nil)
+            let tempSBLeader=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader:nil)
+
+            
+            tempSBLeader.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
             map.entList.append(tempSBLeader)
+            map.entityCounter+=1
+            
+            let herdsize=Int(random(min: ENTITYHERDSIZE*0.5, max: ENTITYHERDSIZE*1.5))
+            
             for _ in 1...herdsize
             {
                 
-                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: entityHerdCount, leader:tempSBLeader)
+                let tempSpringbok=SpringbokClass(theScene: self, theMap: map, pos: CGPoint(x: random(min: loc.x-size.width/10, max: loc.x+size.width/10), y: random(min: loc.y-size.height/10, max: loc.y+size.height/10)), number: map.entityCounter, leader:tempSBLeader)
                 print(tempSpringbok.name)
                 
                 tempSpringbok.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
                 map.entList.append(tempSpringbok)
-                entityHerdCount+=1
+                map.entityCounter+=1
                 
             } // for each member of the herd
             
