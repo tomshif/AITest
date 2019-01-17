@@ -693,7 +693,7 @@ class GameScene: SKScene {
             }
             else
             {
-                infoHerdLeader.text="Herd Leader: \(selectedEntity!.herdLeader!.name)"
+                infoHerdLeader.text="Herd Leader: None"
             }
             
         } // if something is selected
