@@ -284,7 +284,7 @@ class EntityClass
             if turnDelta > TURNFREQ/Double(map!.getTimeScale())
             {
                 //print("Starting turn")
-                turnToAngle=sprite.zRotation + random(min: -CGFloat.pi, max: CGFloat.pi)
+                turnToAngle=sprite.zRotation + random(min: -WANDERANGLE, max: WANDERANGLE)
                 
                 // Adjust turn to angle to be 0-pi*2
                 if turnToAngle >= CGFloat.pi*2
