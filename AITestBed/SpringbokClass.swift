@@ -58,7 +58,7 @@ class SpringbokClass:EntityClass
         MAXSPEED=2.2
         TURNRATE=0.15
         TURNFREQ=1.0
-        WANDERANGLE=CGFloat.pi/8
+        WANDERANGLE=CGFloat.pi/2
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
