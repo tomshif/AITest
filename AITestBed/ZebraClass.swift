@@ -11,7 +11,7 @@ import SpriteKit
 
 class ZebraClass:EntityClass
 {
-    
+    var counter:Int=0
     var alert:Int=0
     var temper:Int=0
     var MAXHERD:Int=30
@@ -102,6 +102,12 @@ class ZebraClass:EntityClass
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
+        let maleChance=random(min: 0, max: 1)
+        if maleChance > 0.75 || leader == nil
+        {
+            isMale=true
+        }
+        
     } // full init()
     
     func catchUp()
@@ -118,6 +124,56 @@ class ZebraClass:EntityClass
         speed=herdLeader!.speed*1.05    // added by Shiflet to make sure
                                 // that we can catch up
     }//func catch up
+    
+    
+    
+    func findNewHerdLeader()
+    {
+        var maleIndex:Int = -1
+        var maleDist:CGFloat=300000
+        var nearbyLeaderDist:CGFloat=300000
+        var nearbyLeaderIndex:Int = -1
+        
+        if !isHerdLeader
+        {
+            for i in 0..<map!.entList.count
+            {
+                if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].isMale
+                {
+                    let dist=getDistToEntity(ent: herdLeader!)
+                    if map!.entList[i].isHerdLeader
+                    {
+                        if dist<nearbyLeaderDist
+                        {
+                            nearbyLeaderDist=dist
+                            nearbyLeaderIndex=i
+                        }// if distance to leader is lower than max distance
+                        else
+                        {
+                            if dist < maleDist
+                            {
+                                maleDist=dist
+                                maleIndex=i
+                            }// male distance is lower than max distance
+                        }// else
+                    }// if map entlist leader
+                }//if map entlist
+            }// for i in map!
+            if nearbyLeaderDist<300000
+            {
+                herdLeader=map!.entList[nearbyLeaderIndex]
+                
+            }// if leader dist less than 300000
+            else
+            {
+                herdLeader=map!.entList[maleIndex]
+                map!.entList[maleIndex].isHerdLeader=true
+            }//else male leader
+        }// if no leader and am not leader
+    }//func new herd leader
+    
+    
+    
     
    override internal func update(cycle: Int) -> Int
     {
@@ -157,6 +213,17 @@ class ZebraClass:EntityClass
                     wander()
                 }// else wander
             }//if current state = wander state
+            
+
+            if herdLeader != nil
+            {
+                if !herdLeader!.isAlive()
+                {
+                    findNewHerdLeader()
+                    
+                }
+            }
+
             
             // fix it if our rotation is more than pi*2 or less than 0
             if sprite.zRotation > CGFloat.pi*2
