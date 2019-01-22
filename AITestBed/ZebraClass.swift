@@ -27,13 +27,15 @@ class ZebraClass:EntityClass
     var isPregnant:Bool=false
     var isTranqued:Bool=false
     
+    let adultTexture=SKTexture(imageNamed: "zebraVariation2Sprite")
+    let babyTexture=SKTexture(imageNamed: "zebraVariation1Sprite")
 
     
     override init()
    
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
+        sprite=SKSpriteNode(imageNamed: "zebraVariation2Sprite")
     } // init
    
     override init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int)
@@ -46,7 +48,7 @@ class ZebraClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
+        sprite=SKSpriteNode(imageNamed: "zebraVariation2Sprite")
         sprite.position=pos
         sprite.name=String(format:"entZebra%04d", number)
         name=String(format:"entZebra%04d", number)
@@ -62,7 +64,10 @@ class ZebraClass:EntityClass
         WANDERANGLE=CGFloat.pi/7
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
-        
+        if age < MAXAGE*0.2
+        {
+            sprite.texture=babyTexture
+        }
     } // full init()
     
     init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int, leader:EntityClass?)
@@ -84,7 +89,7 @@ class ZebraClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "zebraArrow2")
+        sprite=SKSpriteNode(imageNamed: "zebraVariation2Sprite")
         sprite.position=pos
         sprite.name=String(format:"entZebra%04d", number)
         name=String(format:"entZebra%04d", number)
@@ -107,7 +112,10 @@ class ZebraClass:EntityClass
         {
             isMale=true
         }
-        
+        if age < MAXAGE*0.2
+        {
+            sprite.texture=babyTexture
+        }
     } // full init()
     
     func catchUp()
@@ -140,7 +148,7 @@ class ZebraClass:EntityClass
             {
                 if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].isMale
                 {
-                    let dist=getDistToEntity(ent: herdLeader!)
+                    let dist=getDistToEntity(ent: map!.entList[i])
                     if map!.entList[i].isHerdLeader
                     {
                         if dist<nearbyLeaderDist
@@ -148,15 +156,16 @@ class ZebraClass:EntityClass
                             nearbyLeaderDist=dist
                             nearbyLeaderIndex=i
                         }// if distance to leader is lower than max distance
-                        else
-                        {
-                            if dist < maleDist
-                            {
-                                maleDist=dist
-                                maleIndex=i
-                            }// male distance is lower than max distance
-                        }// else
+
                     }// if map entlist leader
+                    else
+                    {
+                        if dist < maleDist
+                        {
+                            maleDist=dist
+                            maleIndex=i
+                        }// male distance is lower than max distance
+                    }// else
                 }//if map entlist
             }// for i in map!
             if nearbyLeaderDist<300000
@@ -181,6 +190,11 @@ class ZebraClass:EntityClass
         
         doTurn()
         updateGraphics()
+        
+        if age > MAXAGE*0.2 && sprite.texture==babyTexture
+        {
+            sprite.texture=adultTexture
+        }
         
         if alive
         {
