@@ -662,6 +662,8 @@ class GameScene: SKScene {
         
     } // updateSelected
     
+
+    
     func updateInfo()
     {
         if isSelected

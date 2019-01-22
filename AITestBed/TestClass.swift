@@ -154,6 +154,52 @@ class TestClass:EntityClass
         
     } // full init()
     
+    private func findNewHerdLeader()
+    {
+        var maleIndex:Int = -1
+        var maleDistance:CGFloat=500000000
+        var closestLeaderDist:CGFloat=500000000
+        var closestLeaderIndex:Int = -1
+        
+        for i in 1..<map!.entList.count
+        {
+            if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].isMale
+            {
+                let dist=getDistToEntity(ent: map!.entList[i])
+
+                if map!.entList[i].isHerdLeader
+                {
+                    if dist < closestLeaderDist
+                    {
+                        closestLeaderDist=dist
+                        closestLeaderIndex=i
+                    } // if we've found a herd leader
+                } // we've found another herd leader
+                else
+                {
+                    if dist < maleDistance
+                    {
+                        maleDistance=dist
+                        maleIndex=i
+                    }
+                } // if it's just a mature male
+            } // if it's mature/alive/male
+            
+        } // for each entity
+        
+        if closestLeaderDist < 5000
+        {
+            herdLeader=map!.entList[closestLeaderIndex]
+            map!.entList[closestLeaderIndex].isHerdLeader=true
+            map!.entList[closestLeaderIndex].herdLeader=nil
+        } // if we found a herd leader close enough, switch to it
+        else
+        {
+            herdLeader=map!.entList[maleIndex]
+            map!.entList[maleIndex].isHerdLeader=true
+            map!.entList[maleIndex].herdLeader=nil
+        } // otherwise choose the closest mature male
+    } // func findNewHerdLeader
     
     override func ageEntity() -> Bool
     {
@@ -161,7 +207,8 @@ class TestClass:EntityClass
         if age > MAXAGE
         {
             map!.msg.sendMessage(type: 8, from: name)
-            sprite.removeFromParent()
+            let deathAction=SKAction.sequence([SKAction.fadeOut(withDuration: 2.5),SKAction.removeFromParent()])
+            sprite.run(deathAction)
             alive=false
             return false
         } // if we die of old age
@@ -179,17 +226,14 @@ class TestClass:EntityClass
             }
             sprite.setScale(scale)
             
-            if getAgeString() == "Juvenile"
+            if getAgeString()=="Juvenile" && !herdLeader!.isMale
             {
-                if herdLeader != nil
+                if herdLeader!.herdLeader!.isAlive()
                 {
-                    if !herdLeader!.isMale && herdLeader!.herdLeader != nil
-                    {
-                        herdLeader=herdLeader!.herdLeader
-                        
-                    } // if momma's our leader and her leader is valid
-                } // if our herd leader is valid
-            } // if we're at juvenile stage
+                    findNewHerdLeader()
+                }
+            } // if our herd leader is still our mom
+            
             
             // Baby time!
             if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
@@ -439,7 +483,13 @@ class TestClass:EntityClass
         {
             // first decide what to do
             decideWhatToDo()
-            
+            if !isHerdLeader
+            {
+                if !herdLeader!.isAlive()
+                {
+                    findNewHerdLeader()
+                }
+            }
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
