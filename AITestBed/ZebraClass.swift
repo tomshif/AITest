@@ -146,7 +146,7 @@ class ZebraClass:EntityClass
         {
             for i in 0..<map!.entList.count
             {
-                if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].isMale
+                if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].name.contains("Zebra")
                 {
                     let dist=getDistToEntity(ent: map!.entList[i])
                     if map!.entList[i].isHerdLeader
@@ -158,7 +158,7 @@ class ZebraClass:EntityClass
                         }// if distance to leader is lower than max distance
 
                     }// if map entlist leader
-                    else
+                    else if map!.entList[i].isMale
                     {
                         if dist < maleDist
                         {
@@ -168,16 +168,22 @@ class ZebraClass:EntityClass
                     }// else
                 }//if map entlist
             }// for i in map!
-            if nearbyLeaderDist<300000
+            if nearbyLeaderDist<300000 && nearbyLeaderIndex > -1
             {
                 herdLeader=map!.entList[nearbyLeaderIndex]
                 
             }// if leader dist less than 300000
-            else
+            else if maleIndex > -1
             {
                 herdLeader=map!.entList[maleIndex]
                 map!.entList[maleIndex].isHerdLeader=true
-            }//else male leader
+            }//else male leader was found
+            else
+            {
+                isHerdLeader=true
+                herdLeader=nil
+            } // failover to make self leader
+            
         }// if no leader and am not leader
     }//func new herd leader
     
