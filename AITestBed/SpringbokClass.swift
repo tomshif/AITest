@@ -22,7 +22,8 @@ class SpringbokClass:EntityClass
     internal var followDist:CGFloat=150
     
     
-    
+    let adultTexture=SKTexture(imageNamed: "springbokAdultSprite")
+    let babyTexture=SKTexture(imageNamed: "springbokBabySprite")
     
     
     
@@ -30,7 +31,7 @@ class SpringbokClass:EntityClass
     override init()
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
     } // init
     
     
@@ -45,9 +46,8 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
         sprite.position=pos
-        sprite.name="springbokArrow"
         sprite.name=String(format:"entSpringbok%04d", number)
         name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
@@ -63,6 +63,10 @@ class SpringbokClass:EntityClass
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
+        if (age < MAXAGE*0.2)
+        {
+            sprite.texture=babyTexture
+        }
         
     } // full init()
     
@@ -86,9 +90,8 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
         sprite.position=pos
-        sprite.name="Springbok"
         sprite.name=String(format:"entSpringbok%04d", number)
         name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
@@ -105,6 +108,15 @@ class SpringbokClass:EntityClass
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
+        if leader==nil
+        {
+            age=random(min: MAXAGE*0.4, max: MAXAGE*0.6)
+            isMale=true
+        }
+        if (age < MAXAGE*0.2)
+        {
+            sprite.texture=babyTexture
+        }
     } // full init()
     
     func catchUp()
@@ -124,7 +136,10 @@ class SpringbokClass:EntityClass
 
         
         var ret:Int = -1
-        
+        if age > MAXAGE*0.2 && sprite.texture==babyTexture
+        {
+            sprite.texture=adultTexture
+        }
         doTurn()
         updateGraphics()
         
