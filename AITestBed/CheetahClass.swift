@@ -24,7 +24,7 @@ class CheetahClass:EntityClass
     override init()
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "cheetahArrow")
+        sprite=SKSpriteNode(imageNamed: "cheetahSprite")
     } // init
     
     
@@ -39,9 +39,8 @@ class CheetahClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "cheetahArrow")
+        sprite=SKSpriteNode(imageNamed: "cheetahSprite")
         sprite.position=pos
-        sprite.name="cheetah"
         sprite.name=String(format:"entCheetah%04d", number)
         name=String(format:"entCheetah%04d", number)
         sprite.zPosition=120
@@ -85,7 +84,7 @@ class CheetahClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "cheetahArrow")
+        sprite=SKSpriteNode(imageNamed: "cheetahSprite")
         sprite.position=pos
         sprite.name="cheetah"
         sprite.name=String(format:"entCheetah%04d", number)

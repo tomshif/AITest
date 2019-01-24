@@ -662,6 +662,8 @@ class GameScene: SKScene {
         
     } // updateSelected
     
+
+    
     func updateInfo()
     {
         if isSelected
@@ -669,7 +671,8 @@ class GameScene: SKScene {
             infoBG.isHidden=false
             
             infoTitle.text=selectedEntity!.name
-            infoAge.text=String(format: "Age: \(selectedEntity!.getAgeString()) - %2.1f / %2.1f", selectedEntity!.getAge(), selectedEntity!.getMaxAge())
+            let ageYears=selectedEntity!.getAge()/8640
+            infoAge.text=String(format: "Age: \(selectedEntity!.getAgeString()) - %2.1f / %2.1f (%2.1f)", selectedEntity!.getAge(), selectedEntity!.getMaxAge(), ageYears)
                 
                 
             infoState.text="State: \(selectedEntity!.getCurrentStateString())"

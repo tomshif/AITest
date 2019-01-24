@@ -13,7 +13,7 @@ class SpringbokClass:EntityClass
 {
     private var isPregnant:Bool=false
     private var isFleeing:Bool=false
-    private var isClose:Bool=false  // is close to what?
+    private var isCloseToCheetah:Bool=false  // is close to what?
    
     private var MAXHERD:Int=50
     private var MINHERD:Int=15
@@ -22,7 +22,8 @@ class SpringbokClass:EntityClass
     internal var followDist:CGFloat=150
     
     
-    
+    let adultTexture=SKTexture(imageNamed: "springbokAdultSprite")
+    let babyTexture=SKTexture(imageNamed: "springbokBabySprite")
     
     
     
@@ -30,7 +31,7 @@ class SpringbokClass:EntityClass
     override init()
     {
         super.init()
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
     } // init
     
     
@@ -45,9 +46,8 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
         sprite.position=pos
-        sprite.name="springbokArrow"
         sprite.name=String(format:"entSpringbok%04d", number)
         name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
@@ -57,11 +57,16 @@ class SpringbokClass:EntityClass
         // Variable updates
         MAXSPEED=2.2
         TURNRATE=0.15
-        TURNFREQ=0.8
+        TURNFREQ=1.0
+        WANDERANGLE=CGFloat.pi/2
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
+        if (age < MAXAGE*0.2)
+        {
+            sprite.texture=babyTexture
+        }
         
     } // full init()
     
@@ -85,9 +90,8 @@ class SpringbokClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "springbokArrow")
+        sprite=SKSpriteNode(imageNamed: "springbokAdultSprite")
         sprite.position=pos
-        sprite.name="Springbok"
         sprite.name=String(format:"entSpringbok%04d", number)
         name=String(format:"entSpringbok%04d", number)
         sprite.zPosition=140
@@ -97,12 +101,22 @@ class SpringbokClass:EntityClass
         // Variable updates
         MAXSPEED=2.2
         TURNRATE=0.15
-        TURNFREQ=0.8
+        TURNFREQ=1
+        WANDERANGLE=CGFloat.pi/8
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
+        if leader==nil
+        {
+            age=random(min: MAXAGE*0.4, max: MAXAGE*0.6)
+            isMale=true
+        }
+        if (age < MAXAGE*0.2)
+        {
+            sprite.texture=babyTexture
+        }
     } // full init()
     
     func catchUp()
@@ -114,7 +128,7 @@ class SpringbokClass:EntityClass
         }
         turnToAngle=angle
         isTurning=true
-        speed = MAXSPEED * 0.45
+        speed = herdLeader!.speed * 1.05
     }
     
     override func update(cycle: Int) -> Int
@@ -122,7 +136,10 @@ class SpringbokClass:EntityClass
 
         
         var ret:Int = -1
-        
+        if age > MAXAGE*0.2 && sprite.texture==babyTexture
+        {
+            sprite.texture=adultTexture
+        }
         doTurn()
         updateGraphics()
         
