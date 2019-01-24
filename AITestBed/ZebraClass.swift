@@ -18,8 +18,8 @@ class ZebraClass:EntityClass
     var MAXCHILDRENBORN:Int=2
     
     var followDistance:CGFloat=150
-    
-    
+    var lastBaby:CGFloat=0
+
     
     var isSick:Bool=false
     var isFemale:Bool=false
@@ -168,7 +168,7 @@ class ZebraClass:EntityClass
                     }// else
                 }//if map entlist
             }// for i in map!
-            if nearbyLeaderDist<300000 && nearbyLeaderIndex > -1
+            if nearbyLeaderDist<3000 && nearbyLeaderIndex > -1
             {
                 herdLeader=map!.entList[nearbyLeaderIndex]
                 
@@ -189,11 +189,32 @@ class ZebraClass:EntityClass
     
     
     
+    func giveBirth()
+    {
+        if !isMale && getAgeString()=="Mature" && age-lastBaby > 8640
+        {
+            
+            let spawnChance:CGFloat=random(min: 0, max: 1.00)
+            if spawnChance > 0.9997875
+            {
+                print("Baby!")
+                let baby=ZebraClass(theScene: scene!, theMap: map!, pos: sprite.position, number: map!.entityCounter, leader: self)
+                map!.entList.append(baby)
+                map!.msg.sendMessage(type: map!.msg.BORN, from: name)
+                map!.entityCounter+=1
+                lastBaby=age
+                
+            }
+        }
+
+    }// func give birth
+    
+    
     
    override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
-        
+        giveBirth()
         doTurn()
         updateGraphics()
         
