@@ -105,7 +105,62 @@ class SpringbokClass:EntityClass
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
+        let maleChance=random(min: 0, max: 1)
+        if maleChance > 0.75 || herdLeader==nil
+        {
+            isMale=true
+        }
+        
     } // full init()
+    
+   func checkHerdLeader()
+   {
+    var maleIndex:Int = -1
+    var maleDistance:CGFloat=500000000
+    var closestLeaderDist:CGFloat=500000000
+    var closestLeaderIndex:Int = -1
+    
+        for i in 0..<map!.entList.count
+        {
+            if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isMale && map!.entList[i].isAlive()
+            {
+                let dist = getDistToEntity(ent: map!.entList[i])
+                
+               if map!.entList[i].isHerdLeader
+               {
+                    if dist < closestLeaderDist
+                    {
+                        closestLeaderDist = dist
+                        closestLeaderIndex = i
+                    }//if dist < closestLeaderDist
+                }//if map!.entList[i].isHerdLeader
+                else
+               {
+                    if dist < maleDistance
+                    {
+                        maleDistance = dist
+                        maleIndex = i
+                    }//male distance
+                }//else
+            }//if male, alive, mature
+        }//for statement
+        if closestLeaderDist < 5000
+        {
+            herdLeader=map!.entList[closestLeaderIndex]
+            
+            map!.entList[closestLeaderIndex].herdLeader=nil
+        }// closest leader dist
+        else
+        {
+            herdLeader=map!.entList[maleIndex]
+            map!.entList[maleIndex].isHerdLeader=true
+            map!.entList[maleIndex].herdLeader=nil
+            
+        }
+    
+    }//check herdleader
+    
+    
     
     func catchUp()
     {
@@ -121,8 +176,13 @@ class SpringbokClass:EntityClass
     
     override func update(cycle: Int) -> Int
     {
-
-        
+        if herdLeader != nil
+        {
+            if (!herdLeader!.isAlive())
+            {
+              checkHerdLeader()
+            }
+        }
         var ret:Int = -1
         
         doTurn()
@@ -174,7 +234,7 @@ class SpringbokClass:EntityClass
 
 } // class SpringbokClass
 
-
+//map!.entList[i]
 
 
 
