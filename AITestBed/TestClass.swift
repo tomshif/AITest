@@ -262,7 +262,7 @@ class TestClass:EntityClass
             
             return true
         } // if we're still alive
-    }
+    } // func ageEntity
     
     
     private func goTo()

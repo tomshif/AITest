@@ -24,7 +24,7 @@ class SpringbokClass:EntityClass
     
     let adultTexture=SKTexture(imageNamed: "springbokAdultSprite")
     let babyTexture=SKTexture(imageNamed: "springbokBabySprite")
-    
+    private var lastBabyYear:Int=0
     
     
     
@@ -72,7 +72,19 @@ class SpringbokClass:EntityClass
     
     init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int, leader: EntityClass?)
     {
+    
         super.init()
+    
+        let chance = random(min: 0, max: 1)
+        if chance > 0.6
+        {
+            isMale=true
+        }
+        else
+        {
+            isMale=false
+        }
+        
         
         if leader==nil
         {
@@ -108,12 +120,17 @@ class SpringbokClass:EntityClass
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
-        let maleChance=random(min: 0, max: 1)
-        if maleChance > 0.75 || herdLeader==nil
+        
+        
+        if leader==nil
         {
+            age=random(min: MAXAGE*0.4, max: MAXAGE*0.6)
             isMale=true
         }
-        
+        if (age < MAXAGE*0.2)
+        {
+            sprite.texture=babyTexture
+        }
     } // full init()
     
    func checkHerdLeader()
@@ -125,7 +142,7 @@ class SpringbokClass:EntityClass
     
         for i in 0..<map!.entList.count
         {
-            if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isMale && map!.entList[i].isAlive()
+            if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].name.contains("Springbok")
             {
                 let dist = getDistToEntity(ent: map!.entList[i])
                 
@@ -139,7 +156,7 @@ class SpringbokClass:EntityClass
                 }//if map!.entList[i].isHerdLeader
                 else
                {
-                    if dist < maleDistance
+                    if dist < maleDistance && map!.entList[i].isMale
                     {
                         maleDistance = dist
                         maleIndex = i
@@ -153,18 +170,85 @@ class SpringbokClass:EntityClass
             
             map!.entList[closestLeaderIndex].herdLeader=nil
         }// closest leader dist
-        else
+        else if maleIndex > -1
         {
             herdLeader=map!.entList[maleIndex]
             map!.entList[maleIndex].isHerdLeader=true
             map!.entList[maleIndex].herdLeader=nil
-            
         }
+        else
+        {
+            herdLeader=nil
+            isHerdLeader=true
+    }
     
     }//check herdleader
     
     
-    
+    override func ageEntity() -> Bool
+    {
+        age += map!.getTimeInterval()*map!.getTimeScale()
+        if age > MAXAGE
+        {
+            map!.msg.sendMessage(type: 8, from: name)
+            let deathAction=SKAction.sequence([SKAction.fadeOut(withDuration: 2.5),SKAction.removeFromParent()])
+            sprite.run(deathAction)
+            alive=false
+            return false
+        } // if we die of old age
+        else
+        {
+            let ageRatio=age/(MAXAGE*0.5)
+            var scale:CGFloat=ageRatio
+            if scale < MINSCALE
+            {
+                scale=MINSCALE
+            }
+            if scale > MAXSCALE
+            {
+                scale = MAXSCALE
+            }
+            sprite.setScale(scale)
+            
+            
+            
+            // Baby time!
+            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
+            {
+                let babyChance=random(min: 0.0, max: 1.0)
+                if babyChance > 0.999875
+                {
+                    // Hurray! We're having a baby!
+                    let babyNumber=Int(random(min: 2, max: 5.999999))
+                    for _ in 1...babyNumber
+                    {
+                        let baby=SpringbokClass(theScene: scene!, theMap: map!, pos: self.sprite.position, number: map!.entityCounter, leader: self)
+                        map!.entList.append(baby)
+                        map!.entityCounter+=1
+                        
+                    } // for each baby
+                    lastBabyYear=map!.getYear()
+                    map!.msg.sendMessage(type: 20, from: self.name)
+                    let chance = random(min: 0, max: 1)
+                    if chance > 0.6
+                    {
+                        isMale=true
+                    }
+                    else
+                    {
+                        isMale=false
+                    }
+                    
+                } // if we're having a baby
+                
+                
+                
+            } // if it's dry season and we're female and we're "mature" and we have a herd leader and we haven't had babies this year
+            
+            
+            return true
+        } // if we're still alive
+    } // func ageEntity
     func catchUp()
     {
         var angle = getAngleToEntity(ent: herdLeader!)
