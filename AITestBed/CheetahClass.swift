@@ -19,7 +19,7 @@ class CheetahClass:EntityClass
     var isTravel:Bool = false       // travel?
     var cubs:Bool = false
     var followDist:CGFloat = 400
-    var timeInterval:CGFloat = 0
+    var lastBaby:CGFloat = 0
     
     override init()
     {
@@ -55,7 +55,7 @@ class CheetahClass:EntityClass
         MAXAGE=8*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
-    
+        
         
         
     } // full init()
@@ -66,6 +66,11 @@ class CheetahClass:EntityClass
         MAXAGE=8*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
 
+        let chance = random(min: 0, max: 1)
+        if chance > 0.6
+        {
+            isMale = true
+        }
         
         if leader == nil
         {
@@ -113,24 +118,6 @@ class CheetahClass:EntityClass
         speed = MAXSPEED * 0.45
     }
     
-    func TimeInterval()
-    {
-        timeInterval += map!.getTimeInterval()*map!.getTimeScale()
-        
-        if timeInterval >= 12960
-        {
-            spawnBaby()
-        }
-    }
-    
-    func checkBaby()
-    {
-        if !isMale && getAgeString()=="Mature"
-        {
-            
-                }
-            }
-    
     
     override func update(cycle: Int) -> Int
     {
@@ -140,6 +127,7 @@ class CheetahClass:EntityClass
         
         doTurn()
         updateGraphics()
+        Baby()
         
         if alive
         {
@@ -184,28 +172,38 @@ class CheetahClass:EntityClass
                 herdLeader = nil
             }
             
-            func spawnBaby()
-            {
-                
-          let chance=random(min: 0, max: 1)
-            if chance > 0.999995
-            {
-                let temp = CheetahClass(theScene: scene!, theMap: map!, pos: sprite.position, number: map!.entityCounter, leader: self)
-                
-                map!.entityCounter+=1
-                
-                map!.entList.append(temp)
-            }
-            }
+            
         } // if it's our update cycle
         
         return ret
         
     } // func update
     
-    
-    
-    
-    
+    func Baby()
+    {
+
+        
+        if age - lastBaby > 10 && !isMale && getAgeString()=="Mature"
+        {
+           
+            let chance=random(min: 0, max: 1)
+            if chance > 0.9995
+            {
+                let temp = CheetahClass(theScene: scene!, theMap: map!, pos: sprite.position, number: map!.entityCounter, leader: self)
+                
+                let chance = random(min: 0, max: 0.6)
+                if chance > 0.6
+                {
+                    isMale = true
+                }
+                
+                map!.entityCounter+=1
+                
+                map!.entList.append(temp)
+                map!.msg.sendMessage(type: map!.msg.BORN, from: name)
+                lastBaby = age
+            }
+        }
+    }
     
 } // CheetahClass
