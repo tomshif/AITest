@@ -19,6 +19,7 @@ class CheetahClass:EntityClass
     var isTravel:Bool = false       // travel?
     var cubs:Bool = false
     var followDist:CGFloat = 400
+    var timeInterval:CGFloat = 0
     
     override init()
     {
@@ -113,6 +114,25 @@ class CheetahClass:EntityClass
         speed = MAXSPEED * 0.45
     }
     
+    func TimeInterval()
+    {
+        timeInterval += map!.getTimeInterval()*map!.getTimeScale()
+        
+        if timeInterval >= 12960
+        {
+            spawnBaby()
+        }
+    }
+    
+    func checkBaby()
+    {
+        if !isMale && getAgeString()=="Mature"
+        {
+            
+                }
+            }
+    
+    
     override func update(cycle: Int) -> Int
     {
         
@@ -160,6 +180,24 @@ class CheetahClass:EntityClass
                 sprite.zRotation += CGFloat.pi*2
             }
             
+            if getAgeString() == "Mature"
+            {
+                herdLeader = nil
+            }
+            
+            func spawnBaby()
+            {
+                
+          let chance=random(min: 0, max: 1)
+            if chance > 0.999995
+            {
+                let temp = CheetahClass(theScene: scene!, theMap: map!, pos: sprite.position, number: map!.entityCounter, leader: self)
+                
+                map!.entityCounter+=1
+                
+                map!.entList.append(temp)
+            }
+            }
         } // if it's our update cycle
         
         return ret
