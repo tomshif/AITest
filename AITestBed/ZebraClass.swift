@@ -211,6 +211,69 @@ class ZebraClass:EntityClass
     
     
     
+    private func checkForPredators()
+    {
+        var closest:CGFloat=50000000000
+        var closestIndex:Int=0
+        for i in 0..<map!.entList.count
+        {
+            if map!.entList[i].name.contains("Cheetah")
+            {
+                let dist=getDistToEntity(ent: map!.entList[i])
+                if dist < closest
+                {
+                    closest=dist
+                    closestIndex=i
+                }// if its closer then max distance
+            }// if the name is cheetah
+      
+        }// for loop entlist
+        
+        if closestIndex  >  -1 && closest<1000
+        {
+            isFleeing=true
+            predTarget=map!.entList[closestIndex]
+            print("predator in range")
+        }// if closest index
+        else
+        {
+            isFleeing=false
+            predTarget=nil
+        }// else index
+        
+    }// function
+    
+    private func escape()
+    {
+        if predTarget != nil
+        {
+            var angle = getAngleToEntity(ent: predTarget!)
+            
+            angle += CGFloat.pi
+            
+            if angle > CGFloat.pi*2
+            {
+                angle -= CGFloat.pi*2
+            }
+            if angle < 0
+            {
+                angle += CGFloat.pi*2
+            }
+            
+            turnToAngle=angle
+            isTurning=true
+            
+            speed+=ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed=MAXSPEED
+            }
+        }// if we have a predator
+        
+        
+    }// escape func
+    
+    
    override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
@@ -233,6 +296,13 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
+            checkForPredators()
+            
+            if isFleeing && predTarget != nil
+            {
+                escape()
+            }// if were fleeing and we have a predator
+            
             if currentState==WANDERSTATE
             {
                 // wander() -- removed by Shiflet -- should not wander AND have
