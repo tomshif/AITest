@@ -30,7 +30,7 @@ class EntityClass
     public var MINSCALE:CGFloat = 0.5
     public var MAXSCALE:CGFloat = 1.0
     internal var WANDERANGLE:CGFloat=CGFloat.pi/4
-    
+    public var MODMAXSPEED:CGFloat=0
     public var currentState:Int=0
     public var AICycle:Int=0
     
@@ -43,6 +43,10 @@ class EntityClass
     internal var isDrinking:Bool=false
     internal var isResting:Bool=false
     
+    var stamina:CGFloat = 1.0
+    
+    var TURNSPEEDLOST:CGFloat=0.1
+    var ACCELERATION:CGFloat=0.3
     
     public var herdLeader:EntityClass?
     
@@ -60,7 +64,7 @@ class EntityClass
     let EATSTATE:Int=4
     let DRINKSTATE:Int=6
     let RESTSTATE:Int=8
-    
+    let HUNTSTATE:Int=10
     
     init()
     {
@@ -181,6 +185,9 @@ class EntityClass
             
         case 8:
             return "Rest"
+            
+        case HUNTSTATE:
+            return "Hunting"
         default:
             return "Other (error)"
         } // switch
@@ -210,7 +217,10 @@ class EntityClass
                 scale = MAXSCALE
             }
             sprite.setScale(scale)
-            
+            if MODMAXSPEED > MAXSPEED
+            {
+                MODMAXSPEED = MAXSPEED
+            }
             
             
             return true
@@ -314,6 +324,11 @@ class EntityClass
                 sprite.zRotation=turnToAngle
                 isTurning=false
                 lastWanderTurn=NSDate()
+                speed -= TURNSPEEDLOST
+                if speed < 0
+                {
+                    speed=0
+                }
                 //print("Finished turn")
             } // if we can stop turning
         }

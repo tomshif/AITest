@@ -20,7 +20,7 @@ class MessageClass
     let DEATH_AGE:Int=8
     let BORN:Int=20
     let NEWHERDLEADER:Int=22
-    
+    let FAILEDHUNT:Int=24
     
     init()
     {
@@ -57,7 +57,9 @@ class MessageClass
         case 22:
             let temp="\(from) found a new herd leader."
             unreadQueue.append(temp)
-            
+        case 24:
+            let temp="\(from) failed to kill prey."
+            unreadQueue.append(temp)
         default:
             break
         } // switch

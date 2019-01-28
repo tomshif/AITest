@@ -18,8 +18,14 @@ class CheetahClass:EntityClass
     var isClose:Bool = false        // close to what?
     var isTravel:Bool = false       // travel?
     var cubs:Bool = false
-    var followDist:CGFloat = 400
+    var followDist:CGFloat = 100
     var lastBaby:CGFloat = 0
+    
+
+
+    
+    private var targetEntity:EntityClass?
+    
     
     override init()
     {
@@ -48,8 +54,8 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
-        TURNRATE=0.15
+        MAXSPEED=6
+        TURNRATE=0.1
         TURNFREQ=3
         AICycle=0
         MAXAGE=8*8640
@@ -99,11 +105,12 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
-        TURNRATE=0.15
+        MAXSPEED=6
+        TURNRATE=0.1
         TURNFREQ=3
         AICycle=0
-        
+        ACCELERATION=0.6
+        TURNSPEEDLOST=0.4
     } // full init()
     
     func catchUp()
@@ -115,9 +122,96 @@ class CheetahClass:EntityClass
         }
         turnToAngle=angle
         isTurning=true
-        speed = MAXSPEED * 0.45
+        speed = herdLeader!.speed*1.05 + MAXSPEED*0.2
+        let dist=getDistToEntity(ent: herdLeader!)
+        if dist < followDist*1.05
+        {
+            speed=herdLeader!.speed
+        }
     }
     
+    func lookForPrey()
+    {
+        if herdLeader == nil
+        {
+            var closest:CGFloat=500000000
+            var targetIndex:Int = -1
+            
+            // first find the closest prey
+            for i in 0 ..< map!.entList.count
+            {
+                if !map!.entList[i].name.contains("Cheetah")
+                {
+                    let dist=getDistToEntity(ent: map!.entList[i])
+                    if dist < closest
+                    {
+                        closest=dist
+                        targetIndex=i
+                    } // if we're closer
+                } // if it's not a cheetah
+            } // for each entity
+            
+            if closest < 600 && targetIndex > -1 && stamina > 0.999
+            {
+                targetEntity=map!.entList[targetIndex]
+                currentState=HUNTSTATE
+            }
+            else
+            {
+                targetEntity=nil
+                currentState=WANDERSTATE
+            }
+        }
+        
+        
+    } // func lookForPrey
+    
+    func hunt()
+    {
+        if herdLeader == nil
+        {
+            var angle = getAngleToEntity(ent: targetEntity!)
+            if angle > CGFloat.pi*2
+            {
+                angle -= CGFloat.pi*2
+            }
+            if angle < 0
+            {
+                angle += CGFloat.pi*2
+            }
+            turnToAngle=angle
+            isTurning=true
+            speed += ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed=MAXSPEED
+            }
+            
+            let dist = getDistToEntity(ent: targetEntity!)
+            if dist < 10
+            {
+                map!.msg.sendMessage(type: map!.msg.DEATH_PREDATOR, from: targetEntity!.name)
+                targetEntity!.die()
+                targetEntity=nil
+                currentState=WANDERSTATE
+                speed=0
+            }
+            stamina -= 0.01
+            if stamina < 0
+            {
+                speed=0
+                currentState=WANDERSTATE
+                targetEntity=nil
+                map!.msg.sendMessage(type: map!.msg.FAILEDHUNT, from: name)
+            }
+        } // if we're the momma
+        else
+        {
+            speed=0
+            currentState=WANDERSTATE
+        }
+        
+    }
     
     override func update(cycle: Int) -> Int
     {
@@ -149,11 +243,36 @@ class CheetahClass:EntityClass
                     else
                     {
                         wander()
+                        lookForPrey()
+                        stamina+=0.0001
+                        if stamina > 1
+                        {
+                            stamina=1
+                        }
                     }
                 }
                 else
                 {
                     wander()
+                    lookForPrey()
+                    stamina+=0.0001
+                    if stamina > 1
+                    {
+                        stamina=1
+                    }
+                }
+            }
+            
+            if (currentState==HUNTSTATE && targetEntity != nil)
+            {
+                hunt()
+            }
+            
+            if herdLeader != nil
+            {
+                if herdLeader?.currentState==HUNTSTATE
+                {
+                    hunt()
                 }
             }
             
@@ -183,7 +302,7 @@ class CheetahClass:EntityClass
     {
 
         
-        if age - lastBaby > 10 && !isMale && getAgeString()=="Mature"
+        if age - lastBaby > 1000 && !isMale && getAgeString()=="Mature"
         {
            
             let chance=random(min: 0, max: 1)

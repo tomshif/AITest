@@ -20,12 +20,14 @@ class SpringbokClass:EntityClass
     private var MAXCHILD:Int=2
     
     internal var followDist:CGFloat=150
-    
+    private var predTarget:EntityClass?
     
     let adultTexture=SKTexture(imageNamed: "springbokAdultSprite")
     let babyTexture=SKTexture(imageNamed: "springbokBabySprite")
     private var lastBabyYear:Int=0
-    
+    private var lastFleeTurn=NSDate()
+    private var lastPredCheck=NSDate()
+    let predCheckTime:Double=0.5
     
     
     override init()
@@ -55,14 +57,16 @@ class SpringbokClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.2
-        TURNRATE=0.15
+        MAXSPEED=5
+        TURNRATE=0.2
         TURNFREQ=1.0
         WANDERANGLE=CGFloat.pi/2
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
+        ACCELERATION=0.6
+        
         if (age < MAXAGE*0.2)
         {
             sprite.texture=babyTexture
@@ -111,15 +115,16 @@ class SpringbokClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.2
-        TURNRATE=0.15
+        MAXSPEED=5
+        TURNRATE=0.2
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
         AICycle=0
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
-        
+        TURNSPEEDLOST=0.1
+        ACCELERATION=0.5
         
         
         if leader==nil
@@ -135,10 +140,10 @@ class SpringbokClass:EntityClass
     
    func checkHerdLeader()
    {
-    var maleIndex:Int = -1
-    var maleDistance:CGFloat=500000000
-    var closestLeaderDist:CGFloat=500000000
-    var closestLeaderIndex:Int = -1
+        var maleIndex:Int = -1
+        var maleDistance:CGFloat=500000000
+        var closestLeaderDist:CGFloat=500000000
+        var closestLeaderIndex:Int = -1
     
         for i in 0..<map!.entList.count
         {
@@ -184,6 +189,64 @@ class SpringbokClass:EntityClass
     
     }//check herdleader
     
+    func lookForPredator()
+    {
+        var closest:CGFloat=500000000
+        var predIndex:Int = -1
+        for i in 0..<map!.entList.count
+        {
+            if map!.entList[i].name.contains("Cheetah")
+            {
+                let dist = getDistToEntity(ent: map!.entList[i])
+                if dist < closest
+                {
+                    closest=dist
+                    predIndex=i
+                } // if we're closer
+            } // if it's a cheetah
+        } // for each entity
+        
+        if closest < 500
+        {
+            predTarget=map!.entList[predIndex]
+            isFleeing=true
+        }
+        else
+        {
+            predTarget=nil
+            isFleeing=false
+        }
+        
+    } // func lookForPredator
+    
+    func flee()
+    {
+        
+        let now = NSDate()
+        if -lastFleeTurn.timeIntervalSinceNow > 0.5
+        {
+            var angleAway=getAngleToEntity(ent: predTarget!)+random(min: -CGFloat.pi/2, max: CGFloat.pi/2)+CGFloat.pi
+            if angleAway >= CGFloat.pi*2
+            {
+                angleAway -= CGFloat.pi*2
+            }
+            if angleAway <= 0
+            {
+                angleAway += CGFloat.pi*2
+            }
+            turnToAngle=angleAway
+            isTurning=true
+            print("Fleeing")
+            lastFleeTurn=now
+        }
+        speed += ACCELERATION
+        if speed > MODMAXSPEED
+        {
+            speed=MODMAXSPEED
+        }
+        
+        
+    }
     
     override func ageEntity() -> Bool
     {
@@ -209,7 +272,12 @@ class SpringbokClass:EntityClass
                 scale = MAXSCALE
             }
             sprite.setScale(scale)
-            
+            let speedRatio = age/MAXAGE+(MAXSPEED*0.5)
+            MODMAXSPEED=speedRatio*MAXSPEED
+            if MODMAXSPEED > MAXSPEED
+            {
+                MODMAXSPEED = MAXSPEED
+            }
             
             
             // Baby time!
@@ -258,7 +326,7 @@ class SpringbokClass:EntityClass
         }
         turnToAngle=angle
         isTurning=true
-        speed = herdLeader!.speed * 1.05
+        speed = herdLeader!.speed * 0.5 + MODMAXSPEED*0.25
     }
     
     override func update(cycle: Int) -> Int
@@ -287,22 +355,48 @@ class SpringbokClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
-            if currentState==WANDERSTATE
+            if isFleeing && predTarget != nil
+            {
+                flee()
+                if -lastPredCheck.timeIntervalSinceNow > predCheckTime
+                {
+                    lookForPredator()
+                    lastPredCheck=NSDate()
+                }
+                
+            }
+            else if currentState==WANDERSTATE && !isFleeing
             {
                 if herdLeader != nil && !isHerdLeader
                 {
                     if getDistToEntity(ent: herdLeader!) > followDist
                     {
                         catchUp()
+                        if -lastPredCheck.timeIntervalSinceNow > predCheckTime
+                        {
+                            lookForPredator()
+                            lastPredCheck=NSDate()
+                        }
                     }
                     else
                     {
                         wander()
+                        if -lastPredCheck.timeIntervalSinceNow > predCheckTime
+                        {
+                            lookForPredator()
+                            lastPredCheck=NSDate()
+                        }
+                        
                     }
                 }
                 else
                 {
                     wander()
+                    if -lastPredCheck.timeIntervalSinceNow > predCheckTime
+                    {
+                        lookForPredator()
+                        lastPredCheck=NSDate()
+                    }
                 }
             }
             
