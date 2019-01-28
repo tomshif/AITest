@@ -154,6 +154,72 @@ class TestClass:EntityClass
         
     } // full init()
     
+    private func checkPredators()
+    {
+        var closest:CGFloat=5000000000
+        var closestIndex:Int = -1
+        
+        for i in 0..<map!.entList.count
+        {
+            if map!.entList[i].name.contains("Cheetah")
+            {
+                let dist = getDistToEntity(ent: map!.entList[i])
+                if dist < closest
+                {
+                    closest=dist
+                    closestIndex=i
+                } // if we've found a closer one
+            } // if it's a cheetah
+            
+        } // for each entity
+        
+        if closestIndex > -1 && closest < 1000
+        {
+            isFleeing = true
+            predTarget=map!.entList[closestIndex]
+            print("Predator in range.")
+            
+        }
+        else
+        {
+            isFleeing=false
+            predTarget=nil
+        }
+        
+    } // func checkPredators
+    
+    
+    private func flee()
+    {
+        if predTarget != nil
+        {
+            var angle=getAngleToEntity(ent: predTarget!)
+            
+            angle += CGFloat.pi
+            
+            if angle > CGFloat.pi*2
+            {
+                angle -= CGFloat.pi*2
+            }
+            if angle < 0
+            {
+                angle += CGFloat.pi*2
+            }
+            
+            turnToAngle=angle
+            isTurning=true
+            
+            speed += ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed = MAXSPEED
+            }
+        } // if predator is valid
+        
+        
+    } // func flee
+    
+    
     private func findNewHerdLeader()
     {
         var maleIndex:Int = -1
@@ -481,6 +547,7 @@ class TestClass:EntityClass
         
         if cycle==AICycle
         {
+            checkPredators()
             // first decide what to do
             decideWhatToDo()
             if !isHerdLeader
@@ -490,6 +557,12 @@ class TestClass:EntityClass
                     findNewHerdLeader()
                 }
             }
+            
+            if isFleeing && predTarget != nil
+            {
+                flee()
+            }
+            
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
