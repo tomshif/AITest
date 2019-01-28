@@ -34,6 +34,10 @@ class EntityClass
     public var currentState:Int=0
     public var AICycle:Int=0
     
+    public var predTarget:EntityClass?
+    public var isFleeing:Bool=false
+    public var ACCELERATION:CGFloat=0.5
+    public var TURNSPEEDLOST:CGFloat=0.25
     
     public var isTurning:Bool=false
     public var alive:Bool=true
