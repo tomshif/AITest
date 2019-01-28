@@ -183,6 +183,64 @@ class SpringbokClass:EntityClass
     
     }//check herdleader
     
+    private func flee()
+    {
+        if predTarget != nil
+        {
+            var angle=getAngleToEntity(ent: predTarget!)
+            
+            angle += CGFloat.pi
+            
+            if angle > CGFloat.pi*2
+            {
+                angle -= CGFloat.pi * 2
+                
+            }
+            if angle < 0
+            {
+                angle += CGFloat.pi*2
+            }
+            turnToAngle=angle
+            isTurning=true
+            
+            speed+=ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed = MAXSPEED
+            }
+        }
+    }
+    
+    
+    private func checkPredators()
+    {
+        var closest:CGFloat=50000000000
+        var closestIndex:Int = -1
+        
+        for i in 0..<map!.entList.count
+        {
+            if map!.entList[i].name.contains("Cheetah")
+            {
+                let dist = getDistToEntity(ent: map!.entList[i])
+                if dist<closest
+                {
+                    closest=dist
+                    closestIndex=i
+                }
+            }
+        }
+        if closestIndex > -1 && closest < 1000
+        {
+            isFleeing = true
+            predTarget=map!.entList[closestIndex]
+            print("Predator is close")
+        }
+        else
+        {
+            isFleeing=false
+            predTarget=nil
+        }
+    }
     
     override func ageEntity() -> Bool
     {
@@ -215,7 +273,7 @@ class SpringbokClass:EntityClass
             if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
             {
                 let babyChance=random(min: 0.0, max: 1.0)
-                if babyChance > 0.999875
+                if babyChance > 0.999955
                 {
                     // Hurray! We're having a baby!
                     let babyNumber=Int(random(min: 2, max: 5.999999))
@@ -271,6 +329,12 @@ class SpringbokClass:EntityClass
               checkHerdLeader()
             }
         }
+        
+        if isFleeing && predTarget != nil
+        {
+            flee()
+        }
+        
         var ret:Int = -1
         if age > MAXAGE*0.2 && sprite.texture==babyTexture
         {
@@ -288,6 +352,7 @@ class SpringbokClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
+            checkPredators()
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
