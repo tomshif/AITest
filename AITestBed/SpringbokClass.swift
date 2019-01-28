@@ -12,7 +12,6 @@ import SpriteKit
 class SpringbokClass:EntityClass
 {
     private var isPregnant:Bool=false
-    private var isFleeing:Bool=false
     private var isCloseToCheetah:Bool=false  // is close to what?
    
     private var MAXHERD:Int=50
