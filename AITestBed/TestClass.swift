@@ -52,7 +52,7 @@ class TestClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=1.2
+        MAXSPEED=2.8
         TURNRATE=0.15
         TURNFREQ=0.8
         AICycle=3
