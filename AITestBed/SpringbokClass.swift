@@ -12,7 +12,7 @@ import SpriteKit
 class SpringbokClass:EntityClass
 {
     private var isPregnant:Bool=false
-    private var isFleeing:Bool=false
+    
     private var isCloseToCheetah:Bool=false  // is close to what?
    
     private var MAXHERD:Int=50
@@ -27,7 +27,7 @@ class SpringbokClass:EntityClass
     private var lastBabyYear:Int=0
     private var lastFleeTurn=NSDate()
     private var lastPredCheck=NSDate()
-    let predCheckTime:Double=0.5
+    let predCheckTime:Double=0.25
     
     
     override init()
@@ -206,7 +206,7 @@ class SpringbokClass:EntityClass
             } // if it's a cheetah
         } // for each entity
         
-        if closest < 500
+        if closest < followDist*3.5
         {
             predTarget=map!.entList[predIndex]
             isFleeing=true
@@ -215,6 +215,7 @@ class SpringbokClass:EntityClass
         {
             predTarget=nil
             isFleeing=false
+            currentState=WANDERSTATE
         }
         
     } // func lookForPredator
@@ -225,7 +226,7 @@ class SpringbokClass:EntityClass
         let now = NSDate()
         if -lastFleeTurn.timeIntervalSinceNow > 0.5
         {
-            var angleAway=getAngleToEntity(ent: predTarget!)+random(min: -CGFloat.pi/2, max: CGFloat.pi/2)+CGFloat.pi
+            var angleAway=getAngleToEntity(ent: predTarget!)+random(min: -CGFloat.pi/3, max: CGFloat.pi/3)+CGFloat.pi
             if angleAway >= CGFloat.pi*2
             {
                 angleAway -= CGFloat.pi*2
@@ -355,37 +356,31 @@ class SpringbokClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
+            if -lastPredCheck.timeIntervalSinceNow > predCheckTime
+            {
+                lookForPredator()
+                lastPredCheck=NSDate()
+            }
+            
             if isFleeing && predTarget != nil
             {
                 flee()
-                if -lastPredCheck.timeIntervalSinceNow > predCheckTime
-                {
-                    lookForPredator()
-                    lastPredCheck=NSDate()
-                }
+                print("Fleeing")
                 
             }
-            else if currentState==WANDERSTATE && !isFleeing
+            else if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
                 {
                     if getDistToEntity(ent: herdLeader!) > followDist
                     {
                         catchUp()
-                        if -lastPredCheck.timeIntervalSinceNow > predCheckTime
-                        {
-                            lookForPredator()
-                            lastPredCheck=NSDate()
-                        }
+
                     }
                     else
                     {
                         wander()
-                        if -lastPredCheck.timeIntervalSinceNow > predCheckTime
-                        {
-                            lookForPredator()
-                            lastPredCheck=NSDate()
-                        }
+
                         
                     }
                 }

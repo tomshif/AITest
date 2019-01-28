@@ -33,7 +33,7 @@ class EntityClass
     public var MODMAXSPEED:CGFloat=0
     public var currentState:Int=0
     public var AICycle:Int=0
-    
+    public var isFleeing:Bool=false
     
     public var isTurning:Bool=false
     public var alive:Bool=true
@@ -319,22 +319,27 @@ class EntityClass
     {
         if isTurning
         {
-            if abs(turnToAngle-sprite.zRotation) < TURNRATE*2*speed
+            if abs(turnToAngle-sprite.zRotation) < TURNRATE*2
             {
                 sprite.zRotation=turnToAngle
                 isTurning=false
                 lastWanderTurn=NSDate()
-                speed -= TURNSPEEDLOST
-                if speed < 0
-                {
-                    speed=0
-                }
+                
+
                 //print("Finished turn")
             } // if we can stop turning
         }
         
         if isTurning
         {
+            if speed > MAXSPEED*0.5
+            {
+                speed -= TURNSPEEDLOST
+                if speed < 0
+                {
+                    speed=0
+                }
+            }
             var angleDiff = turnToAngle-sprite.zRotation
             
             if angleDiff > CGFloat.pi*2
@@ -349,13 +354,12 @@ class EntityClass
             if angleDiff < CGFloat.pi || angleDiff < -CGFloat.pi
             {
                 // turning left
-                sprite.zRotation += TURNRATE*speed
-                
+                sprite.zRotation += TURNRATE*speed*0.5
             } // if turn left
-            else if angleDiff > -CGFloat.pi || angleDiff > CGFloat.pi
+            else if angleDiff >= -CGFloat.pi || angleDiff >= CGFloat.pi
             {
                 // we need to turn right
-                sprite.zRotation -= TURNRATE*speed
+                sprite.zRotation -= TURNRATE*speed*0.5
                 
             } // else if turn right
 

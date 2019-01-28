@@ -686,8 +686,8 @@ class GameScene: SKScene {
                 infoGender.text="Gender: Female"
             }
             
-            infoHunger.text=String(format: "Hunger: %2.3f", selectedEntity!.hunger)
-            infoThirst.text=String(format: "Thirst: %2.3f", selectedEntity!.thirst)
+            infoHunger.text=String(format: "isFleeing: \(selectedEntity!.isFleeing)")
+            infoThirst.text=String(format: "isTurning: \(selectedEntity!.isTurning)")
             infoTurning.text="isTurning: \(selectedEntity!.checkTurning())"
             
             infoTurning.text=String(format:"Stamina: %1.3f",selectedEntity!.stamina)

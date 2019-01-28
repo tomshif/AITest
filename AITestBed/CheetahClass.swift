@@ -54,7 +54,7 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=6
+        MAXSPEED=5.85
         TURNRATE=0.1
         TURNFREQ=3
         AICycle=0
@@ -105,12 +105,12 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=6
+        MAXSPEED=5.9
         TURNRATE=0.1
         TURNFREQ=3
         AICycle=0
-        ACCELERATION=0.6
-        TURNSPEEDLOST=0.4
+        ACCELERATION=0.9
+        TURNSPEEDLOST=0.45
     } // full init()
     
     func catchUp()
