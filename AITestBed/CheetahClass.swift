@@ -20,6 +20,7 @@ class CheetahClass:EntityClass
     var cubs:Bool = false
     var followDist:CGFloat = 400
     var lastBaby:CGFloat = 0
+    var preyTarget:EntityClass?
     
     override init()
     {
@@ -138,6 +139,8 @@ class CheetahClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
+        
+            checkPrey()
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
@@ -155,6 +158,11 @@ class CheetahClass:EntityClass
                 {
                     wander()
                 }
+            }
+            
+            if currentState == HUNTSTATE
+            {
+                hunt()
             }
             
             // fix it if our rotation is more than pi*2 or less than 0
@@ -179,11 +187,75 @@ class CheetahClass:EntityClass
         
     } // func update
     
+    private func checkPrey()
+    {
+        var closest:CGFloat=5000000000
+        var closestIndex:Int = -1
+        
+        for i in 0..<map!.entList.count
+        {
+            if !map!.entList[i].name.contains("Cheetah")
+            {
+                let dist = getDistToEntity(ent: map!.entList[i])
+                if dist < closest
+                {
+                    closest=dist
+                    closestIndex=i
+                }// if we've found a closer one
+            }// if it's a cheetah
+        
+        }//for each entity
+    
+        if closestIndex > -1 && closest < 1100
+        {
+            currentState = HUNTSTATE
+            preyTarget = map!.entList[closestIndex]
+            print("Prey within Range")
+        }
+        else
+        {
+            currentState = WANDERSTATE
+        }
+    }
+    
+    private func hunt()
+    {
+        if preyTarget != nil
+        {
+            var angle = getAngleToEntity(ent: preyTarget!)
+            if angle > CGFloat.pi*2
+            {
+                angle -= CGFloat.pi*2
+            }
+            if angle < 0
+            {
+                angle += CGFloat.pi*2
+            }
+            
+            turnToAngle = angle
+            isTurning = true
+            speed += ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed = MAXSPEED
+            }
+            let dist = getDistToEntity(ent: preyTarget!)
+            if dist < 20
+            {
+                preyTarget!.die()
+                preyTarget = nil
+                currentState = WANDERSTATE
+                
+            }
+        }// if predator is valid
+        
+    }// func flee
+    
     func Baby()
     {
 
         
-        if age - lastBaby > 10 && !isMale && getAgeString()=="Mature"
+        if age - lastBaby > 12960 && !isMale && getAgeString()=="Mature"
         {
            
             let chance=random(min: 0, max: 1)

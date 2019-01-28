@@ -64,7 +64,7 @@ class EntityClass
     let EATSTATE:Int=4
     let DRINKSTATE:Int=6
     let RESTSTATE:Int=8
-    
+    let HUNTSTATE:Int=10
     
     init()
     {
