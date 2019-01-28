@@ -249,6 +249,8 @@ class SpringbokClass:EntityClass
             return true
         } // if we're still alive
     } // func ageEntity
+    
+
     func catchUp()
     {
         var angle = getAngleToEntity(ent: herdLeader!)
