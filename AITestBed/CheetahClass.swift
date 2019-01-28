@@ -20,6 +20,7 @@ class CheetahClass:EntityClass
     var cubs:Bool = false
     var followDist:CGFloat = 400
     var lastBaby:CGFloat = 0
+    var preyTarget:EntityClass?
     
     override init()
     {
@@ -178,6 +179,15 @@ class CheetahClass:EntityClass
         return ret
         
     } // func update
+    
+    func checkPrey()
+    {
+        if !map!.entList[i].name.contains("Cheetah")
+        {
+            
+        }
+        
+    }
     
     func Baby()
     {
