@@ -57,10 +57,11 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.0
+        MAXSPEED=2.5
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
+        ACCELERATION=0.15
         WANDERANGLE=CGFloat.pi/7
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -98,10 +99,11 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.8
+        MAXSPEED=2.5
         TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
+        ACCELERATION=0.15
         WANDERANGLE=CGFloat.pi/7
         MAXAGE=8640*10
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
@@ -215,31 +217,36 @@ class ZebraClass:EntityClass
     {
         var closest:CGFloat=50000000000
         var closestIndex:Int=0
-        for i in 0..<map!.entList.count
-        {
-            if map!.entList[i].name.contains("Cheetah")
-            {
-                let dist=getDistToEntity(ent: map!.entList[i])
-                if dist < closest
-                {
-                    closest=dist
-                    closestIndex=i
-                }// if its closer then max distance
-            }// if the name is cheetah
-      
-        }// for loop entlist
         
-        if closestIndex  >  -1 && closest<1000
-        {
-            isFleeing=true
-            predTarget=map!.entList[closestIndex]
-            print("predator in range")
-        }// if closest index
-        else
-        {
-            isFleeing=false
-            predTarget=nil
-        }// else index
+        
+        
+            for i in 0..<map!.entList.count
+            {
+                if map!.entList[i].name.contains("Cheetah")
+                {
+                    let dist=getDistToEntity(ent: map!.entList[i])
+                    if dist < closest
+                    {
+                        closest=dist
+                        closestIndex=i
+                        
+                        
+                    }// if its closer then max distance
+                }// if the name is cheetah
+          
+            }// for loop entlist
+            
+            if closestIndex  >  -1 && closest<600
+            {
+                isFleeing=true
+                predTarget=map!.entList[closestIndex]
+                print("predator in range")
+            }// if closest index
+            else
+            {
+                isFleeing=false
+                predTarget=nil
+            }// else index
         
     }// function
     
