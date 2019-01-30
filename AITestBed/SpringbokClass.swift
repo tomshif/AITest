@@ -214,6 +214,7 @@ class SpringbokClass:EntityClass
     
     private func checkPredators()
     {
+        
         var closest:CGFloat=50000000000
         var closestIndex:Int = -1
         
@@ -352,7 +353,11 @@ class SpringbokClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
-            checkPredators()
+            if -lastPredCheck.timeIntervalSinceNow > 1.0
+            {
+                checkPredators()
+                lastPredCheck=NSDate()
+            }
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
