@@ -21,6 +21,7 @@ class CheetahClass:EntityClass
     var followDist:CGFloat = 400
     var lastBaby:CGFloat = 0
     var preyTarget:EntityClass?
+    var lastPreyCheck = NSDate()
     
     override init()
     {
@@ -77,12 +78,12 @@ class CheetahClass:EntityClass
         {
             isHerdLeader = true
             age=random(min: MAXAGE*0.3, max: MAXAGE*0.7)
-        }
+        }// if leader
         else
         {
             herdLeader = leader
             age=random(min: 1.0, max: MAXAGE*0.1)
-        }
+        }// else leader
         
         // set the passed references
         map=theMap
@@ -117,7 +118,7 @@ class CheetahClass:EntityClass
         turnToAngle=angle
         isTurning=true
         speed = MAXSPEED * 0.45
-    }
+    }// func catchUp
     
     
     override func update(cycle: Int) -> Int
@@ -129,6 +130,9 @@ class CheetahClass:EntityClass
         doTurn()
         updateGraphics()
         Baby()
+        Stam()
+        
+
         
         if alive
         {
@@ -140,7 +144,11 @@ class CheetahClass:EntityClass
         if cycle==AICycle
         {
         
-            checkPrey()
+            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85
+            {
+                checkPrey()
+                lastPreyCheck = NSDate()
+            }// if -lastPreyCheck
             if currentState==WANDERSTATE
             {
                 if herdLeader != nil && !isHerdLeader
@@ -211,7 +219,7 @@ class CheetahClass:EntityClass
             currentState = HUNTSTATE
             preyTarget = map!.entList[closestIndex]
             print("Prey within Range")
-        }
+        }// if closestIndex
         else
         {
             currentState = WANDERSTATE
@@ -222,6 +230,7 @@ class CheetahClass:EntityClass
     {
         if preyTarget != nil
         {
+            stamina -= 0.01 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
             if angle > CGFloat.pi*2
             {
@@ -245,8 +254,15 @@ class CheetahClass:EntityClass
                 preyTarget!.die()
                 preyTarget = nil
                 currentState = WANDERSTATE
-                
-            }
+                stamina = 0
+            }// dist < 20
+            if stamina < 0
+            {
+                currentState = WANDERSTATE
+                preyTarget = nil
+                stamina = 0
+            }// if stamina < 0
+            
         }// if predator is valid
         
     }// func flee
@@ -274,8 +290,21 @@ class CheetahClass:EntityClass
                 map!.entList.append(temp)
                 map!.msg.sendMessage(type: map!.msg.BORN, from: name)
                 lastBaby = age
-            }
+            }// if chance > 0.9995
+        }// if age - lastBaby
+    }// func Baby
+    
+    func Stam()
+    {
+        if currentState != HUNTSTATE
+        {
+            stamina += 0.00002 * map!.getTimeScale()
         }
-    }
+        if stamina > 1.0
+        {
+            stamina = 1.0
+        }
+
+    }// func Stam
     
 } // CheetahClass
