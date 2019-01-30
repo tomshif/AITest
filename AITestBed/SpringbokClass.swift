@@ -189,25 +189,47 @@ class SpringbokClass:EntityClass
         {
             var angle=getAngleToEntity(ent: predTarget!)
             
-            angle += CGFloat.pi
             
-            if angle > CGFloat.pi*2
-            {
-                angle -= CGFloat.pi * 2
+             if -lastFleeTurn.timeIntervalSinceNow > 1.0
+             {
+                if angle > CGFloat.pi*2
+                {
+                    angle -= CGFloat.pi * 2
+                }
+                if angle < 0
+                {
+                    angle += CGFloat.pi*2
+                }
+                angle += CGFloat.pi
+                turnToAngle=angle
+                isTurning=true
                 
-            }
-            if angle < 0
-            {
-                angle += CGFloat.pi*2
-            }
-            turnToAngle=angle
-            isTurning=true
+                speed+=ACCELERATION
+                if speed > MAXSPEED
+                {
+                    speed = MAXSPEED
+                }
+                
+                
+                
+                let offset:CGFloat=random(min: -CGFloat.pi/2, max: CGFloat.pi/2)
+                lastFleeTurn=NSDate()
+                    var tempAngle=offset + angle
+                
+                
+               if tempAngle > CGFloat.pi*2
+               {
+                tempAngle -= CGFloat.pi*2
+                }
+                if tempAngle < 0
+                {
+                    tempAngle += CGFloat.pi*2
+                }
+                isTurning=true
+                turnToAngle=tempAngle
             
-            speed+=ACCELERATION
-            if speed > MAXSPEED
-            {
-                speed = MAXSPEED
             }
+            
         }
     }
     
@@ -358,7 +380,9 @@ class SpringbokClass:EntityClass
                 checkPredators()
                 lastPredCheck=NSDate()
             }
-            if currentState==WANDERSTATE
+            
+
+            if currentState==WANDERSTATE && !isFleeing
             {
                 if herdLeader != nil && !isHerdLeader
                 {
