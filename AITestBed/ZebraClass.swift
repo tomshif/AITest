@@ -98,8 +98,8 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.0
-        TURNRATE=0.20
+        MAXSPEED=2.8
+        TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
         WANDERANGLE=CGFloat.pi/7
@@ -249,19 +249,45 @@ class ZebraClass:EntityClass
         {
             var angle = getAngleToEntity(ent: predTarget!)
             
-            angle += CGFloat.pi
-            
-            if angle > CGFloat.pi*2
+            if -lastFleeTurn.timeIntervalSinceNow > 01.0
             {
-                angle -= CGFloat.pi*2
-            }// if angle is above 180
-            if angle < 0
-            {
-                angle += CGFloat.pi*2
-            }// if angle is greater than 0
+                if angle > CGFloat.pi*2
+                {
+                    angle -= CGFloat.pi*2
+                }// if angle is above 180
+                if angle < 0
+                {
+                    angle += CGFloat.pi*2
+                }// if angle is greater than 0
+                angle += CGFloat.pi
+                
+                let offSet:CGFloat=random(min: -CGFloat.pi/4, max: CGFloat.pi/4)
+                lastFleeTurn=NSDate()
+                var tempAngle = angle + offSet
+                
+                if tempAngle > CGFloat.pi*2
+                {
+                    tempAngle -= CGFloat.pi*2
+                }// if temp angle 180
+                
+                if tempAngle < 0
+                {
+                    tempAngle += CGFloat.pi*2
+                }//if tempangle 0
+                
+                turnToAngle=tempAngle
+                isTurning=true
+            }//if - last flee turn
             
-            turnToAngle=angle
-            isTurning=true
+            
+
+            
+            
+            
+            
+
+
+
             
             speed+=ACCELERATION
             if speed > MAXSPEED
@@ -308,7 +334,7 @@ class ZebraClass:EntityClass
                 escape()
             }// if were fleeing and we have a predator
             
-            if currentState==WANDERSTATE
+            if currentState==WANDERSTATE && !isFleeing
             {
                 // wander() -- removed by Shiflet -- should not wander AND have
                 // the opportunity to pursue the herdLeader...should be OR
