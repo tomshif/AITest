@@ -59,6 +59,7 @@ class SpringbokClass:EntityClass
         TURNFREQ=1.0
         WANDERANGLE=CGFloat.pi/2
         AICycle=0
+        ACCELERATION=0.5
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -115,6 +116,7 @@ class SpringbokClass:EntityClass
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
         AICycle=0
+        ACCELERATION=0.5
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -189,31 +191,54 @@ class SpringbokClass:EntityClass
         {
             var angle=getAngleToEntity(ent: predTarget!)
             
-            angle += CGFloat.pi
             
-            if angle > CGFloat.pi*2
-            {
-                angle -= CGFloat.pi * 2
+             if -lastFleeTurn.timeIntervalSinceNow > 1.0
+             {
+                if angle > CGFloat.pi*2
+                {
+                    angle -= CGFloat.pi * 2
+                }
+                if angle < 0
+                {
+                    angle += CGFloat.pi*2
+                }
+                angle += CGFloat.pi
+                turnToAngle=angle
+                isTurning=true
                 
-            }
-            if angle < 0
-            {
-                angle += CGFloat.pi*2
-            }
-            turnToAngle=angle
-            isTurning=true
+                speed+=ACCELERATION
+                if speed > MAXSPEED
+                {
+                    speed = MAXSPEED
+                }
+                
+                
+                
+                let offset:CGFloat=random(min: -CGFloat.pi/2, max: CGFloat.pi/2)
+                lastFleeTurn=NSDate()
+                    var tempAngle=offset + angle
+                
+                
+               if tempAngle > CGFloat.pi*2
+               {
+                tempAngle -= CGFloat.pi*2
+                }
+                if tempAngle < 0
+                {
+                    tempAngle += CGFloat.pi*2
+                }
+                isTurning=true
+                turnToAngle=tempAngle
             
-            speed+=ACCELERATION
-            if speed > MAXSPEED
-            {
-                speed = MAXSPEED
             }
+            
         }
     }
     
     
     private func checkPredators()
     {
+        
         var closest:CGFloat=50000000000
         var closestIndex:Int = -1
         
@@ -352,8 +377,14 @@ class SpringbokClass:EntityClass
         } // if we're alive
         if cycle==AICycle
         {
-            checkPredators()
-            if currentState==WANDERSTATE
+            if -lastPredCheck.timeIntervalSinceNow > 1.0
+            {
+                checkPredators()
+                lastPredCheck=NSDate()
+            }
+            
+
+            if currentState==WANDERSTATE && !isFleeing
             {
                 if herdLeader != nil && !isHerdLeader
                 {
