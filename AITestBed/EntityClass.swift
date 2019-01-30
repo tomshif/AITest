@@ -58,6 +58,7 @@ class EntityClass
     
     public var lastWanderTurn=NSDate()
     public var lastPredCheck=NSDate()
+    public var lastFleeTurn=NSDate()
     
     internal var gotoPoint=CGPoint(x: 0, y: 0)
     
