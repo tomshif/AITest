@@ -67,7 +67,7 @@ class ZebraClass:EntityClass
         if age < MAXAGE*0.2
         {
             sprite.texture=babyTexture
-        }
+        }// if age is less than one fifth of life span
     } // full init()
     
     init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int, leader:EntityClass?)
@@ -98,8 +98,8 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.0
-        TURNRATE=0.20
+        MAXSPEED=2.8
+        TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
         WANDERANGLE=CGFloat.pi/7
@@ -115,7 +115,7 @@ class ZebraClass:EntityClass
         if age < MAXAGE*0.2
         {
             sprite.texture=babyTexture
-        }
+        }// if age is less than a fifth of max age
     } // full init()
     
     func catchUp()
@@ -204,8 +204,8 @@ class ZebraClass:EntityClass
                 map!.entityCounter+=1
                 lastBaby=age
                 
-            }
-        }
+            }// if spawn chance
+        }// if it's female and mature
 
     }// func give birth
     
@@ -249,25 +249,51 @@ class ZebraClass:EntityClass
         {
             var angle = getAngleToEntity(ent: predTarget!)
             
-            angle += CGFloat.pi
-            
-            if angle > CGFloat.pi*2
+            if -lastFleeTurn.timeIntervalSinceNow > 01.0
             {
-                angle -= CGFloat.pi*2
-            }
-            if angle < 0
-            {
-                angle += CGFloat.pi*2
-            }
+                if angle > CGFloat.pi*2
+                {
+                    angle -= CGFloat.pi*2
+                }// if angle is above 180
+                if angle < 0
+                {
+                    angle += CGFloat.pi*2
+                }// if angle is greater than 0
+                angle += CGFloat.pi
+                
+                let offSet:CGFloat=random(min: -CGFloat.pi/4, max: CGFloat.pi/4)
+                lastFleeTurn=NSDate()
+                var tempAngle = angle + offSet
+                
+                if tempAngle > CGFloat.pi*2
+                {
+                    tempAngle -= CGFloat.pi*2
+                }// if temp angle 180
+                
+                if tempAngle < 0
+                {
+                    tempAngle += CGFloat.pi*2
+                }//if tempangle 0
+                
+                turnToAngle=tempAngle
+                isTurning=true
+            }//if - last flee turn
             
-            turnToAngle=angle
-            isTurning=true
+            
+
+            
+            
+            
+            
+
+
+
             
             speed+=ACCELERATION
             if speed > MAXSPEED
             {
                 speed=MAXSPEED
-            }
+            }//if speed is greater than max
         }// if we have a predator
         
         
@@ -284,7 +310,7 @@ class ZebraClass:EntityClass
         if age > MAXAGE*0.2 && sprite.texture==babyTexture
         {
             sprite.texture=adultTexture
-        }
+        }// if age is greater than one fifth of max life
         
         if alive
         {
@@ -296,14 +322,19 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
-            checkForPredators()
+            if -lastPredCheck.timeIntervalSinceNow > 1.0
+            {
+                checkForPredators()
+                lastPredCheck=NSDate()
+                
+            }// if we need to check for predators again
             
             if isFleeing && predTarget != nil
             {
                 escape()
             }// if were fleeing and we have a predator
             
-            if currentState==WANDERSTATE
+            if currentState==WANDERSTATE && !isFleeing
             {
                 // wander() -- removed by Shiflet -- should not wander AND have
                 // the opportunity to pursue the herdLeader...should be OR
@@ -317,8 +348,8 @@ class ZebraClass:EntityClass
                     else // added by Shiflet -- the OR part
                     {
                         wander()
-                    }
-                }
+                    }// else shif
+                }//if we have no herdleader
                 else
                 {
                     wander()
@@ -332,19 +363,19 @@ class ZebraClass:EntityClass
                 {
                     findNewHerdLeader()
                     
-                }
-            }
+                }// if herd leader is dead
+            }// if heard leader is nil
 
             
             // fix it if our rotation is more than pi*2 or less than 0
             if sprite.zRotation > CGFloat.pi*2
             {
                 sprite.zRotation -= CGFloat.pi*2
-            }
+            }// if sprite rotation 180
             if sprite.zRotation < 0
             {
                 sprite.zRotation += CGFloat.pi*2
-            }
+            }// is sprite rotation 0
             
         } // if it's our update cycle
         
