@@ -50,7 +50,7 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
+        MAXSPEED=7
         TURNRATE=0.15
         TURNFREQ=3
         AICycle=0
@@ -101,11 +101,11 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
+        MAXSPEED=7.0
         TURNRATE=0.15
         TURNFREQ=3
         AICycle=0
-        
+        ACCELERATION=0.2
     } // full init()
     
     func catchUp()
@@ -230,8 +230,14 @@ class CheetahClass:EntityClass
     {
         if preyTarget != nil
         {
+    
             stamina -= 0.01 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
+            if speed > MAXSPEED
+            {
+                ACCELERATION = 0
+                speed = MAXSPEED
+            }
             if angle > CGFloat.pi*2
             {
                 angle -= CGFloat.pi*2
