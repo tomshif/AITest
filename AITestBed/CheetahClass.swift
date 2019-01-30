@@ -21,6 +21,8 @@ class CheetahClass:EntityClass
     var followDist:CGFloat = 100
     var lastBaby:CGFloat = 0
     
+    var lastPreyCheck=NSDate()
+    let PREYCHECKTIME:Double=1.0
 
 
     
@@ -132,37 +134,40 @@ class CheetahClass:EntityClass
     
     func lookForPrey()
     {
-        if herdLeader == nil
+        if -lastPreyCheck.timeIntervalSinceNow > PREYCHECKTIME
         {
-            var closest:CGFloat=500000000
-            var targetIndex:Int = -1
-            
-            // first find the closest prey
-            for i in 0 ..< map!.entList.count
+            if herdLeader == nil
             {
-                if !map!.entList[i].name.contains("Cheetah")
+                var closest:CGFloat=500000000
+                var targetIndex:Int = -1
+                
+                // first find the closest prey
+                for i in 0 ..< map!.entList.count
                 {
-                    let dist=getDistToEntity(ent: map!.entList[i])
-                    if dist < closest
+                    if !map!.entList[i].name.contains("Cheetah")
                     {
-                        closest=dist
-                        targetIndex=i
-                    } // if we're closer
-                } // if it's not a cheetah
-            } // for each entity
-            
-            if closest < 600 && targetIndex > -1 && stamina > 0.999
-            {
-                targetEntity=map!.entList[targetIndex]
-                currentState=HUNTSTATE
-            }
-            else
-            {
-                targetEntity=nil
-                currentState=WANDERSTATE
-            }
-        }
-        
+                        let dist=getDistToEntity(ent: map!.entList[i])
+                        if dist < closest
+                        {
+                            closest=dist
+                            targetIndex=i
+                        } // if we're closer
+                    } // if it's not a cheetah
+                } // for each entity
+                
+                if closest < 600 && targetIndex > -1 && stamina > 0.999
+                {
+                    targetEntity=map!.entList[targetIndex]
+                    currentState=HUNTSTATE
+                }
+                else
+                {
+                    targetEntity=nil
+                    currentState=WANDERSTATE
+                }
+            } // if we're a herd leader
+            lastPreyCheck=NSDate()
+        } // if it's time to look for prey again
         
     } // func lookForPrey
     
@@ -196,7 +201,7 @@ class CheetahClass:EntityClass
                 currentState=WANDERSTATE
                 speed=0
             }
-            stamina -= 0.01
+            stamina -= 0.01 * map!.getTimeScale()
             if stamina < 0
             {
                 speed=0
@@ -244,7 +249,7 @@ class CheetahClass:EntityClass
                     {
                         wander()
                         lookForPrey()
-                        stamina+=0.0001
+                        stamina+=0.0001*map!.getTimeScale()
                         if stamina > 1
                         {
                             stamina=1
@@ -255,7 +260,7 @@ class CheetahClass:EntityClass
                 {
                     wander()
                     lookForPrey()
-                    stamina+=0.0001
+                    stamina+=0.0001*map!.getTimeScale()
                     if stamina > 1
                     {
                         stamina=1

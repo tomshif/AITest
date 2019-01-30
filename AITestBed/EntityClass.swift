@@ -43,6 +43,8 @@ class EntityClass
     internal var isDrinking:Bool=false
     internal var isResting:Bool=false
     
+    public var predTarget:EntityClass?
+    
     var stamina:CGFloat = 1.0
     
     var TURNSPEEDLOST:CGFloat=0.1

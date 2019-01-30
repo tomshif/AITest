@@ -20,14 +20,14 @@ class SpringbokClass:EntityClass
     private var MAXCHILD:Int=2
     
     internal var followDist:CGFloat=150
-    private var predTarget:EntityClass?
+    
     
     let adultTexture=SKTexture(imageNamed: "springbokAdultSprite")
     let babyTexture=SKTexture(imageNamed: "springbokBabySprite")
     private var lastBabyYear:Int=0
     private var lastFleeTurn=NSDate()
     private var lastPredCheck=NSDate()
-    let predCheckTime:Double=0.25
+    let predCheckTime:Double=1.5
     
     
     override init()
@@ -191,32 +191,49 @@ class SpringbokClass:EntityClass
     
     func lookForPredator()
     {
-        var closest:CGFloat=500000000
-        var predIndex:Int = -1
-        for i in 0..<map!.entList.count
+        if isHerdLeader
         {
-            if map!.entList[i].name.contains("Cheetah")
+            var closest:CGFloat=500000000
+            var predIndex:Int = -1
+            for i in 0..<map!.entList.count
             {
-                let dist = getDistToEntity(ent: map!.entList[i])
-                if dist < closest
+                if map!.entList[i].name.contains("Cheetah")
                 {
-                    closest=dist
-                    predIndex=i
-                } // if we're closer
-            } // if it's a cheetah
-        } // for each entity
-        
-        if closest < followDist*3.5
-        {
-            predTarget=map!.entList[predIndex]
-            isFleeing=true
+                    let dist = getDistToEntity(ent: map!.entList[i])
+                    if dist < closest
+                    {
+                        closest=dist
+                        predIndex=i
+                    } // if we're closer
+                } // if it's a cheetah
+            } // for each entity
+            
+            if closest < followDist*3.5
+            {
+                predTarget=map!.entList[predIndex]
+                isFleeing=true
+            }
+            else
+            {
+                predTarget=nil
+                isFleeing=false
+                currentState=WANDERSTATE
+            }
         }
         else
         {
-            predTarget=nil
-            isFleeing=false
-            currentState=WANDERSTATE
-        }
+            if herdLeader != nil
+            {
+                if herdLeader!.isFleeing && herdLeader!.predTarget != nil
+                {
+
+                    predTarget = herdLeader!.predTarget!
+                    isFleeing = true
+                }
+  
+
+            } // if we have a herd leader
+        } // else if we're not a herd leader
         
     } // func lookForPredator
     
@@ -244,6 +261,12 @@ class SpringbokClass:EntityClass
         if speed > MODMAXSPEED
         {
             speed=MODMAXSPEED
+        }
+        
+        if getDistToEntity(ent: predTarget!) > followDist*3.75
+        {
+            predTarget = nil
+            isFleeing = false
         }
         
         
