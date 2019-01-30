@@ -21,6 +21,10 @@ class EntityClass
     public var age:CGFloat=1.0
     internal var hunger:CGFloat=1.0
     internal var thirst:CGFloat=1.0
+    public var stamina:CGFloat=1.0
+    
+
+    
     internal var turnToAngle:CGFloat=0.0
     
     public var MAXAGE:CGFloat=25920.0   // In game time minutes -- One year = 8640
@@ -47,14 +51,13 @@ class EntityClass
     internal var isDrinking:Bool=false
     internal var isResting:Bool=false
     
-    
     public var herdLeader:EntityClass?
     
     var hash:String
     var name:String=""
     
     public var lastWanderTurn=NSDate()
-    
+    public var lastPredCheck=NSDate()
     
     internal var gotoPoint=CGPoint(x: 0, y: 0)
     
