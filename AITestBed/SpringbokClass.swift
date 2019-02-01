@@ -59,7 +59,7 @@ class SpringbokClass:EntityClass
         TURNFREQ=1.0
         WANDERANGLE=CGFloat.pi/2
         AICycle=0
-        ACCELERATION=0.5
+        ACCELERATION=0.25
         MAXAGE=7*8640
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -116,8 +116,9 @@ class SpringbokClass:EntityClass
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
         AICycle=0
-        ACCELERATION=0.5
+        ACCELERATION=0.325
         MAXAGE=7*8640
+        TURNSPEEDLOST=0.15
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
@@ -190,8 +191,11 @@ class SpringbokClass:EntityClass
         if predTarget != nil
         {
             var angle=getAngleToEntity(ent: predTarget!)
-            
-            
+            speed+=ACCELERATION
+            if speed > MAXSPEED
+            {
+                speed = MAXSPEED
+            }
              if -lastFleeTurn.timeIntervalSinceNow > 1.0
              {
                 if angle > CGFloat.pi*2
@@ -206,11 +210,8 @@ class SpringbokClass:EntityClass
                 turnToAngle=angle
                 isTurning=true
                 
-                speed+=ACCELERATION
-                if speed > MAXSPEED
-                {
-                    speed = MAXSPEED
-                }
+                
+
                 
                 
                 
@@ -254,7 +255,7 @@ class SpringbokClass:EntityClass
                 }
             }
         }
-        if closestIndex > -1 && closest < 1000
+        if closestIndex > -1 && closest < 800
         {
             isFleeing = true
             predTarget=map!.entList[closestIndex]

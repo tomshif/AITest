@@ -50,7 +50,7 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
+        MAXSPEED=6.5
         TURNRATE=0.15
         TURNFREQ=3
         AICycle=0
@@ -101,11 +101,12 @@ class CheetahClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=3
+        MAXSPEED=6.5
         TURNRATE=0.15
         TURNFREQ=3
         AICycle=0
-        
+        ACCELERATION=0.45
+        TURNSPEEDLOST=0.25
     } // full init()
     
     func catchUp()
@@ -204,17 +205,20 @@ class CheetahClass:EntityClass
         {
             if !map!.entList[i].name.contains("Cheetah")
             {
-                let dist = getDistToEntity(ent: map!.entList[i])
-                if dist < closest
+                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature")
                 {
-                    closest=dist
-                    closestIndex=i
-                }// if we've found a closer one
+                    let dist = getDistToEntity(ent: map!.entList[i])
+                    if dist < closest
+                    {
+                        closest=dist
+                        closestIndex=i
+                    }// if we've found a closer one
+                }
             }// if it's a cheetah
         
         }//for each entity
     
-        if closestIndex > -1 && closest < 1100
+        if closestIndex > -1 && closest < 900
         {
             currentState = HUNTSTATE
             preyTarget = map!.entList[closestIndex]
@@ -230,8 +234,14 @@ class CheetahClass:EntityClass
     {
         if preyTarget != nil
         {
+    
             stamina -= 0.01 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
+            if speed > MAXSPEED
+            {
+                ACCELERATION = 0
+                speed = MAXSPEED
+            }
             if angle > CGFloat.pi*2
             {
                 angle -= CGFloat.pi*2
@@ -251,16 +261,19 @@ class CheetahClass:EntityClass
             let dist = getDistToEntity(ent: preyTarget!)
             if dist < 20
             {
+                map!.msg.sendMessage(type: map!.msg.DEATH_PREDATOR, from: preyTarget!.name)
                 preyTarget!.die()
                 preyTarget = nil
                 currentState = WANDERSTATE
-                stamina = 0
+                speed=0
+
             }// dist < 20
             if stamina < 0
             {
                 currentState = WANDERSTATE
                 preyTarget = nil
                 stamina = 0
+                map!.msg.sendMessage(type: map!.msg.HUNTFAILED, from: self.name)
             }// if stamina < 0
             
         }// if predator is valid
