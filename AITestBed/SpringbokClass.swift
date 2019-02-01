@@ -54,7 +54,7 @@ class SpringbokClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.2
+        MAXSPEED=4.0
         TURNRATE=0.15
         TURNFREQ=1.0
         WANDERANGLE=CGFloat.pi/2
@@ -111,7 +111,7 @@ class SpringbokClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.2
+        MAXSPEED=4.0
         TURNRATE=0.15
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
