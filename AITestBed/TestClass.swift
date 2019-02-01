@@ -194,28 +194,49 @@ class TestClass:EntityClass
         if predTarget != nil
         {
             var angle=getAngleToEntity(ent: predTarget!)
-            
-            angle += CGFloat.pi
-            
-            if angle > CGFloat.pi*2
-            {
-                angle -= CGFloat.pi*2
-            }
-            if angle < 0
-            {
-                angle += CGFloat.pi*2
-            }
-            
-            turnToAngle=angle
-            isTurning=true
-            
-            speed += ACCELERATION
+            speed+=ACCELERATION
             if speed > MAXSPEED
             {
                 speed = MAXSPEED
             }
-        } // if predator is valid
-        
+            if -lastFleeTurn.timeIntervalSinceNow > 1.0
+            {
+                if angle > CGFloat.pi*2
+                {
+                    angle -= CGFloat.pi * 2
+                }
+                if angle < 0
+                {
+                    angle += CGFloat.pi*2
+                }
+                angle += CGFloat.pi
+                turnToAngle=angle
+                isTurning=true
+                
+                
+                
+                
+                
+                
+                let offset:CGFloat=random(min: -CGFloat.pi/2, max: CGFloat.pi/2)
+                lastFleeTurn=NSDate()
+                var tempAngle=offset + angle
+                
+                
+                if tempAngle > CGFloat.pi*2
+                {
+                    tempAngle -= CGFloat.pi*2
+                }
+                if tempAngle < 0
+                {
+                    tempAngle += CGFloat.pi*2
+                }
+                isTurning=true
+                turnToAngle=tempAngle
+                
+            }
+            
+        }
         
     } // func flee
     

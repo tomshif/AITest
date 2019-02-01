@@ -108,7 +108,8 @@ class ZebraClass:EntityClass
         MAXAGE=8640*10
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
-        
+        ACCELERATION=0.15
+        TURNSPEEDLOST=0.4
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
         {
