@@ -338,6 +338,16 @@ class EntityClass
         
         if isTurning
         {
+            if turnToAngle > CGFloat.pi*2
+            {
+                turnToAngle -= CGFloat.pi*2
+            }
+            if turnToAngle < 0
+            {
+                turnToAngle += CGFloat.pi*2
+            }
+            
+            
             var angleDiff = turnToAngle-sprite.zRotation
             
             if angleDiff > CGFloat.pi*2
