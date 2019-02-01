@@ -300,7 +300,7 @@ class CheetahClass:EntityClass
                 
                 map!.entityCounter+=1
                 
-                map!.entList.append(temp)
+                map!.predList.append(temp)
                 map!.msg.sendMessage(type: map!.msg.BORN, from: name)
                 lastBaby = age
             }// if chance > 0.9995

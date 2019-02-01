@@ -159,11 +159,11 @@ class TestClass:EntityClass
         var closest:CGFloat=5000000000
         var closestIndex:Int = -1
         
-        for i in 0..<map!.entList.count
+        for i in 0..<map!.predList.count
         {
-            if map!.entList[i].name.contains("Cheetah")
+            if map!.predList[i].name.contains("Cheetah")
             {
-                let dist = getDistToEntity(ent: map!.entList[i])
+                let dist = getDistToEntity(ent: map!.predList[i])
                 if dist < closest
                 {
                     closest=dist
@@ -176,7 +176,7 @@ class TestClass:EntityClass
         if closestIndex > -1 && closest < 1000
         {
             isFleeing = true
-            predTarget=map!.entList[closestIndex]
+            predTarget=map!.predList[closestIndex]
             print("Predator in range.")
             
         }

@@ -243,30 +243,34 @@ class SpringbokClass:EntityClass
         var closest:CGFloat=50000000000
         var closestIndex:Int = -1
         
-        for i in 0..<map!.entList.count
+        if map!.predList.count > 0
         {
-            if map!.entList[i].name.contains("Cheetah")
+            for i in 0...map!.predList.count - 1
             {
-                let dist = getDistToEntity(ent: map!.entList[i])
-                if dist<closest
+                if map!.predList[i].name.contains("Cheetah")
                 {
-                    closest=dist
-                    closestIndex=i
+                    let dist = getDistToEntity(ent: map!.predList[i])
+                    if dist<closest
+                    {
+                        closest=dist
+                        closestIndex=i
+                    }
                 }
+            } // for each predator
+            
+            if closestIndex > -1 && closest < 800
+            {
+                isFleeing = true
+                predTarget=map!.predList[closestIndex]
+                //print("Predator is close")
             }
-        }
-        if closestIndex > -1 && closest < 800
-        {
-            isFleeing = true
-            predTarget=map!.entList[closestIndex]
-            print("Predator is close")
-        }
-        else
-        {
-            isFleeing=false
-            predTarget=nil
-        }
-    }
+            else
+            {
+                isFleeing=false
+                predTarget=nil
+            }
+        } // if predators exist
+    } // func checkPredators
     
     override func ageEntity() -> Bool
     {

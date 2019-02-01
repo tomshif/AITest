@@ -216,11 +216,11 @@ class ZebraClass:EntityClass
     {
         var closest:CGFloat=50000000000
         var closestIndex:Int=0
-        for i in 0..<map!.entList.count
+        for i in 0..<map!.predList.count
         {
-            if map!.entList[i].name.contains("Cheetah")
+            if map!.predList[i].name.contains("Cheetah")
             {
-                let dist=getDistToEntity(ent: map!.entList[i])
+                let dist=getDistToEntity(ent: map!.predList[i])
                 if dist < closest
                 {
                     closest=dist
@@ -233,7 +233,7 @@ class ZebraClass:EntityClass
         if closestIndex  >  -1 && closest<800
         {
             isFleeing=true
-            predTarget=map!.entList[closestIndex]
+            predTarget=map!.predList[closestIndex]
             print("predator in range")
         }// if closest index
         else
