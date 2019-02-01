@@ -88,7 +88,7 @@ class GameScene: SKScene {
     let CHEETAHHERD:Int=10
     
     
-    let BIRDCOUNT:Int=100
+    let BIRDCOUNT:Int=0
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
