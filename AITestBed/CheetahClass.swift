@@ -29,8 +29,6 @@ class CheetahClass:EntityClass
         sprite=SKSpriteNode(imageNamed: "cheetahSprite")
     } // init
     
-    
-    
     override init(theScene:SKScene, theMap: MapClass, pos: CGPoint, number: Int)
     {
         super.init()
@@ -169,7 +167,7 @@ class CheetahClass:EntityClass
                     {
                         wander()
                     }
-                }
+                }//if herdleader
                 else
                 {
                     wander()
@@ -239,7 +237,16 @@ class CheetahClass:EntityClass
     
     private func hunt()
     {
-        if preyTarget != nil
+        if preyTarget != nil && getAgeString()=="Baby" && getAgeString()=="Juvinile" && herdLeader?.currentState == HUNTSTATE
+        {
+            speed = 0
+            if herdLeader?.currentState == WANDERSTATE
+            {
+                catchUp()
+                Stam()
+            }
+        }
+        if preyTarget != nil && getAgeString()=="Mature"
         {
     
             stamina -= 0.01 *  map!.getTimeScale()
@@ -292,7 +299,7 @@ class CheetahClass:EntityClass
     {
 
         
-        if age - lastBaby > 12960 && !isMale && getAgeString()=="Mature"
+        if age - lastBaby > 12960 && !isMale && getAgeString()=="Mature" && preyTarget == nil
         {
            
             let chance=random(min: 0, max: 1)
@@ -327,6 +334,7 @@ class CheetahClass:EntityClass
         }
 
     }// func Stam
+    
     
 } // CheetahClass
 
