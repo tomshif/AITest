@@ -542,7 +542,7 @@ class TestClass:EntityClass
             }
             
             // first decide what to do
-            decideWhatToDo()
+            // decideWhatToDo()
             if !isHerdLeader
             {
                 if !herdLeader!.isAlive()
@@ -603,8 +603,7 @@ class TestClass:EntityClass
                 }
                 
             } // if we're in rest state
-            
-            if currentState==GOTOSTATE
+            else if currentState==GOTOSTATE
             {
                 goTo()
             }
