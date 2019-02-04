@@ -307,10 +307,10 @@ class SpringbokClass:EntityClass
             
             
             // Baby time!
-            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
+            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0 && isFleeing==false
             {
                 let babyChance=random(min: 0.0, max: 1.0)
-                if babyChance > 0.999955
+                if babyChance > 0.999994
                 {
                     // Hurray! We're having a baby!
                     let babyNumber=Int(random(min: 2, max: 5.999999))
@@ -344,7 +344,12 @@ class SpringbokClass:EntityClass
         } // if we're still alive
     } // func ageEntity
     
-
+    func offMap()
+    {
+        //gotoLastState=CurrentState
+        currentState=GOTOSTATE
+    }
+    
     func catchUp()
     {
         var angle = getAngleToEntity(ent: herdLeader!)
