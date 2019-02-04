@@ -110,16 +110,16 @@ class SpringbokClass:EntityClass
         
         scene!.addChild(sprite)
         
-        let rC=random(min: 0.75, max: 1.0)
-        let gC=random(min: 0.75, max: 1.0)
-        let bC=random(min: 0.75, max: 1.0)
+        let rC=random(min: 0.85, max: 1.0)
+        let gC=random(min: 0.85, max: 1.0)
+        let bC=random(min: 0.85, max: 1.0)
         sprite.colorBlendFactor=1.0
-        sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
+        sprite.color=NSColor(calibratedRed: rC, green: bC, blue: bC, alpha: 1.0)
         
         
         // Variable updates
         MAXSPEED=5.1
-        TURNRATE=0.15
+        TURNRATE=0.1
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
         AICycle=0

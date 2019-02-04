@@ -134,9 +134,9 @@ class TestClass:EntityClass
         name=String(format:"entWarthog%04d", number)
         sprite.zPosition=170
         scene!.addChild(sprite)
-        let rC=random(min: 0.5, max: 1.0)
-        let gC=random(min: 0.5, max: 1.0)
-        let bC=random(min: 0.5, max: 1.0)
+        let rC=random(min: 0.6, max: 1.0)
+        let gC=random(min: 0.6, max: 1.0)
+        let bC=random(min: 0.6, max: 1.0)
         sprite.colorBlendFactor=1.0
         sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
         
