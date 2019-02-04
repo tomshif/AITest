@@ -18,7 +18,7 @@ class TestClass:EntityClass
     
     private var targetZone:ZoneClass?
     
-    private var gotoLastState:Int = 0
+    
     
     public static let FOODZONE:Int=0
     public static let WATERZONE:Int=2
@@ -366,54 +366,7 @@ class TestClass:EntityClass
     } // func ageEntity
     
     
-    private func goTo()
-    {
-        let dx=gotoPoint.x-sprite.position.x
-        let dy=gotoPoint.y-sprite.position.y
-        let dist=hypot(dy, dx)
-        
-        if dist > 50
-        {
-            var angleToPoint=atan2(dy, dx)
-            if angleToPoint < 0
-            {
-                angleToPoint+=CGFloat.pi*2
-            }
-            
-            turnToAngle=angleToPoint
-            
-            isTurning=true
-            
-            let speedChance=random(min: 0, max: 1.0)
-            if speedChance > 0.75
-            {
-                speed+=0.1
-                if speed > MAXSPEED*0.7
-                {
-                    speed=MAXSPEED*0.7
-                }
-            } // if we speed up
-            else if speedChance > 0.5
-            {
-                speed -= 0.1
-                if speed < MAXSPEED*0.5
-                {
-                    speed=MAXSPEED*0.5
-                    
-                } // if speed drops below zero
-                
-                
-            } // if we slow down
-            
-        } // if we're still far enough away
-        else
-        {
-            
-            currentState=gotoLastState
-            
-        } // if we're close enough
-        
-    } // func goTo()
+    
     
     private func pursue()
     {

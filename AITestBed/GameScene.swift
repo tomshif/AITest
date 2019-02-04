@@ -363,6 +363,19 @@ class GameScene: SKScene {
             addChild(obstacle)
         } // if we're spawning obstacles
       
+        if currentMode==GOTOMODE
+        {
+            if isSelected && selectedEntity != nil
+            {
+                if selectedEntity!.isHerdLeader
+                {
+                    
+                    selectedEntity!.gotoPoint=pos
+                    selectedEntity!.gotoLastState=selectedEntity!.currentState
+                    selectedEntity!.currentState=selectedEntity!.GOTOSTATE
+                } // if we're a herd leader
+            } // if we have something valid selected
+        } // if we're in goto mode
     } // touchDown
     
     func touchMoved(toPoint pos : CGPoint) {
