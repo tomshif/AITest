@@ -243,6 +243,10 @@ class SpringbokClass:EntityClass
         }
     }
     
+    func offMap()
+    {
+    
+    }
     
     private func checkPredators()
     {
@@ -344,11 +348,7 @@ class SpringbokClass:EntityClass
         } // if we're still alive
     } // func ageEntity
     
-    func offMap()
-    {
-        //gotoLastState=CurrentState
-        currentState=GOTOSTATE
-    }
+    
     
     func catchUp()
     {
@@ -418,6 +418,11 @@ class SpringbokClass:EntityClass
                 {
                     wander()
                 }
+               
+            }
+            else if currentState == GOTOSTATE
+            {
+                goTo()
             }
             
             // fix it if our rotation is more than pi*2 or less than 0
@@ -429,6 +434,7 @@ class SpringbokClass:EntityClass
             {
                 sprite.zRotation += CGFloat.pi*2
             }
+            
             
         } // if it's our update cycle
         
