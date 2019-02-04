@@ -173,10 +173,13 @@ class CheetahClass:EntityClass
                     wander()
                 }
             }
-            
-            if currentState == HUNTSTATE
+            else if currentState == HUNTSTATE
             {
                 hunt()
+            }
+            else if currentState==GOTOSTATE
+            {
+                goTo()
             }
             
             // fix it if our rotation is more than pi*2 or less than 0
