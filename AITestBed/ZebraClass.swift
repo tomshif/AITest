@@ -199,7 +199,7 @@ class ZebraClass:EntityClass
     
     func giveBirth()
     {
-        if !isMale && getAgeString()=="Mature" && age-lastBaby > 8640
+        if !isMale && getAgeString()=="Mature" && age-lastBaby > 8640 && !isFleeing
         {
             
             let spawnChance:CGFloat=random(min: 0, max: 1.00)
@@ -226,11 +226,11 @@ class ZebraClass:EntityClass
         
         
         
-            for i in 0..<map!.entList.count
+            for i in 0..<map!.predList.count
             {
-                if map!.entList[i].name.contains("Cheetah")
+                if map!.predList[i].name.contains("Cheetah")
                 {
-                    let dist=getDistToEntity(ent: map!.entList[i])
+                    let dist=getDistToEntity(ent: map!.predList[i])
                     if dist < closest
                     {
                         closest=dist
@@ -245,7 +245,7 @@ class ZebraClass:EntityClass
             if closestIndex  >  -1 && closest<600
             {
                 isFleeing=true
-                predTarget=map!.entList[closestIndex]
+                predTarget=map!.predList[closestIndex]
                 print("predator in range")
             }// if closest index
             else
@@ -316,8 +316,10 @@ class ZebraClass:EntityClass
    override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
-        giveBirth()
-        doTurn()
+        
+            giveBirth()
+        
+            doTurn()
         updateGraphics()
         
         if age > MAXAGE*0.2 && sprite.texture==babyTexture
