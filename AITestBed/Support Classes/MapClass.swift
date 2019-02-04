@@ -13,6 +13,8 @@ class MapClass
 {
     var zoneList=[ZoneClass]()
     var entList=[EntityClass]()
+    var predList=[EntityClass]()
+    
     var birdList=[BirdClass]()
     
     public var mapBorder:CGFloat=0
@@ -66,6 +68,15 @@ class MapClass
             if !entList[i].isAlive()
             {
                 entList.remove(at: i)
+                break
+            }
+        } // for each entity
+        
+        for i in 0..<predList.count
+        {
+            if !predList[i].isAlive()
+            {
+                predList.remove(at: i)
                 break
             }
         } // for each entity
@@ -163,6 +174,10 @@ class MapClass
             ent.sprite.removeFromParent()
         }
         
+        for ent in predList
+        {
+            ent.die()
+        }
         
         zoneList.removeAll()
         entList.removeAll()

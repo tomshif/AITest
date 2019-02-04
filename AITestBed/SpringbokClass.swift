@@ -110,9 +110,16 @@ class SpringbokClass:EntityClass
         
         scene!.addChild(sprite)
         
+        let rC=random(min: 0.85, max: 1.0)
+        let gC=random(min: 0.85, max: 1.0)
+        let bC=random(min: 0.85, max: 1.0)
+        sprite.colorBlendFactor=1.0
+        sprite.color=NSColor(calibratedRed: rC, green: bC, blue: bC, alpha: 1.0)
+        
+        
         // Variable updates
         MAXSPEED=5.1
-        TURNRATE=0.15
+        TURNRATE=0.1
         TURNFREQ=1
         WANDERANGLE=CGFloat.pi/8
         AICycle=0
@@ -243,30 +250,34 @@ class SpringbokClass:EntityClass
         var closest:CGFloat=50000000000
         var closestIndex:Int = -1
         
-        for i in 0..<map!.entList.count
+        if map!.predList.count > 0
         {
-            if map!.entList[i].name.contains("Cheetah")
+            for i in 0...map!.predList.count - 1
             {
-                let dist = getDistToEntity(ent: map!.entList[i])
-                if dist<closest
+                if map!.predList[i].name.contains("Cheetah")
                 {
-                    closest=dist
-                    closestIndex=i
+                    let dist = getDistToEntity(ent: map!.predList[i])
+                    if dist<closest
+                    {
+                        closest=dist
+                        closestIndex=i
+                    }
                 }
+            } // for each predator
+            
+            if closestIndex > -1 && closest < 800
+            {
+                isFleeing = true
+                predTarget=map!.predList[closestIndex]
+                //print("Predator is close")
             }
-        }
-        if closestIndex > -1 && closest < 800
-        {
-            isFleeing = true
-            predTarget=map!.entList[closestIndex]
-            print("Predator is close")
-        }
-        else
-        {
-            isFleeing=false
-            predTarget=nil
-        }
-    }
+            else
+            {
+                isFleeing=false
+                predTarget=nil
+            }
+        } // if predators exist
+    } // func checkPredators
     
     override func ageEntity() -> Bool
     {
