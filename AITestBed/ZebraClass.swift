@@ -316,27 +316,27 @@ class ZebraClass:EntityClass
     {
         if isHerdLeader==true
         {
-            if  sprite.position.x > BOUNDARY
+            if  sprite.position.x > map!.BOUNDARY
             {
-                gotoLASTSTATE = currentState
+                gotoLastState = currentState
                 currentState = GOTOSTATE
             }
             
-            if sprite.position.y > BOUNDARY
+            if sprite.position.y > map!.BOUNDARY
             {
-                gotoLASTSTATE = currentState
+                gotoLastState = currentState
                 currentState = GOTOSTATE
             }
             
-            if sprite.position.x < -BOUNDARY
+            if sprite.position.x < -map!.BOUNDARY
             {
-                gotoLASTSTATE = currentState
+                gotoLastState = currentState
                 currentState = GOTOSTATE
             }
             
-            if sprite.position.y < -BOUNDARY
+            if sprite.position.y < -map!.BOUNDARY
             {
-                gotoLASTSTATE = currentState  
+                gotoLastState = currentState
                 currentState = GOTOSTATE
             }
         }
@@ -381,6 +381,8 @@ class ZebraClass:EntityClass
             
             if currentState==WANDERSTATE && !isFleeing
             {
+                
+                
                 // wander() -- removed by Shiflet -- should not wander AND have
                 // the opportunity to pursue the herdLeader...should be OR
                 if herdLeader != nil && !isHerdLeader
@@ -401,6 +403,10 @@ class ZebraClass:EntityClass
                 }// else wander
             }//if current state = wander state
             
+            else if currentState==GOTOSTATE
+            {
+                goTo()
+            }// else if gotostate
 
             if herdLeader != nil
             {
@@ -411,6 +417,7 @@ class ZebraClass:EntityClass
                 }// if herd leader is dead
             }// if heard leader is nil
 
+            
             
             // fix it if our rotation is more than pi*2 or less than 0
             if sprite.zRotation > CGFloat.pi*2
