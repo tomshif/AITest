@@ -40,7 +40,7 @@ class TestClass:EntityClass
         scene=theScene
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "warthogArrow")
+        sprite=SKSpriteNode(imageNamed: "warthog")
         sprite.position=pos
         
         sprite.name=String(format:"entWarthog%04d", number)
@@ -51,8 +51,13 @@ class TestClass:EntityClass
         sprite.shadowCastBitMask=0
         scene!.addChild(sprite)
         
+        let colorVariation=random(min: 0.7, max: 1.0)
+        sprite.colorBlendFactor=1.0
+        sprite.color=NSColor(calibratedRed: colorVariation, green: colorVariation, blue: colorVariation, alpha: 1.0)
+        
+        
         // Variable updates
-        MAXSPEED=2.8
+        MAXSPEED=4.5
         TURNRATE=0.15
         TURNFREQ=0.8
         AICycle=3
@@ -79,19 +84,22 @@ class TestClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "warthogArrow")
+        sprite=SKSpriteNode(imageNamed: "warthog")
         sprite.position=pos
         
         sprite.name=String(format:"entWarthog%04d", number)
         name=String(format:"entWarthog%04d", number)
         sprite.zPosition=170
-        sprite.lightingBitMask=1
-        sprite.shadowedBitMask=0
-        sprite.shadowCastBitMask=0
         scene!.addChild(sprite)
         
+        let rC=random(min: 0.5, max: 1.0)
+        let gC=random(min: 0.5, max: 1.0)
+        let bC=random(min: 0.5, max: 1.0)
+        sprite.colorBlendFactor=1.0
+        sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
+        
         // Variable updates
-        MAXSPEED=1.2
+        MAXSPEED=5.5
         TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
@@ -119,16 +127,22 @@ class TestClass:EntityClass
         
         
         // sprite update
-        sprite=SKSpriteNode(imageNamed: "warthogArrow")
+        sprite=SKSpriteNode(imageNamed: "warthog")
         sprite.position=pos
         
         sprite.name=String(format:"entWarthog%04d", number)
         name=String(format:"entWarthog%04d", number)
         sprite.zPosition=170
         scene!.addChild(sprite)
+        let rC=random(min: 0.5, max: 1.0)
+        let gC=random(min: 0.5, max: 1.0)
+        let bC=random(min: 0.5, max: 1.0)
+        sprite.colorBlendFactor=1.0
+        sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
+        
         
         // Variable updates
-        MAXSPEED=1.2
+        MAXSPEED=5.5
         TURNRATE=0.15
         TURNFREQ=0.5
         AICycle=3
@@ -173,7 +187,7 @@ class TestClass:EntityClass
             
         } // for each entity
         
-        if closestIndex > -1 && closest < 1000
+        if closestIndex > -1 && closest < 1200
         {
             isFleeing = true
             predTarget=map!.predList[closestIndex]
@@ -199,7 +213,7 @@ class TestClass:EntityClass
             {
                 speed = MAXSPEED
             }
-            if -lastFleeTurn.timeIntervalSinceNow > 1.0
+            if -lastFleeTurn.timeIntervalSinceNow > 1.5
             {
                 if angle > CGFloat.pi*2
                 {
@@ -218,7 +232,7 @@ class TestClass:EntityClass
                 
                 
                 
-                let offset:CGFloat=random(min: -CGFloat.pi/2, max: CGFloat.pi/2)
+                let offset:CGFloat=random(min: -CGFloat.pi/4, max: CGFloat.pi/4)
                 lastFleeTurn=NSDate()
                 var tempAngle=offset + angle
                 
@@ -323,10 +337,10 @@ class TestClass:EntityClass
             
             
             // Baby time!
-            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
+            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0 && !isFleeing
             {
                 let babyChance=random(min: 0.0, max: 1.0)
-                if babyChance > 0.999775
+                if babyChance > 0.999875
                 {
                     // Hurray! We're having a baby!
                     let babyNumber=Int(random(min: 2, max: 5.999999))
@@ -568,7 +582,12 @@ class TestClass:EntityClass
         
         if cycle==AICycle
         {
-            checkPredators()
+            if -lastPredCheck.timeIntervalSinceNow > 1.5
+            {
+                checkPredators()
+                lastPredCheck=NSDate()
+            }
+            
             // first decide what to do
             decideWhatToDo()
             if !isHerdLeader

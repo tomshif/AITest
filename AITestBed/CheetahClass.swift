@@ -100,6 +100,13 @@ class CheetahClass:EntityClass
         
         scene!.addChild(sprite)
         
+        let rC=random(min: 0.85, max: 1.0)
+        let gC=random(min: 0.85, max: 1.0)
+        let bC=random(min: 0.85, max: 1.0)
+        sprite.colorBlendFactor=1.0
+        sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
+        
+        
         // Variable updates
         MAXSPEED=6.5
         TURNRATE=0.15
@@ -273,6 +280,7 @@ class CheetahClass:EntityClass
                 currentState = WANDERSTATE
                 preyTarget = nil
                 stamina = 0
+                speed=0
                 map!.msg.sendMessage(type: map!.msg.HUNTFAILED, from: self.name)
             }// if stamina < 0
             
@@ -321,3 +329,6 @@ class CheetahClass:EntityClass
     }// func Stam
     
 } // CheetahClass
+
+
+
