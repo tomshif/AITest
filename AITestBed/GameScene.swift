@@ -88,7 +88,7 @@ class GameScene: SKScene {
     let CHEETAHHERD:Int=10
     
     
-    let BIRDCOUNT:Int=100
+    let BIRDCOUNT:Int=0
     
     let MAPHEIGHT:Int=32
     let MAPWIDTH:Int=32
@@ -266,7 +266,7 @@ class GameScene: SKScene {
         {
             var temp:String=""
             isSelected=false
-            
+            selectedEntity=nil
             for node in nodes(at: pos)
             {
                 if (node.name?.contains("ent"))! || (node.name?.contains("infoHunger"))!
@@ -276,7 +276,7 @@ class GameScene: SKScene {
                 } // if we have a match
 
             } // for each node
-           
+            
             if isSelected
             {
                 for i in 0..<map.entList.count
@@ -287,7 +287,18 @@ class GameScene: SKScene {
                         break
                     } // if we have a match
                 } // for each entity
-                
+                  if selectedEntity==nil
+                  {
+                    for i in 0..<map.predList.count
+                    {
+                        if map.predList[i].name==temp
+                        {
+                            selectedEntity=map.predList[i]
+                            break
+                        } // if we have a match
+                        
+                    }
+                }
             } // if we have something selected
     
         } // if we're in select mode
@@ -578,6 +589,11 @@ class GameScene: SKScene {
             
         case 85: // Numeric keypad 3
             scatterZone(type: 4)
+            
+            
+        case 92:
+            scatterAnimals()
+            
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         } // switch
@@ -642,6 +658,32 @@ class GameScene: SKScene {
         }
         
     } // checkKeys
+    
+    func scatterAnimals()
+    {
+        for _ in 1...20
+        {
+            let num=random(min: 0, max: 1)
+            let pos=CGPoint(x: random(min: CGFloat(-MAPWIDTH/2)*map.TILESIZE, max: CGFloat(MAPWIDTH/2)*map.TILESIZE), y: random(min: CGFloat(-MAPWIDTH/2)*map.TILESIZE, max: CGFloat(MAPWIDTH/2)*map.TILESIZE))
+            if num > 0.7
+            {
+                spawnHerd(type: SPRINGBOKHERD, loc: pos)
+            }
+            else if num > 0.4
+            {
+                spawnHerd(type: ZEBRAHERD, loc: pos)
+            }
+            else if num > 0.1
+            {
+                spawnHerd(type: ENTITYHERD, loc: pos)
+            }
+            else
+            {
+                spawnHerd(type: CHEETAHHERD, loc: pos)
+            }
+        }
+        
+    }
     
     func updateSelected()
     {
@@ -806,7 +848,7 @@ class GameScene: SKScene {
             print(tempCheetah.name)
             
             tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-            map.entList.append(tempCheetah)
+            map.predList.append(tempCheetah)
             map.entityCounter+=1
             
             let chance=random(min: 0, max: 1.0)
@@ -818,7 +860,7 @@ class GameScene: SKScene {
 
                     
                     tempCheetah.sprite.zRotation=random(min: 0, max: CGFloat.pi*2)
-                    map.entList.append(cheetahBaby)
+                    map.predList.append(cheetahBaby)
                     map.entityCounter+=1
                     
                 }
@@ -944,6 +986,20 @@ class GameScene: SKScene {
                     } // if the selected entity dies
                 } // if something dies
             } // for each entity
+            
+            for i in 0..<map.predList.count
+            {
+                let updateReturn=map.predList[i].update(cycle: currentCycle)
+                if updateReturn > -1 && isSelected
+                {
+                    if map.predList[i].name==selectedEntity!.name
+                    {
+                        isSelected=false
+                        selectedEntity=nil
+                    } // if the selected entity dies
+                } // if something dies
+                
+            } // update predators
             
             // update birds
             for i in 0..<map.birdList.count
