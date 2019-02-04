@@ -312,6 +312,36 @@ class ZebraClass:EntityClass
         
     }// escape func
     
+    func boundCheck()
+    {
+        if isHerdLeader==true
+        {
+            if  sprite.position.x > BOUNDARY
+            {
+                gotoLASTSTATE = currentState
+                currentState = GOTOSTATE
+            }
+            
+            if sprite.position.y > BOUNDARY
+            {
+                gotoLASTSTATE = currentState
+                currentState = GOTOSTATE
+            }
+            
+            if sprite.position.x < -BOUNDARY
+            {
+                gotoLASTSTATE = currentState
+                currentState = GOTOSTATE
+            }
+            
+            if sprite.position.y < -BOUNDARY
+            {
+                gotoLASTSTATE = currentState  
+                currentState = GOTOSTATE
+            }
+        }
+    }
+    
     
    override internal func update(cycle: Int) -> Int
     {
