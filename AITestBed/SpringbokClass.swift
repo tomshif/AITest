@@ -243,6 +243,46 @@ class SpringbokClass:EntityClass
         }
     }
     
+    func offMap()
+    {
+        if isHerdLeader==true && currentState != GOTOSTATE
+        {
+            if sprite.position.x > map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y
+                gotoPoint.x = sprite.position.x*0.9 - 200
+            }
+            if sprite.position.x < -map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y
+                gotoPoint.x = sprite.position.x*0.9 + 200
+            }
+            if sprite.position.y > map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y*0.9 - 200
+                gotoPoint.x = sprite.position.x
+            }
+            if sprite.position.y < -map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y*0.9 + 200
+                gotoPoint.x = sprite.position.x
+            }
+        }
+        
+        
+        
+        
+        
+        
+    }
     
     private func checkPredators()
     {
@@ -307,10 +347,10 @@ class SpringbokClass:EntityClass
             
             
             // Baby time!
-            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0
+            if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0 && isFleeing==false
             {
                 let babyChance=random(min: 0.0, max: 1.0)
-                if babyChance > 0.999955
+                if babyChance > 0.999994
                 {
                     // Hurray! We're having a baby!
                     let babyNumber=Int(random(min: 2, max: 5.999999))
@@ -344,7 +384,8 @@ class SpringbokClass:EntityClass
         } // if we're still alive
     } // func ageEntity
     
-
+    
+    
     func catchUp()
     {
         var angle = getAngleToEntity(ent: herdLeader!)
@@ -394,7 +435,7 @@ class SpringbokClass:EntityClass
                 checkPredators()
                 lastPredCheck=NSDate()
             }
-            
+            offMap()
 
             if currentState==WANDERSTATE && !isFleeing
             {
@@ -413,6 +454,11 @@ class SpringbokClass:EntityClass
                 {
                     wander()
                 }
+               
+            }
+            else if currentState == GOTOSTATE
+            {
+                goTo()
             }
             
             // fix it if our rotation is more than pi*2 or less than 0
@@ -424,6 +470,7 @@ class SpringbokClass:EntityClass
             {
                 sprite.zRotation += CGFloat.pi*2
             }
+            
             
         } // if it's our update cycle
         
