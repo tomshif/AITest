@@ -507,12 +507,51 @@ class TestClass:EntityClass
         return nil
     } // findZone
     
+    func boundCheck()
+    {
+        if isHerdLeader==true && currentState != GOTOSTATE
+        {
+            if  sprite.position.x > map!.BOUNDARY*0.9
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y=sprite.position.y
+                gotoPoint.x=sprite.position.x*0.9-256
+            }
+            
+            if sprite.position.y > map!.BOUNDARY*0.9
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y=sprite.position.y*0.9-256
+                gotoPoint.x=sprite.position.x
+            }
+            
+            if sprite.position.x < -map!.BOUNDARY*0.9
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y=sprite.position.y
+                gotoPoint.x=sprite.position.x*0.9+200
+            }
+            
+            if sprite.position.y < -map!.BOUNDARY*0.9
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y=sprite.position.y*0.9+200
+                gotoPoint.x=sprite.position.x
+            }
+        }
+    } // func boundCheck
+    
     override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
         
         doTurn()
         updateGraphics()
+        boundCheck()
         // fix it if our rotation is more than pi*2 or less than 0
         if sprite.zRotation > CGFloat.pi*2
         {
@@ -542,7 +581,7 @@ class TestClass:EntityClass
             }
             
             // first decide what to do
-            decideWhatToDo()
+            // decideWhatToDo()
             if !isHerdLeader
             {
                 if !herdLeader!.isAlive()
@@ -603,8 +642,7 @@ class TestClass:EntityClass
                 }
                 
             } // if we're in rest state
-            
-            if currentState==GOTOSTATE
+            else if currentState==GOTOSTATE
             {
                 goTo()
             }
