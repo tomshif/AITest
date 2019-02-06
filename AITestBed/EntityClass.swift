@@ -44,6 +44,8 @@ class EntityClass
     public var ACCELERATION:CGFloat=0.5
     public var TURNSPEEDLOST:CGFloat=0.1
     
+    public var isDiseased:Bool=false
+    
     public var isTurning:Bool=false
     public var alive:Bool=true
     internal var isHerdLeader:Bool=false
@@ -111,6 +113,11 @@ class EntityClass
         
         
     } // init
+    
+    public func catchDisease()
+    {
+        
+    }
     
     public func updateGraphics()
     {

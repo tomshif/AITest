@@ -262,9 +262,9 @@ class TestClass:EntityClass
         var closestLeaderDist:CGFloat=500000000
         var closestLeaderIndex:Int = -1
         
-        for i in 1..<map!.entList.count
+        for i in 0..<map!.entList.count
         {
-            if map!.entList[i].getAgeString()=="Mature" && map!.entList[i].isAlive() && map!.entList[i].isMale
+            if map!.entList[i].isAlive()
             {
                 let dist=getDistToEntity(ent: map!.entList[i])
 
@@ -276,7 +276,7 @@ class TestClass:EntityClass
                         closestLeaderIndex=i
                     } // if we've found a herd leader
                 } // we've found another herd leader
-                else
+                else if map!.entList[i].isMale && map!.entList[i].getAgeString()=="Mature"
                 {
                     if dist < maleDistance
                     {
@@ -288,18 +288,24 @@ class TestClass:EntityClass
             
         } // for each entity
         
-        if closestLeaderDist < 5000
+        if closestLeaderDist < 1000
         {
             herdLeader=map!.entList[closestLeaderIndex]
             map!.entList[closestLeaderIndex].isHerdLeader=true
             map!.entList[closestLeaderIndex].herdLeader=nil
         } // if we found a herd leader close enough, switch to it
-        else
+        else if maleIndex > -1 && maleDistance < 2000
         {
             herdLeader=map!.entList[maleIndex]
             map!.entList[maleIndex].isHerdLeader=true
             map!.entList[maleIndex].herdLeader=nil
         } // otherwise choose the closest mature male
+        else
+        {
+            herdLeader=nil
+            isHerdLeader=true
+            
+        } // promote self to leader
     } // func findNewHerdLeader
     
     override func ageEntity() -> Bool
@@ -317,6 +323,8 @@ class TestClass:EntityClass
         {
             let ageRatio=age/(MAXAGE*0.5)
             var scale:CGFloat=ageRatio
+            let zRatio=(age/MAXAGE)*10+160
+            sprite.zPosition=zRatio
             if scale < MINSCALE
             {
                 scale=MINSCALE
@@ -327,14 +335,13 @@ class TestClass:EntityClass
             }
             sprite.setScale(scale)
             
-            if getAgeString()=="Juvenile" && !herdLeader!.isMale
+            if getAgeString()=="Juvenile" && herdLeader != nil
             {
-                if herdLeader!.herdLeader!.isAlive()
+                if !herdLeader!.isHerdLeader
                 {
                     findNewHerdLeader()
                 }
-            } // if our herd leader is still our mom
-            
+            }
             
             // Baby time!
             if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0 && !isFleeing
@@ -551,7 +558,7 @@ class TestClass:EntityClass
         
         doTurn()
         updateGraphics()
-        boundCheck()
+       
         // fix it if our rotation is more than pi*2 or less than 0
         if sprite.zRotation > CGFloat.pi*2
         {
@@ -574,6 +581,7 @@ class TestClass:EntityClass
         
         if cycle==AICycle
         {
+             boundCheck()
             if -lastPredCheck.timeIntervalSinceNow > 1.5
             {
                 checkPredators()
