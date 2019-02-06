@@ -137,7 +137,7 @@ class CheetahClass:EntityClass
         updateGraphics()
         Baby()
         Stam()
-        
+        border()
 
         
         if alive
@@ -324,6 +324,35 @@ class CheetahClass:EntityClass
             }// if chance > 0.9995
         }// if age - lastBaby
     }// func Baby
+    
+    func border()
+    {
+    
+            if sprite.position.x > map!.BOUNDARY * 0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint = CGPoint(x: sprite.position.x * 0.9 - 200, y: sprite.position.y)
+            }// sprite.position.x >
+            if sprite.position.x < -map!.BOUNDARY * 0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint = CGPoint(x: sprite.position.x * 0.9 - 200, y: sprite.position.y)
+            }// sprite.position.x <
+            if sprite.position.y > map!.BOUNDARY * 0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint = CGPoint(x: sprite.position.x, y: sprite.position.y * 0.9 - 200)
+            }// sprite.position.y >
+            if sprite.position.y < -map!.BOUNDARY * 0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint = CGPoint(x: sprite.position.x, y: sprite.position.y * 0.9 + 200)
+            }// sprite.position.y <
+    }//border
     
     func Stam()
     {
