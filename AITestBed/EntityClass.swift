@@ -114,6 +114,11 @@ class EntityClass
         
     } // init
     
+    public func catchDisease()
+    {
+        
+    }
+    
     public func updateGraphics()
     {
         let dx=cos(sprite.zRotation)*speed*map!.getTimeScale()

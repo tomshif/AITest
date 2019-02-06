@@ -193,6 +193,14 @@ class SpringbokClass:EntityClass
     
     }//check herdleader
     
+    override func catchDisease()
+    {
+        
+    }
+    
+    
+    
+    
     private func flee()
     {
         if predTarget != nil
@@ -283,6 +291,7 @@ class SpringbokClass:EntityClass
         
         
     }
+    
     
     private func checkPredators()
     {
