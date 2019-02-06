@@ -354,6 +354,16 @@ class CheetahClass:EntityClass
             }// sprite.position.y <
     }//border
     
+    
+    func catchDisease()
+    {
+        let chance=random(min: 0, max: 1)
+        if chance > 0.99999999995
+        {
+
+        }
+    }
+    
     func Stam()
     {
         if currentState != HUNTSTATE
