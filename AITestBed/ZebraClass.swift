@@ -314,7 +314,7 @@ class ZebraClass:EntityClass
     
     func boundCheck()
     {
-        if isHerdLeader==true
+        if isHerdLeader==true && currentState != GOTOSTATE
         {
             if  sprite.position.x > map!.BOUNDARY
             {
@@ -348,7 +348,7 @@ class ZebraClass:EntityClass
         var ret:Int = -1
         
             giveBirth()
-        
+        boundCheck()
             doTurn()
         updateGraphics()
         
