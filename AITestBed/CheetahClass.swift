@@ -355,7 +355,7 @@ class CheetahClass:EntityClass
     }//border
     
     
-    func catchDisease()
+    override func catchDisease()
     {
         let chance=random(min: 0, max: 1)
         if chance > 0.99999999995

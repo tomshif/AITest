@@ -18,7 +18,10 @@ class TestClass:EntityClass
     
     private var targetZone:ZoneClass?
     
-    
+    private var diseaseHour:CGFloat=0
+    private var diseaseDay:Int=0
+    private var diseaseColor=NSColor()
+    private var healthyColor=NSColor()
     
     public static let FOODZONE:Int=0
     public static let WATERZONE:Int=2
@@ -51,10 +54,13 @@ class TestClass:EntityClass
         sprite.shadowCastBitMask=0
         scene!.addChild(sprite)
         
-        let colorVariation=random(min: 0.7, max: 1.0)
+        let rC=random(min: 0.5, max: 1.0)
+        let gC=random(min: 0.5, max: 1.0)
+        let bC=random(min: 0.5, max: 1.0)
         sprite.colorBlendFactor=1.0
-        sprite.color=NSColor(calibratedRed: colorVariation, green: colorVariation, blue: colorVariation, alpha: 1.0)
-        
+        sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
+        diseaseColor=NSColor(calibratedRed: 0.05, green: 1.0, blue: 0.5, alpha: 1.0)
+        healthyColor=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
         
         // Variable updates
         MAXSPEED=4.5
@@ -97,7 +103,8 @@ class TestClass:EntityClass
         let bC=random(min: 0.5, max: 1.0)
         sprite.colorBlendFactor=1.0
         sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
-        
+        diseaseColor=NSColor(calibratedRed: 0.05, green: 1.0, blue: 0.5, alpha: 1.0)
+        healthyColor=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
         // Variable updates
         MAXSPEED=5.5
         TURNRATE=0.15
@@ -139,8 +146,8 @@ class TestClass:EntityClass
         let bC=random(min: 0.6, max: 1.0)
         sprite.colorBlendFactor=1.0
         sprite.color=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
-        
-        
+        diseaseColor=NSColor(calibratedRed: 0.5, green: 1.0, blue: 0.5, alpha: 1.0)
+        healthyColor=NSColor(calibratedRed: rC, green: gC, blue: bC, alpha: 1.0)
         // Variable updates
         MAXSPEED=5.5
         TURNRATE=0.15
@@ -311,6 +318,8 @@ class TestClass:EntityClass
     override func ageEntity() -> Bool
     {
         age += map!.getTimeInterval()*map!.getTimeScale()
+        
+        
         if age > MAXAGE
         {
             map!.msg.sendMessage(type: 8, from: name)
@@ -347,7 +356,7 @@ class TestClass:EntityClass
             if map!.getDay() >= 1 && map!.getDay() <= 3 && !isMale && self.getAgeString()=="Mature" && herdLeader != nil && map!.getYear()-lastBabyYear > 0 && !isFleeing
             {
                 let babyChance=random(min: 0.0, max: 1.0)
-                if babyChance > 0.999875
+                if babyChance > 0.999995
                 {
                     // Hurray! We're having a baby!
                     let babyNumber=Int(random(min: 2, max: 5.999999))
@@ -368,12 +377,84 @@ class TestClass:EntityClass
             } // if it's dry season and we're female and we're "mature" and we have a herd leader and we haven't had babies this year
             
             
+            // if we're diseased, have a very small chance to make our
+            // herd leader diseased
+            if herdLeader != nil && isDiseased
+            {
+                if !herdLeader!.isDiseased
+                {
+                    let chance=random(min: 0, max: 1)
+                    if chance > 0.99995
+                    {
+                        herdLeader!.catchDisease()
+                    }
+                }
+            } // if we have a herd leader and we are diseased
+            else if herdLeader != nil && !isDiseased
+            {
+                if herdLeader!.isDiseased
+                {
+                    let chance=random(min: 0, max: 1)
+                    if chance > 0.99995
+                    {
+                        catchDisease()
+                    }
+                    
+                }
+            }
+            else if !isDiseased
+            {
+                
+                // give a really small chance to catch a disease
+                
+                let chance = random(min: 0.0, max: 1.0)
+                if getAgeString() == "Baby"
+                {
+                    if chance > 0.9999955
+                    {
+                        catchDisease()
+                    }
+                }
+                else if getAgeString()=="Juvenile"
+                {
+                    if chance > 0.99999955
+                    {
+                        catchDisease()
+                    }
+                }
+                else if getAgeString()=="Mature"
+                {
+                    if chance > 0.999999955
+                    {
+                        catchDisease()
+                    }
+                }
+                else
+                {
+                    if chance > 0.9999955
+                    {
+                        catchDisease()
+                    }
+                }
+            } // else if we're not diseased
             return true
         } // if we're still alive
     } // func ageEntity
     
     
-    
+    override func catchDisease()
+    {
+        diseaseHour=map!.getTimeOfDay()
+        diseaseDay=map!.getDay()
+        if diseaseDay == 6
+        {
+            diseaseDay = 0
+        }
+        
+        isDiseased=true
+        map!.msg.sendMessage(type: map!.msg.INFECTED, from: name)
+        sprite.color=diseaseColor
+    } // func catchDisease
     
     private func pursue()
     {
@@ -523,14 +604,14 @@ class TestClass:EntityClass
                 gotoLastState = currentState
                 currentState = GOTOSTATE
                 gotoPoint.y=sprite.position.y
-                gotoPoint.x=sprite.position.x*0.9-256
+                gotoPoint.x=sprite.position.x*0.8
             }
             
             if sprite.position.y > map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint.y=sprite.position.y*0.9-256
+                gotoPoint.y=sprite.position.y*0.8
                 gotoPoint.x=sprite.position.x
             }
             
@@ -539,14 +620,14 @@ class TestClass:EntityClass
                 gotoLastState = currentState
                 currentState = GOTOSTATE
                 gotoPoint.y=sprite.position.y
-                gotoPoint.x=sprite.position.x*0.9+200
+                gotoPoint.x=sprite.position.x*0.8
             }
             
             if sprite.position.y < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint.y=sprite.position.y*0.9+200
+                gotoPoint.y=sprite.position.y*0.8
                 gotoPoint.x=sprite.position.x
             }
         }
@@ -581,7 +662,20 @@ class TestClass:EntityClass
         
         if cycle==AICycle
         {
-             boundCheck()
+            // check time we've had disease and die if it's been too long
+            if isDiseased
+            {
+                let timeUntilDeath = (CGFloat(diseaseDay)*1440 + diseaseHour) - (CGFloat(map!.getDay())*1440 + map!.getTimeOfDay()) + 1440
+    
+                if timeUntilDeath < 0
+                {
+                    die()
+                    map!.msg.sendMessage(type: map!.msg.DEATH_DISEASE, from: name)
+                }
+            }
+            
+            
+            boundCheck()
             if -lastPredCheck.timeIntervalSinceNow > 1.5
             {
                 checkPredators()
