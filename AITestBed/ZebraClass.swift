@@ -316,31 +316,35 @@ class ZebraClass:EntityClass
     {
         if isHerdLeader==true && currentState != GOTOSTATE
         {
-            if  sprite.position.x > map!.BOUNDARY
+            if  sprite.position.x > map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-            }
+                gotoPoint=CGPoint(x: sprite.position.x-200, y:  sprite.position.y )
+            }// if we leave the right boundary
             
-            if sprite.position.y > map!.BOUNDARY
+            if sprite.position.y > map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-            }
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y-200 )
+            }// if we leave the top boundary
             
-            if sprite.position.x < -map!.BOUNDARY
+            if sprite.position.x < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-            }
+                gotoPoint=CGPoint(x: sprite.position.x+200, y:  sprite.position.y )
+            }// if we leave the left boundary
             
-            if sprite.position.y < -map!.BOUNDARY
+            if sprite.position.y < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-            }
-        }
-    }
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y + 200 )
+            }// if we leave the bottom boundary
+        }// if we're the herd leader and not in goto state
+    }// boundcheck function
     
     
    override internal func update(cycle: Int) -> Int
