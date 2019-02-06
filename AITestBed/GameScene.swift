@@ -522,7 +522,13 @@ class GameScene: SKScene {
         case 37: // L
             currentMode=OBSTACLEMODE
             map.msg.sendCustomMessage(message: "Spawn obstacle mode.")
+          
             
+        case 44: // / (slash)
+            if isSelected && selectedEntity != nil
+            {
+                selectedEntity!.catchDisease()
+            }
         case 46:
             if msgBG.isHidden
             {

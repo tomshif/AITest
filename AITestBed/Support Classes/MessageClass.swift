@@ -21,6 +21,7 @@ class MessageClass
     let BORN:Int=20
     let NEWHERDLEADER:Int=22
     let HUNTFAILED:Int=24
+    let INFECTED:Int=26
     
     
     init()
@@ -63,6 +64,10 @@ class MessageClass
             unreadQueue.append(temp)
         case 24:
             let temp="\(name) failed on a hunt."
+            unreadQueue.append(temp)
+            
+        case 26:
+            let temp="\(name) got a disease."
             unreadQueue.append(temp)
             
         default:
