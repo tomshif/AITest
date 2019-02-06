@@ -245,7 +245,43 @@ class SpringbokClass:EntityClass
     
     func offMap()
     {
-    
+        if isHerdLeader==true && currentState != GOTOSTATE
+        {
+            if sprite.position.x > map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y
+                gotoPoint.x = sprite.position.x*0.9 - 200
+            }
+            if sprite.position.x < -map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y
+                gotoPoint.x = sprite.position.x*0.9 + 200
+            }
+            if sprite.position.y > map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y*0.9 - 200
+                gotoPoint.x = sprite.position.x
+            }
+            if sprite.position.y < -map!.BOUNDARY*0.95
+            {
+                gotoLastState = currentState
+                currentState = GOTOSTATE
+                gotoPoint.y = sprite.position.y*0.9 + 200
+                gotoPoint.x = sprite.position.x
+            }
+        }
+        
+        
+        
+        
+        
+        
     }
     
     private func checkPredators()
@@ -399,7 +435,7 @@ class SpringbokClass:EntityClass
                 checkPredators()
                 lastPredCheck=NSDate()
             }
-            
+            offMap()
 
             if currentState==WANDERSTATE && !isFleeing
             {
