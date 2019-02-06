@@ -346,6 +346,53 @@ class ZebraClass:EntityClass
         }// if we're the herd leader and not in goto state
     }// boundcheck function
     
+    override public func ageEntity() -> Bool
+    {
+        age += map!.getTimeInterval()*map!.getTimeScale()
+        let diseaseChance:CGFloat=random(min: 0, max: 1.0)
+        
+        if diseaseChance>0.999997775
+        {
+            isDiseased=true
+            if isDiseased==true
+            {
+                let diseaseDay=map!.getDay()
+                let diseaseTIme=map!.getTimeOfDay()
+                if map!.getDay() != diseaseDay  &&  map!.getTimeOfDay() == diseaseTIme
+                {
+                    map!.msg.sendMessage(type: 8, from: name)
+                    sprite.removeFromParent()
+                    alive=false
+                    return false
+                }
+            }
+        }
+        if age > MAXAGE
+        {
+            map!.msg.sendMessage(type: 8, from: name)
+            sprite.removeFromParent()
+            alive=false
+            return false
+        } // if we die of old age
+        else
+        {
+            let ageRatio=age/(MAXAGE*0.5)
+            var scale:CGFloat=ageRatio
+            if scale < MINSCALE
+            {
+                scale=MINSCALE
+            }
+            if scale > MAXSCALE
+            {
+                scale = MAXSCALE
+            }
+            sprite.setScale(scale)
+            
+            
+            
+            return true
+        } // if we're still alive
+    } // func ageEntity
     
    override internal func update(cycle: Int) -> Int
     {
