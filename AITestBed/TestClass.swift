@@ -384,24 +384,24 @@ class TestClass:EntityClass
                 if !herdLeader!.isDiseased
                 {
                     let chance=random(min: 0, max: 1)
-                    if chance > 0.99995
+                    if chance > 0.99955
                     {
                         herdLeader!.catchDisease()
                     }
-                }
+                } // if our herd leader is not diseased
             } // if we have a herd leader and we are diseased
             else if herdLeader != nil && !isDiseased
             {
                 if herdLeader!.isDiseased
                 {
                     let chance=random(min: 0, max: 1)
-                    if chance > 0.99995
+                    if chance > 0.99955
                     {
                         catchDisease()
                     }
                     
-                }
-            }
+                } // if the herd leader is diseased, then we have a small chance to catch it.
+            } // if we have a herd leader and we're not diseased
             else if !isDiseased
             {
                 
@@ -410,28 +410,28 @@ class TestClass:EntityClass
                 let chance = random(min: 0.0, max: 1.0)
                 if getAgeString() == "Baby"
                 {
-                    if chance > 0.9999955
+                    if chance > 0.9999555
                     {
                         catchDisease()
                     }
                 }
                 else if getAgeString()=="Juvenile"
                 {
-                    if chance > 0.99999955
+                    if chance > 0.99999555
                     {
                         catchDisease()
                     }
                 }
                 else if getAgeString()=="Mature"
                 {
-                    if chance > 0.999999955
+                    if chance > 0.999999555
                     {
                         catchDisease()
                     }
                 }
                 else
                 {
-                    if chance > 0.9999955
+                    if chance > 0.9999555
                     {
                         catchDisease()
                     }
