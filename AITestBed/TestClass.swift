@@ -384,7 +384,7 @@ class TestClass:EntityClass
                 if !herdLeader!.isDiseased
                 {
                     let chance=random(min: 0, max: 1)
-                    if chance > 0.99955
+                    if chance > 0.99995
                     {
                         herdLeader!.catchDisease()
                     }
@@ -395,7 +395,7 @@ class TestClass:EntityClass
                 if herdLeader!.isDiseased
                 {
                     let chance=random(min: 0, max: 1)
-                    if chance > 0.99955
+                    if chance > 0.99995
                     {
                         catchDisease()
                     }
