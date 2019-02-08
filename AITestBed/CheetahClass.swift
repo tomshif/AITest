@@ -5,7 +5,7 @@
 //  Created by Game Design Shared on 1/7/19.
 //  Copyright © 2019 Liberty Game Dev. All rights reserved.
 //
-
+//if  isDiseased map!.getTimeOfDay() > diseaseHour && map!getDay() != diseaseDay { die()}
 import Foundation
 import SpriteKit
 class CheetahClass:EntityClass
@@ -22,6 +22,10 @@ class CheetahClass:EntityClass
     var lastBaby:CGFloat = 0
     var preyTarget:EntityClass?
     var lastPreyCheck = NSDate()
+    var getDiseaseDay:CGFloat = 6
+    var timePassed:CGFloat = 0
+    var diseaseDay:Int=0
+    var diseaseHour:CGFloat=0
     
     override init()
     {
@@ -53,7 +57,7 @@ class CheetahClass:EntityClass
         TURNFREQ=3
         AICycle=0
         MAXAGE=8*8640
-        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
+        MAXAGE=random(min: MAXAGE*0.7, max: MAXAGE*1.0) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         
         
@@ -138,15 +142,28 @@ class CheetahClass:EntityClass
         Baby()
         Stam()
         border()
-
+        
+        sprite.zPosition = age + 120
         
         if alive
         {
             if !ageEntity()
             {
                 ret=2
+                let chance=random(min: 0, max: 1)
+                if chance > 0.99999999995
+                {
+                    catchDisease()
+                }
             } // we're able to age, if we die, set return death code
         } // if we're alive
+        
+        if isDiseased && map!.getDay() != diseaseDay && diseaseHour > map!.getTimeOfDay()
+        {
+            die()
+            map!.msg.sendMessage(type: map!.msg.DEATH_DISEASE, from: self.name)
+        }
+        
         if cycle==AICycle
         {
         
@@ -283,7 +300,14 @@ class CheetahClass:EntityClass
                 preyTarget = nil
                 currentState = WANDERSTATE
                 speed=0
-
+                if preyTarget!.isDiseased == true
+                {
+                    let chance = random(min: 0, max: 1)
+                    if chance > 0.95
+                    {
+                        catchDisease()
+                    }
+                }
             }// dist < 20
             if stamina < 0
             {
@@ -357,12 +381,11 @@ class CheetahClass:EntityClass
     
     override func catchDisease()
     {
-        let chance=random(min: 0, max: 1)
-        if chance > 0.99999999995
-        {
-
-        }
-    }
+        isDiseased = true
+        map!.msg.sendMessage(type:map!.msg.INFECTED, from: self.name)
+        diseaseHour=map!.getTimeOfDay()
+        diseaseDay=map!.getDay()
+    }// override catchDisease
     
     func Stam()
     {

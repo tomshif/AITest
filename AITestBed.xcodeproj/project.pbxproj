@@ -127,8 +127,8 @@
 			isa = PBXGroup;
 			children = (
 				F4FA4D8821C30A8B0062BDE2 /* AppDelegate.swift */,
-				F4FA4D8A21C30A8B0062BDE2 /* GameScene.sks */,
 				F4FA4D8C21C30A8B0062BDE2 /* Actions.sks */,
+				F4FA4D8A21C30A8B0062BDE2 /* GameScene.sks */,
 				F4FA4D9421C30A8C0062BDE2 /* Main.storyboard */,
 			);
 			path = "Misc Files";
