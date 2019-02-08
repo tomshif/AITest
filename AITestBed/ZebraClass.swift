@@ -17,9 +17,15 @@ class ZebraClass:EntityClass
     var MAXHERD:Int=30
     var MAXCHILDRENBORN:Int=2
     
+    
+    
+    var diseaseDay:Int=0
+    
     var followDistance:CGFloat=150
     var lastBaby:CGFloat=0
-
+    var diseaseTime:CGFloat=0
+    let FOLLOWDIST:CGFloat = 125
+    var followDistVar:CGFloat=0
     
     var isSick:Bool=false
     var isFemale:Bool=false
@@ -62,6 +68,7 @@ class ZebraClass:EntityClass
         TURNFREQ=2
         AICycle=1
         ACCELERATION=0.15
+        followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
         WANDERANGLE=CGFloat.pi/7
         MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
@@ -111,10 +118,11 @@ class ZebraClass:EntityClass
         ACCELERATION=0.15
         WANDERANGLE=CGFloat.pi/7
         MAXAGE=8640*10
-        MAXAGE=random(min: MAXAGE*0.8, max: MAXAGE*1.4) // adjust max age to the individual
+        MAXAGE=random(min: MAXAGE*0.7, max: MAXAGE*1.0) // adjust max age to the individual
         age=random(min: 1.0, max: MAXAGE*0.7)
         ACCELERATION=0.15
         TURNSPEEDLOST=0.4
+        followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
         {
@@ -203,7 +211,7 @@ class ZebraClass:EntityClass
         {
             
             let spawnChance:CGFloat=random(min: 0, max: 1.00)
-            if spawnChance > 0.9997875
+            if spawnChance > 0.99997875
             {
                 print("Baby!")
                 let baby=ZebraClass(theScene: scene!, theMap: map!, pos: sprite.position, number: map!.entityCounter, leader: self)
@@ -311,6 +319,13 @@ class ZebraClass:EntityClass
         
         
     }// escape func
+   
+    override func catchDisease() {
+        diseaseDay=map!.getDay()
+        diseaseTime=map!.getTimeOfDay()
+        isDiseased=true
+        map!.msg.sendMessage(type: map!.msg.INFECTED, from: self.name)
+    } // func catchDisease
     
     func boundCheck()
     {
@@ -353,20 +368,9 @@ class ZebraClass:EntityClass
         
         if diseaseChance>0.999997775
         {
-            isDiseased=true
-            if isDiseased==true
-            {
-                let diseaseDay=map!.getDay()
-                let diseaseTIme=map!.getTimeOfDay()
-                if map!.getDay() != diseaseDay  &&  map!.getTimeOfDay() == diseaseTIme
-                {
-                    map!.msg.sendMessage(type: 8, from: name)
-                    sprite.removeFromParent()
-                    alive=false
-                    return false
-                }
-            }
+            catchDisease()
         }
+        
         if age > MAXAGE
         {
             map!.msg.sendMessage(type: 8, from: name)
@@ -394,6 +398,19 @@ class ZebraClass:EntityClass
         } // if we're still alive
     } // func ageEntity
     
+    func Infected()
+    {
+
+        if map!.getDay() != diseaseDay  &&  map!.getTimeOfDay() > diseaseTime
+        {
+            die()
+            map!.msg.sendMessage(type: map!.msg.DEATH_DISEASE, from: self.name)
+            
+        }
+
+    }
+    
+    
    override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
@@ -402,6 +419,9 @@ class ZebraClass:EntityClass
         boundCheck()
             doTurn()
         updateGraphics()
+        
+        sprite.zPosition = age + 100
+        
         
         if age > MAXAGE*0.2 && sprite.texture==babyTexture
         {
@@ -418,6 +438,10 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
+            if isDiseased
+            {
+                Infected()
+            }
             if -lastPredCheck.timeIntervalSinceNow > 1.0
             {
                 checkForPredators()
