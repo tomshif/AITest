@@ -63,7 +63,7 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
@@ -111,7 +111,7 @@ class ZebraClass:EntityClass
         sprite.color=NSColor(calibratedRed: rC, green: bC, blue: bC, alpha: 1.0)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
@@ -254,7 +254,7 @@ class ZebraClass:EntityClass
           
             }// for loop entlist
             
-            if closestIndex  >  -1 && closest<600
+            if closestIndex  >  -1 && closest<850
             {
                 isFleeing=true
                 predTarget=map!.predList[closestIndex]
