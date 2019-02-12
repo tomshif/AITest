@@ -63,7 +63,7 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
@@ -111,7 +111,7 @@ class ZebraClass:EntityClass
         sprite.color=NSColor(calibratedRed: rC, green: bC, blue: bC, alpha: 1.0)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
@@ -123,6 +123,10 @@ class ZebraClass:EntityClass
         ACCELERATION=0.15
         TURNSPEEDLOST=0.4
         followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
+        if (herdLeader==nil)
+        {
+            age = MAXAGE*0.3
+        }//making sure babies arent herd leaders
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
         {
@@ -250,7 +254,7 @@ class ZebraClass:EntityClass
           
             }// for loop entlist
             
-            if closestIndex  >  -1 && closest<600
+            if closestIndex  >  -1 && closest<850
             {
                 isFleeing=true
                 predTarget=map!.predList[closestIndex]
