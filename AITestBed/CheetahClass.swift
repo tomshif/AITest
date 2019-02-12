@@ -295,11 +295,6 @@ class CheetahClass:EntityClass
             let dist = getDistToEntity(ent: preyTarget!)
             if dist < 20
             {
-                map!.msg.sendMessage(type: map!.msg.DEATH_PREDATOR, from: preyTarget!.name)
-                preyTarget!.die()
-                preyTarget = nil
-                currentState = WANDERSTATE
-                speed=0
                 if preyTarget!.isDiseased == true
                 {
                     let chance = random(min: 0, max: 1)
@@ -307,7 +302,12 @@ class CheetahClass:EntityClass
                     {
                         catchDisease()
                     }
-                }
+                }// preyTarget
+                map!.msg.sendMessage(type: map!.msg.DEATH_PREDATOR, from: preyTarget!.name)
+                preyTarget!.die()
+                preyTarget = nil
+                currentState = WANDERSTATE
+                speed=0
             }// dist < 20
             if stamina < 0
             {
@@ -397,10 +397,7 @@ class CheetahClass:EntityClass
         {
             stamina = 1.0
         }
-
     }// func Stam
-    
-    
 } // CheetahClass
 
 
