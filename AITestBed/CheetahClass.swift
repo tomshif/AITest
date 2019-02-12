@@ -13,8 +13,7 @@ class CheetahClass:EntityClass
     var MAXHERD:Int = 1
     var MAXCHILD:Int = 2
     var isPregnant:Bool = false
-    var isChasing:Bool = false
-    var lastMeal:Bool = false     // I would recommend doing this more as "var lastMeal:Int=0"
+    var isChasing:Bool = false // I would recommend doing this more as "var lastMeal:Int=0"
     var isClose:Bool = false        // close to what?
     var isTravel:Bool = false       // travel?
     var cubs:Bool = false
@@ -142,6 +141,7 @@ class CheetahClass:EntityClass
         Baby()
         Stam()
         border()
+        meal()
         
         sprite.zPosition = age + 120
         
@@ -167,7 +167,7 @@ class CheetahClass:EntityClass
         if cycle==AICycle
         {
         
-            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85
+            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85 || -lastPreyCheck.timeIntervalSinceNow > 1.0 && hunger < 0.2
             {
                 checkPrey()
                 lastPreyCheck = NSDate()
@@ -269,7 +269,7 @@ class CheetahClass:EntityClass
         if preyTarget != nil && getAgeString()=="Mature"
         {
     
-            stamina -= 0.018 *  map!.getTimeScale()
+            stamina -= 0.016 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
             if speed > MAXSPEED
             {
@@ -308,6 +308,7 @@ class CheetahClass:EntityClass
                 preyTarget = nil
                 currentState = WANDERSTATE
                 speed=0
+                hunger = 1.0
             }// dist < 20
             if stamina < 0
             {
@@ -398,6 +399,24 @@ class CheetahClass:EntityClass
             stamina = 1.0
         }
     }// func Stam
+    
+    func meal()
+    {
+        if currentState != HUNTSTATE
+        {
+            hunger -= 0.00002 * map!.getTimeScale()
+        }
+        if hunger == 0
+        {
+            hunger = 0
+            die()
+        }// hunger = 0
+        if hunger == 1.0
+        {
+            hunger = 1.0
+        }
+    }// meal()
+    
 } // CheetahClass
 
 
