@@ -230,7 +230,7 @@ class CheetahClass:EntityClass
         {
             if !map!.entList[i].name.contains("Cheetah")
             {
-                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature")
+                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature") || !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature" && isDiseased == true)
                 {
                     let dist = getDistToEntity(ent: map!.entList[i])
                     if dist < closest
@@ -257,7 +257,7 @@ class CheetahClass:EntityClass
     
     private func hunt()
     {
-        if preyTarget != nil && getAgeString()=="Baby" && getAgeString()=="Juvinile" && herdLeader?.currentState == HUNTSTATE
+        if preyTarget != nil && getAgeString()=="Baby" && getAgeString()=="Juvinile" && herdLeader!.currentState == HUNTSTATE
         {
             speed = 0
             if herdLeader?.currentState == WANDERSTATE
@@ -269,7 +269,7 @@ class CheetahClass:EntityClass
         if preyTarget != nil && getAgeString()=="Mature"
         {
     
-            stamina -= 0.01 *  map!.getTimeScale()
+            stamina -= 0.018 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
             if speed > MAXSPEED
             {
