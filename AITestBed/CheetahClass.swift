@@ -140,9 +140,11 @@ class CheetahClass:EntityClass
         updateGraphics()
         Baby()
         Stam()
-        border()
         meal()
-        
+        if herdLeader == nil
+        {
+            border()
+        }
         sprite.zPosition = age + 120
         
         if alive
@@ -167,7 +169,7 @@ class CheetahClass:EntityClass
         if cycle==AICycle
         {
         
-            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85 || -lastPreyCheck.timeIntervalSinceNow > 1.0 && hunger < 0.15
+            if (-lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85) || (-lastPreyCheck.timeIntervalSinceNow > 1.0 && hunger < 0.15 )
             {
                 checkPrey()
                 lastPreyCheck = NSDate()
@@ -230,7 +232,11 @@ class CheetahClass:EntityClass
         {
             if !map!.entList[i].name.contains("Cheetah")
             {
-                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature") || !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature" && isDiseased == true)
+                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature")
+                {
+                    wander()
+                }
+                if !(map!.entList[i].name.contains("Zebra") && map!.entList[i].getAgeString() == "Mature" && isDiseased == true)
                 {
                     let dist = getDistToEntity(ent: map!.entList[i])
                     if dist < closest
@@ -268,8 +274,8 @@ class CheetahClass:EntityClass
         }//if preyTarget
         if preyTarget != nil && getAgeString()=="Mature"
         {
-    
-            stamina -= 0.016 *  map!.getTimeScale()
+            isChasing = true
+            stamina -= 0.0115 *  map!.getTimeScale()
             var angle = getAngleToEntity(ent: preyTarget!)
             if speed > MAXSPEED
             {
@@ -306,6 +312,7 @@ class CheetahClass:EntityClass
                 map!.msg.sendMessage(type: map!.msg.DEATH_PREDATOR, from: preyTarget!.name)
                 preyTarget!.die()
                 preyTarget = nil
+                border()
                 currentState = WANDERSTATE
                 speed=0
                 hunger = 1.0
@@ -314,6 +321,7 @@ class CheetahClass:EntityClass
             {
                 currentState = WANDERSTATE
                 preyTarget = nil
+                border()
                 stamina = 0
                 speed=0
                 map!.msg.sendMessage(type: map!.msg.HUNTFAILED, from: self.name)
@@ -352,31 +360,37 @@ class CheetahClass:EntityClass
     
     func border()
     {
-    
-            if sprite.position.x > map!.BOUNDARY * 0.95
-            {
-                gotoLastState = currentState
-                currentState = GOTOSTATE
-                gotoPoint = CGPoint(x: sprite.position.x * 0.9 - 200, y: sprite.position.y)
-            }// sprite.position.x >
-            if sprite.position.x < -map!.BOUNDARY * 0.95
-            {
-                gotoLastState = currentState
-                currentState = GOTOSTATE
-                gotoPoint = CGPoint(x: sprite.position.x * 0.9 - 200, y: sprite.position.y)
-            }// sprite.position.x <
-            if sprite.position.y > map!.BOUNDARY * 0.95
-            {
-                gotoLastState = currentState
-                currentState = GOTOSTATE
-                gotoPoint = CGPoint(x: sprite.position.x, y: sprite.position.y * 0.9 - 200)
-            }// sprite.position.y >
-            if sprite.position.y < -map!.BOUNDARY * 0.95
-            {
-                gotoLastState = currentState
-                currentState = GOTOSTATE
-                gotoPoint = CGPoint(x: sprite.position.x, y: sprite.position.y * 0.9 + 200)
-            }// sprite.position.y <
+        if currentState == WANDERSTATE
+        {
+        if sprite.position.x > map!.BOUNDARY*0.95
+        {
+            gotoLastState = currentState
+            currentState = GOTOSTATE
+            gotoPoint.y = sprite.position.y
+            gotoPoint.x = map!.BOUNDARY*0.8
+        }// sprite x
+        if sprite.position.x < -map!.BOUNDARY*0.95
+        {
+            gotoLastState = currentState
+            currentState = GOTOSTATE
+            gotoPoint.y = sprite.position.y
+            gotoPoint.x = -map!.BOUNDARY*0.8
+        }// sprite -x
+        if sprite.position.y > map!.BOUNDARY*0.95
+        {
+            gotoLastState = currentState
+            currentState = GOTOSTATE
+            gotoPoint.y = map!.BOUNDARY*0.8
+            gotoPoint.x = sprite.position.x
+        }// sprite y
+        if sprite.position.y < -map!.BOUNDARY*0.95
+        {
+            gotoLastState = currentState
+            currentState = GOTOSTATE
+            gotoPoint.y = -map!.BOUNDARY*0.8
+            gotoPoint.x = sprite.position.x
+        }// sprite -y
+        }
     }//border
     
     
