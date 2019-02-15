@@ -125,7 +125,7 @@ class ZebraClass:EntityClass
         followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
         if (herdLeader==nil)
         {
-            age = MAXAGE*0.3
+            age = random(min: MAXAGE*0.4, max: MAXAGE*0.6)
         }//making sure babies arent herd leaders
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
