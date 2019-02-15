@@ -167,7 +167,7 @@ class CheetahClass:EntityClass
         if cycle==AICycle
         {
         
-            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85 || -lastPreyCheck.timeIntervalSinceNow > 1.0 && hunger < 0.2
+            if -lastPreyCheck.timeIntervalSinceNow > 1.0 && stamina > 0.85 || -lastPreyCheck.timeIntervalSinceNow > 1.0 && hunger < 0.15
             {
                 checkPrey()
                 lastPreyCheck = NSDate()
@@ -253,7 +253,7 @@ class CheetahClass:EntityClass
         {
             currentState = WANDERSTATE
         }
-    }
+    }// func checkPrey()
     
     private func hunt()
     {
@@ -264,8 +264,8 @@ class CheetahClass:EntityClass
             {
                 catchUp()
                 Stam()
-            }
-        }
+            }// herdLeader?
+        }//if preyTarget
         if preyTarget != nil && getAgeString()=="Mature"
         {
     
