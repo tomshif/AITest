@@ -17,7 +17,7 @@ class ZebraClass:EntityClass
     var MAXHERD:Int=30
     var MAXCHILDRENBORN:Int=2
     
-    
+    var targetZone:ZoneClass?
     
     var diseaseDay:Int=0
     
@@ -125,7 +125,7 @@ class ZebraClass:EntityClass
         followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
         if (herdLeader==nil)
         {
-            age = MAXAGE*0.3
+            age = random(min: MAXAGE*0.4, max: MAXAGE*0.6)
         }//making sure babies arent herd leaders
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
@@ -412,7 +412,101 @@ class ZebraClass:EntityClass
             
         }
 
-    }
+    }// infected func
+    
+    func dailyRoutine()
+    {
+        
+        if map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200 && currentState != GOTOSTATE
+        {
+            if targetZone == nil
+            {
+                targetZone = findZone(type: ZoneType.RESTZONE)
+            
+            }
+            if targetZone != nil
+            {
+                
+
+                gotoPoint=targetZone!.sprite.position
+                currentState=GOTOSTATE
+
+            }
+            if currentState==GOTOSTATE
+            {
+                 let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 500
+                {
+                   
+                    gotoLastState=currentState
+                    currentState=WANDERSTATE
+                    targetZone=nil
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 300 and 1200
+        
+        else if map!.getTimeOfDay()<420 || map!.getTimeOfDay()>300 && currentState != GOTOSTATE
+        {
+            if targetZone == nil
+            {
+                targetZone = findZone(type: ZoneType.WATERZONE)
+                
+            }
+            if targetZone != nil
+            {
+                
+                
+                gotoPoint=targetZone!.sprite.position
+                currentState=GOTOSTATE
+                
+            }
+            if currentState==GOTOSTATE
+            {
+                let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 500
+                {
+                    
+                     gotoLastState=currentState
+                    currentState=WANDERSTATE
+                    targetZone=nil
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 300 and 420
+        
+        else if map!.getTimeOfDay()<600 || map!.getTimeOfDay()>420 && currentState != GOTOSTATE
+        {
+            if targetZone == nil
+            {
+                targetZone = findZone(type: ZoneType.FOODZONE)
+                
+            }
+            if targetZone != nil
+            {
+                
+                
+                gotoPoint=targetZone!.sprite.position
+                currentState=GOTOSTATE
+                
+            }
+            if currentState==GOTOSTATE
+            {
+                let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 500
+                {
+                    
+                     gotoLastState=currentState
+                    currentState=WANDERSTATE
+                    targetZone=nil
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 420 and 600
+        
+        else
+        {
+            currentState=WANDERSTATE
+        }
+        
+    }//daily routine function
     
     
    override internal func update(cycle: Int) -> Int
@@ -442,6 +536,7 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
+            dailyRoutine()
             if isDiseased
             {
                 Infected()
