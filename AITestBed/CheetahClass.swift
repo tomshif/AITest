@@ -5,7 +5,7 @@
 //  Created by Game Design Shared on 1/7/19.
 //  Copyright © 2019 Liberty Game Dev. All rights reserved.
 //
-//if  isDiseased map!.getTimeOfDay() > diseaseHour && map!getDay() != diseaseDay { die()}
+//
 import Foundation
 import SpriteKit
 class CheetahClass:EntityClass
@@ -173,6 +173,7 @@ class CheetahClass:EntityClass
             {
                 checkPrey()
                 lastPreyCheck = NSDate()
+
             }// if -lastPreyCheck
             if currentState==WANDERSTATE
             {
@@ -320,6 +321,7 @@ class CheetahClass:EntityClass
             }// dist < 20
             if stamina < 0
             {
+                stamina = 0.3
                 currentState = WANDERSTATE
                 preyTarget = nil
                 border()
