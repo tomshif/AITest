@@ -473,7 +473,7 @@ class ZebraClass:EntityClass
             }// if we're in wander state
         }// if its between 300 and 420
         
-        else if map!.getTimeOfDay()<600 || map!.getTimeOfDay()>420 && currentState != GOTOSTATE
+        else if map!.getTimeOfDay()<600 || map!.getTimeOfDay()>421 && currentState != GOTOSTATE
         {
             if targetZone == nil
             {
@@ -494,7 +494,7 @@ class ZebraClass:EntityClass
                 if dist < 500
                 {
                     
-                     gotoLastState=currentState
+                    gotoLastState=currentState
                     currentState=WANDERSTATE
                     targetZone=nil
                 }// if distance is less than 50
@@ -504,6 +504,7 @@ class ZebraClass:EntityClass
         else
         {
             currentState=WANDERSTATE
+            targetZone=nil
         }
         
     }//daily routine function
