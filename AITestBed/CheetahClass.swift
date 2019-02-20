@@ -316,14 +316,13 @@ class CheetahClass:EntityClass
                 currentState = WANDERSTATE
                 speed=0
                 hunger = 1.0
+                Stam()
             }// dist < 20
             if stamina < 0
             {
                 currentState = WANDERSTATE
                 preyTarget = nil
                 border()
-                stamina = 0
-                speed=0
                 map!.msg.sendMessage(type: map!.msg.HUNTFAILED, from: self.name)
             }// if stamina < 0
             
