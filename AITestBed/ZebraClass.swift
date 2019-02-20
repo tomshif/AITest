@@ -450,7 +450,6 @@ class ZebraClass:EntityClass
             if targetZone == nil
             {
                 targetZone = findZone(type: ZoneType.WATERZONE)
-                
             }
             if targetZone != nil
             {
