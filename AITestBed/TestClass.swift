@@ -493,7 +493,7 @@ class TestClass:EntityClass
             if (!isResting && targetZone == nil) || (!isResting && targetZone!.type != ZoneType.RESTZONE)
             {
                 // Check to see if we're close enough to a rest zone to be resting
-                let tempZone=findZone(type: TestClass.RESTZONE)
+                let tempZone=findZone(type: ZoneType.RESTZONE)
                 if tempZone != nil
                 {
                     let dist=getDistanceToZone(zone: tempZone!)
