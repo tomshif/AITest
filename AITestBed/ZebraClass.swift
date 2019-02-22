@@ -339,28 +339,28 @@ class ZebraClass:EntityClass
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x-200, y:  sprite.position.y )
+                gotoPoint=CGPoint(x: sprite.position.x*0.8, y:  sprite.position.y )
             }// if we leave the right boundary
             
             if sprite.position.y > map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y-200 )
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y*0.8)
             }// if we leave the top boundary
             
             if sprite.position.x < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x+200, y:  sprite.position.y )
+                gotoPoint=CGPoint(x: sprite.position.x*0.8, y:  sprite.position.y )
             }// if we leave the left boundary
             
             if sprite.position.y < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y + 200 )
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y*0.8 )
             }// if we leave the bottom boundary
         }// if we're the herd leader and not in goto state
     }// boundcheck function
@@ -417,8 +417,10 @@ class ZebraClass:EntityClass
     func dailyRoutine()
     {
         
-        if map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200 && currentState != GOTOSTATE
+        if (map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200) && currentState != GOTOSTATE
         {
+             var resting:Bool=false
+            
             if targetZone == nil
             {
                 targetZone = findZone(type: ZoneType.RESTZONE)
@@ -426,26 +428,38 @@ class ZebraClass:EntityClass
             }
             if targetZone != nil
             {
-                
-
+                if targetZone!.type != ZoneType.RESTZONE
+                {
+                    targetZone = findZone(type: ZoneType.RESTZONE)
+                }
                 gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
                 currentState=GOTOSTATE
-
+                
             }
             if currentState==GOTOSTATE
             {
-                 let dist=getDistanceToZone(zone: targetZone!)
-                if dist < 500
+                
+                let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 200
                 {
                    
-                    gotoLastState=currentState
+                    
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0
                     targetZone=nil
+                    isResting=true
+                    
+                    if !isHerdLeader && herdLeader != nil  &&  resting==true
+                    {
+                        speed=herdLeader!.speed
+                    }
+                    
                 }// if distance is less than 50
             }// if we're in wander state
         }// if its between 300 and 1200
         
-        else if map!.getTimeOfDay()<420 || map!.getTimeOfDay()>300 && currentState != GOTOSTATE
+        else if (map!.getTimeOfDay()<420)
         {
             if targetZone == nil
             {
@@ -456,56 +470,69 @@ class ZebraClass:EntityClass
                 
                 
                 gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
                 currentState=GOTOSTATE
                 
             }
             if currentState==GOTOSTATE
             {
                 let dist=getDistanceToZone(zone: targetZone!)
+                
                 if dist < 500
                 {
                     
-                     gotoLastState=currentState
+                    
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
                     targetZone=nil
                 }// if distance is less than 50
             }// if we're in wander state
         }// if its between 300 and 420
         
-        else if map!.getTimeOfDay()<600 || map!.getTimeOfDay()>421 && currentState != GOTOSTATE
+        else if (map!.getTimeOfDay()<600)
         {
+            print("Time for Food")
             if targetZone == nil
             {
+                print("target zone was nil")
                 targetZone = findZone(type: ZoneType.FOODZONE)
-                
+                print("Target zone: \(targetZone)")
             }
             if targetZone != nil
             {
-                
+                if targetZone!.type != ZoneType.FOODZONE
+                {
+                    print("Target Zone was not food")
+                    targetZone = findZone(type: ZoneType.FOODZONE)
+                    print("Target zone: \(targetZone)")
+                }
                 
                 gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
                 currentState=GOTOSTATE
                 
             }
             if currentState==GOTOSTATE
             {
+                
                 let dist=getDistanceToZone(zone: targetZone!)
                 if dist < 500
                 {
                     
-                    gotoLastState=currentState
+                    
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
                     targetZone=nil
                 }// if distance is less than 50
             }// if we're in wander state
         }// if its between 420 and 600
-        
+        /*
         else
         {
             currentState=WANDERSTATE
-            targetZone=nil
+            
         }
-        
+        */
     }//daily routine function
     
     
@@ -536,7 +563,10 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
-            dailyRoutine()
+            if isHerdLeader==true
+            {
+                dailyRoutine()
+            }
             if isDiseased
             {
                 Infected()
@@ -568,16 +598,23 @@ class ZebraClass:EntityClass
                     }//if distance to entity is greater than follow distance
                     else // added by Shiflet -- the OR part
                     {
-                        wander()
+                        if !isResting
+                        {
+                            wander()
+                        }
                     }// else shif
                 }//if we have no herdleader
                 else
                 {
-                    wander()
+                    if !isResting
+                    {
+                        wander()
+                    }
+                    
                 }// else wander
             }//if current state = wander state
             
-            else if currentState==GOTOSTATE
+            else if currentState==GOTOSTATE && !isFleeing
             {
                 goTo()
             }// else if gotostate
