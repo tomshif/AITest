@@ -25,6 +25,7 @@ class CheetahClass:EntityClass
     var timePassed:CGFloat = 0
     var diseaseDay:Int=0
     var diseaseHour:CGFloat=0
+    var targetZone:ZoneClass?
     
     override init()
     {
@@ -141,6 +142,7 @@ class CheetahClass:EntityClass
         Baby()
         Stam()
         meal()
+        
         if herdLeader == nil
         {
             border()
@@ -406,20 +408,60 @@ class CheetahClass:EntityClass
     func Stam()
     {
         if currentState != HUNTSTATE
-        {
-            stamina += 0.00002 * map!.getTimeScale()
-        }
+            {
+                stamina += 0.00002 * map!.getTimeScale()
+            }
         if stamina > 1.0
-        {
+            {
             stamina = 1.0
-        }
+            }
+        if stamina < 0.85 && currentState == WANDERSTATE
+            {
+                if targetZone != nil
+                    {
+                        if targetZone!.type == ZoneType.RESTZONE
+                            {
+                                let dist = getDistanceToZone(zone: targetZone!)
+                                if dist > 400
+                                    {
+                                        currentState = WANDERSTATE
+                                    }
+                                if dist < 400
+                                    {
+                                        speed = 0
+                                        stamina += 0.0008
+                                    }
+                                if isHerdLeader == false
+                                {
+                                    let dist=getDistToEntity(ent: herdLeader!)
+                                    
+                                    if dist < 50
+                                    {
+                                        speed = 0
+                                    }
+                                        
+                                }// isHerdLeader == false
+                            }//if targetZone!
+                        else
+                            {
+                                targetZone = findZone(type: ZoneType.RESTZONE)
+                            }// else
+                        currentState=GOTOSTATE
+                        targetZone!.sprite.position = gotoPoint
+                        
+                    }// targetZone != nil
+                else
+                {
+                    targetZone = findZone(type: ZoneType.RESTZONE)
+                }
+        }// if stamina < 0.853
     }// func Stam
     
     func meal()
     {
         if currentState != HUNTSTATE
         {
-            hunger -= 0.00002 * map!.getTimeScale()
+            hunger -= 0.000004 * map!.getTimeScale()
         }
         if hunger == 0
         {
