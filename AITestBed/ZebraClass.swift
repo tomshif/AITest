@@ -435,11 +435,12 @@ class ZebraClass:EntityClass
             if currentState==GOTOSTATE
             {
                  let dist=getDistanceToZone(zone: targetZone!)
-                if dist < 500
+                if dist < 20
                 {
                    
                     gotoLastState=currentState
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0
                     targetZone=nil
                 }// if distance is less than 50
             }// if we're in wander state
@@ -467,6 +468,7 @@ class ZebraClass:EntityClass
                     
                      gotoLastState=currentState
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
                     targetZone=nil
                 }// if distance is less than 50
             }// if we're in wander state
@@ -495,6 +497,7 @@ class ZebraClass:EntityClass
                     
                     gotoLastState=currentState
                     currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
                     targetZone=nil
                 }// if distance is less than 50
             }// if we're in wander state
