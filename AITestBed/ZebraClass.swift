@@ -417,7 +417,7 @@ class ZebraClass:EntityClass
     func dailyRoutine()
     {
         
-        if map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200 && currentState != GOTOSTATE
+        if (map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200) && currentState != GOTOSTATE
         {
             if targetZone == nil
             {
@@ -426,11 +426,13 @@ class ZebraClass:EntityClass
             }
             if targetZone != nil
             {
-                
-
+                if targetZone!.type != ZoneType.RESTZONE
+                {
+                    targetZone = findZone(type: ZoneType.RESTZONE)
+                }
                 gotoPoint=targetZone!.sprite.position
                 currentState=GOTOSTATE
-
+                
             }
             if currentState==GOTOSTATE
             {
@@ -446,7 +448,7 @@ class ZebraClass:EntityClass
             }// if we're in wander state
         }// if its between 300 and 1200
         
-        else if map!.getTimeOfDay()<420 || map!.getTimeOfDay()>300 && currentState != GOTOSTATE
+        else if (map!.getTimeOfDay()<420)
         {
             if targetZone == nil
             {
@@ -474,16 +476,23 @@ class ZebraClass:EntityClass
             }// if we're in wander state
         }// if its between 300 and 420
         
-        else if map!.getTimeOfDay()<600 || map!.getTimeOfDay()>421 && currentState != GOTOSTATE
+        else if (map!.getTimeOfDay()<600)
         {
+            print("Time for Food")
             if targetZone == nil
             {
+                print("target zone was nil")
                 targetZone = findZone(type: ZoneType.FOODZONE)
-                
+                print("Target zone: \(targetZone)")
             }
             if targetZone != nil
             {
-                
+                if targetZone!.type != ZoneType.FOODZONE
+                {
+                    print("Target Zone was not food")
+                    targetZone = findZone(type: ZoneType.FOODZONE)
+                    print("Target zone: \(targetZone)")
+                }
                 
                 gotoPoint=targetZone!.sprite.position
                 currentState=GOTOSTATE
