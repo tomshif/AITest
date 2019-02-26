@@ -17,7 +17,7 @@ class ZebraClass:EntityClass
     var MAXHERD:Int=30
     var MAXCHILDRENBORN:Int=2
     
-    
+    var targetZone:ZoneClass?
     
     var diseaseDay:Int=0
     
@@ -63,7 +63,7 @@ class ZebraClass:EntityClass
         scene!.addChild(sprite)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.20
         TURNFREQ=2
         AICycle=1
@@ -111,7 +111,7 @@ class ZebraClass:EntityClass
         sprite.color=NSColor(calibratedRed: rC, green: bC, blue: bC, alpha: 1.0)
         
         // Variable updates
-        MAXSPEED=2.5
+        MAXSPEED=4.0
         TURNRATE=0.1
         TURNFREQ=2
         AICycle=1
@@ -123,6 +123,10 @@ class ZebraClass:EntityClass
         ACCELERATION=0.15
         TURNSPEEDLOST=0.4
         followDistVar=random(min: -FOLLOWDIST*0.25, max: FOLLOWDIST*1.25)
+        if (herdLeader==nil)
+        {
+            age = random(min: MAXAGE*0.4, max: MAXAGE*0.6)
+        }//making sure babies arent herd leaders
         let maleChance=random(min: 0, max: 1)
         if maleChance > 0.75 || leader == nil
         {
@@ -250,7 +254,7 @@ class ZebraClass:EntityClass
           
             }// for loop entlist
             
-            if closestIndex  >  -1 && closest<600
+            if closestIndex  >  -1 && closest<850
             {
                 isFleeing=true
                 predTarget=map!.predList[closestIndex]
@@ -335,28 +339,28 @@ class ZebraClass:EntityClass
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x-200, y:  sprite.position.y )
+                gotoPoint=CGPoint(x: sprite.position.x*0.8, y:  sprite.position.y )
             }// if we leave the right boundary
             
             if sprite.position.y > map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y-200 )
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y*0.8)
             }// if we leave the top boundary
             
             if sprite.position.x < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x+200, y:  sprite.position.y )
+                gotoPoint=CGPoint(x: sprite.position.x*0.8, y:  sprite.position.y )
             }// if we leave the left boundary
             
             if sprite.position.y < -map!.BOUNDARY*0.9
             {
                 gotoLastState = currentState
                 currentState = GOTOSTATE
-                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y + 200 )
+                gotoPoint=CGPoint(x: sprite.position.x, y:  sprite.position.y*0.8 )
             }// if we leave the bottom boundary
         }// if we're the herd leader and not in goto state
     }// boundcheck function
@@ -408,7 +412,128 @@ class ZebraClass:EntityClass
             
         }
 
-    }
+    }// infected func
+    
+    func dailyRoutine()
+    {
+        
+        if (map!.getTimeOfDay()<300 || map!.getTimeOfDay()>1200) && currentState != GOTOSTATE
+        {
+             var resting:Bool=false
+            
+            if targetZone == nil
+            {
+                targetZone = findZone(type: ZoneType.RESTZONE)
+            
+            }
+            if targetZone != nil
+            {
+                if targetZone!.type != ZoneType.RESTZONE
+                {
+                    targetZone = findZone(type: ZoneType.RESTZONE)
+                }
+                gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
+                currentState=GOTOSTATE
+                
+            }
+            if currentState==GOTOSTATE
+            {
+                
+                let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 200
+                {
+                   
+                    
+                    currentState=WANDERSTATE
+                    speed=MAXSPEED*0
+                    targetZone=nil
+                    isResting=true
+                    
+                    if !isHerdLeader && herdLeader != nil  &&  resting==true
+                    {
+                        speed=herdLeader!.speed
+                    }
+                    
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 300 and 1200
+        
+        else if (map!.getTimeOfDay()<420)
+        {
+            if targetZone == nil
+            {
+                targetZone = findZone(type: ZoneType.WATERZONE)
+            }
+            if targetZone != nil
+            {
+                
+                
+                gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
+                currentState=GOTOSTATE
+                
+            }
+            if currentState==GOTOSTATE
+            {
+                let dist=getDistanceToZone(zone: targetZone!)
+                
+                if dist < 500
+                {
+                    
+                    
+                    currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
+                    targetZone=nil
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 300 and 420
+        
+        else if (map!.getTimeOfDay()<600)
+        {
+            print("Time for Food")
+            if targetZone == nil
+            {
+                print("target zone was nil")
+                targetZone = findZone(type: ZoneType.FOODZONE)
+                print("Target zone: \(targetZone)")
+            }
+            if targetZone != nil
+            {
+                if targetZone!.type != ZoneType.FOODZONE
+                {
+                    print("Target Zone was not food")
+                    targetZone = findZone(type: ZoneType.FOODZONE)
+                    print("Target zone: \(targetZone)")
+                }
+                
+                gotoPoint=targetZone!.sprite.position
+                gotoLastState=currentState
+                currentState=GOTOSTATE
+                
+            }
+            if currentState==GOTOSTATE
+            {
+                
+                let dist=getDistanceToZone(zone: targetZone!)
+                if dist < 500
+                {
+                    
+                    
+                    currentState=WANDERSTATE
+                    speed=MAXSPEED*0.2
+                    targetZone=nil
+                }// if distance is less than 50
+            }// if we're in wander state
+        }// if its between 420 and 600
+        /*
+        else
+        {
+            currentState=WANDERSTATE
+            
+        }
+        */
+    }//daily routine function
     
     
    override internal func update(cycle: Int) -> Int
@@ -438,6 +563,10 @@ class ZebraClass:EntityClass
         
         if cycle==AICycle
         {
+            if isHerdLeader==true
+            {
+                dailyRoutine()
+            }
             if isDiseased
             {
                 Infected()
@@ -462,23 +591,30 @@ class ZebraClass:EntityClass
                 // the opportunity to pursue the herdLeader...should be OR
                 if herdLeader != nil && !isHerdLeader
                 {
-                    if getDistToEntity(ent: herdLeader!) > followDistance
+                    if getDistToEntity(ent: herdLeader!) > followDistance+followDistVar
                     {
     
                         catchUp()
                     }//if distance to entity is greater than follow distance
                     else // added by Shiflet -- the OR part
                     {
-                        wander()
+                        if !isResting
+                        {
+                            wander()
+                        }
                     }// else shif
                 }//if we have no herdleader
                 else
                 {
-                    wander()
+                    if !isResting
+                    {
+                        wander()
+                    }
+                    
                 }// else wander
             }//if current state = wander state
             
-            else if currentState==GOTOSTATE
+            else if currentState==GOTOSTATE && !isFleeing
             {
                 goTo()
             }// else if gotostate

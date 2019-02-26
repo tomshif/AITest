@@ -749,7 +749,7 @@ class GameScene: SKScene {
             
             infoHunger.text=String(format: "Stamina: %2.3f", selectedEntity!.stamina)
             infoThirst.text=String(format: "Speed: %2.3f", selectedEntity!.speed)
-            infoTurning.text="isTurning: \(selectedEntity!.checkTurning())"
+            infoTurning.text="Hunger: \(selectedEntity!.hunger)"
             infoHeading.text="isDiseased: \(selectedEntity!.isDiseased)"
             if selectedEntity!.herdLeader != nil
             {

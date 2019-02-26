@@ -14,7 +14,7 @@ class SpringbokClass:EntityClass
     private var isPregnant:Bool=false
     private var isCloseToCheetah:Bool=false  // is close to what?
    
-    private var MAXHERD:Int=50
+    private var MAXHERD:Int=25
     private var MINHERD:Int=15
     private var MAXCHILD:Int=2
     
