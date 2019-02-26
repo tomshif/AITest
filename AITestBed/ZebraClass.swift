@@ -526,13 +526,7 @@ class ZebraClass:EntityClass
                 }// if distance is less than 50
             }// if we're in wander state
         }// if its between 420 and 600
-        /*
-        else
-        {
-            currentState=WANDERSTATE
-            
-        }
-        */
+    
     }//daily routine function
     
     
