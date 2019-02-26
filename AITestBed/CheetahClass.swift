@@ -434,10 +434,7 @@ class CheetahClass:EntityClass
                                 if isHerdLeader == false
                                 {
                                     let dist=getDistToEntity(ent: herdLeader!)
-                                    if herdLeader.speed = 0
-                                    {
-                                        speed = 0
-                                    }
+                                    
                                     if dist < 50
                                     {
                                         speed = 0
