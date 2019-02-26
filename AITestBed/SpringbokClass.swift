@@ -300,6 +300,13 @@ class SpringbokClass:EntityClass
         
     }
     
+    func decideWhatToDo()
+    {
+        
+    }
+    
+    
+    
     
     private func checkPredators()
     {
