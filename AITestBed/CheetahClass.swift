@@ -148,6 +148,7 @@ class CheetahClass:EntityClass
         Stam()
         meal()
         
+        
         if herdLeader == nil
         {
             border()
@@ -338,7 +339,9 @@ class CheetahClass:EntityClass
             
         }// if predator is valid
         
-    }// func flee
+    
+        
+    }// func hunt
     
     func Baby()
     {
@@ -437,7 +440,7 @@ class CheetahClass:EntityClass
                                         speed = 0
                                         stamina += 0.0002
                                     }
-                                if isHerdLeader == false
+                                if isHerdLeader == false && herdLeader != nil
                                 {
                                     let dist=getDistToEntity(ent: herdLeader!)
                                    
@@ -479,6 +482,8 @@ class CheetahClass:EntityClass
             hunger = 1.0
         }
     }// meal()
+    
+    
     
 } // CheetahClass
 
