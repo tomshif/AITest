@@ -125,9 +125,14 @@ class CheetahClass:EntityClass
         {
             angle += CGFloat.pi*2
         }
+        if angle > CGFloat.pi*2
+        {
+            angle -= CGFloat.pi*2
+        }
         turnToAngle=angle
         isTurning=true
         speed = MAXSPEED * 0.45
+        print("Catch up")
     }// func catchUp
     
     
@@ -147,7 +152,8 @@ class CheetahClass:EntityClass
         {
             border()
         }
-        sprite.zPosition = age + 120
+        
+        sprite.zPosition = age/8640 + 120
         
         if alive
         {
@@ -272,7 +278,7 @@ class CheetahClass:EntityClass
         if preyTarget != nil && getAgeString()=="Baby" && getAgeString()=="Juvinile" && herdLeader!.currentState == HUNTSTATE
         {
             speed = 0
-            if herdLeader?.currentState == WANDERSTATE
+            if herdLeader!.currentState == WANDERSTATE
             {
                 catchUp()
                 Stam()
@@ -418,7 +424,7 @@ class CheetahClass:EntityClass
             {
             stamina = 1.0
             }
-        if stamina < 0.85 && currentState == WANDERSTATE
+        if stamina < 0.85 && currentState != HUNTSTATE
             {
                 if targetZone != nil
                     {
@@ -432,12 +438,12 @@ class CheetahClass:EntityClass
                                 if dist < 400
                                     {
                                         speed = 0
-                                        stamina += 0.0008
+                                        stamina += 0.0002
                                     }
                                 if isHerdLeader == false
                                 {
                                     let dist=getDistToEntity(ent: herdLeader!)
-                                    
+                                   
                                     if dist < 50
                                     {
                                         speed = 0
@@ -450,7 +456,7 @@ class CheetahClass:EntityClass
                                 targetZone = findZone(type: ZoneType.RESTZONE)
                             }// else
                         currentState=GOTOSTATE
-                        targetZone!.sprite.position = gotoPoint
+                        gotoPoint = targetZone!.sprite.position
                         
                     }// targetZone != nil
                 else

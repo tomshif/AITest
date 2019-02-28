@@ -11,6 +11,7 @@ import SpriteKit
 
 class ZebraClass:EntityClass
 {
+    var fleeCounter:Int=0
     var counter:Int=0
     var alert:Int=0
     var temper:Int=0
@@ -258,7 +259,7 @@ class ZebraClass:EntityClass
             {
                 isFleeing=true
                 predTarget=map!.predList[closestIndex]
-                print("predator in range")
+                //print("predator in range")
             }// if closest index
             else
             {
@@ -320,8 +321,45 @@ class ZebraClass:EntityClass
                 speed=MAXSPEED
             }//if speed is greater than max
         }// if we have a predator
+       
         
-        
+/*
+            if fleeCounter == 2
+            {
+                let testPoint = CGPoint(x: sprite.position.x+cos(sprite.zRotation)*100, y: sprite.position.y+sin(sprite.zRotation)*100)
+                for child in scene!.nodes(at: testPoint)
+                {
+                    if child.name!.contains("Water")
+                    {
+                        print("Water")
+
+                        let escapePoint1=CGPoint(x: cos(sprite.zRotation + CGFloat.pi/2)*200 , y: sin(sprite.zRotation + CGFloat.pi/2)*200)
+                        let escapePoint2=CGPoint(x: cos(sprite.zRotation - CGFloat.pi/2)*200 , y: sin(sprite.zRotation - CGFloat.pi/2)*200)
+                        if child.contains(escapePoint1)
+                        {
+                            turnToAngle=sprite.zRotation - CGFloat.pi/2
+                            fleeCounter=0
+                        }
+                        else if child.contains(escapePoint2)
+                        {
+                            turnToAngle=sprite.zRotation + CGFloat.pi/2
+                            fleeCounter=0
+                        }
+                        else
+                        {
+                            turnToAngle=sprite.zRotation + CGFloat.pi/2
+                            fleeCounter=0
+                        }
+                        //else if zone.sprite.contains(escapePoint2) || zone.sprite.contains(escapePoint1)
+                        //{
+                        
+                        //}
+                    
+                    } //
+                } // for each node
+                fleeCounter = 0
+            } // if
+        */
     }// escape func
    
     override func catchDisease() {
@@ -526,16 +564,43 @@ class ZebraClass:EntityClass
                 }// if distance is less than 50
             }// if we're in wander state
         }// if its between 420 and 600
-        /*
-        else
-        {
-            currentState=WANDERSTATE
-            
-        }
-        */
+    
     }//daily routine function
     
-    
+    func checkWater()
+    {
+        let testPoint = CGPoint(x: sprite.position.x+(cos(sprite.zRotation)*250), y: sprite.position.y+(sin(sprite.zRotation)*250))
+        for child in scene!.nodes(at: testPoint)
+        {
+            if child.name!.contains("Water")
+            {
+                print("Water")
+                
+                let escapePoint1=CGPoint(x: cos(sprite.zRotation + CGFloat.pi/2)*50 , y: sin(sprite.zRotation + CGFloat.pi/2)*50)
+                let escapePoint2=CGPoint(x: cos(sprite.zRotation - CGFloat.pi/2)*50 , y: sin(sprite.zRotation - CGFloat.pi/2)*50)
+                if child.contains(escapePoint1)
+                {
+                    turnToAngle=sprite.zRotation - CGFloat.pi/2
+                    fleeCounter=0
+                }
+                else if child.contains(escapePoint2)
+                {
+                    turnToAngle=sprite.zRotation + CGFloat.pi/2
+                    fleeCounter=0
+                }
+                else
+                {
+                    turnToAngle=sprite.zRotation + CGFloat.pi/2
+                    fleeCounter=0
+                }
+                //else if zone.sprite.contains(escapePoint2) || zone.sprite.contains(escapePoint1)
+                //{
+                
+                //}
+                
+            } //
+        } // for each node
+    }
    override internal func update(cycle: Int) -> Int
     {
         var ret:Int = -1
@@ -544,7 +609,7 @@ class ZebraClass:EntityClass
         boundCheck()
             doTurn()
         updateGraphics()
-        
+        checkWater()
         sprite.zPosition = age + 100
         
         
@@ -580,6 +645,7 @@ class ZebraClass:EntityClass
             
             if isFleeing && predTarget != nil
             {
+                fleeCounter += 1
                 escape()
             }// if were fleeing and we have a predator
             
