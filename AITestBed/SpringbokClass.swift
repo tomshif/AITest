@@ -211,6 +211,7 @@ class SpringbokClass:EntityClass
     
     private func flee()
     {
+        
         if predTarget != nil
         {
             var angle=getAngleToEntity(ent: predTarget!)
@@ -255,9 +256,13 @@ class SpringbokClass:EntityClass
                 turnToAngle=tempAngle
             
             }
-            
-        }
-    }
+            let testPoint = CGPoint(x:cos(angle) * 50 + sprite.position.x,y: sin(angle) * 50 + sprite.position.y)
+            for child in scene!.nodes(at: testPoint)
+            {
+                
+            }// for zone
+        }// pred Target != nil
+    }// flee()
     
     func offMap()
     {
@@ -300,6 +305,13 @@ class SpringbokClass:EntityClass
         
     }
     
+    func decideWhatToDo()
+    {
+        
+    }
+    
+    
+    
     
     private func checkPredators()
     {
@@ -335,6 +347,8 @@ class SpringbokClass:EntityClass
             }
         } // if predators exist
     } // func checkPredators
+    
+    
     
     override func ageEntity() -> Bool
     {

@@ -271,6 +271,9 @@ class CheetahClass:EntityClass
         }
     }// func checkPrey()
     
+
+    
+    
     private func hunt()
     {
         if preyTarget != nil && getAgeString()=="Baby" && getAgeString()=="Juvinile" && herdLeader!.currentState == HUNTSTATE
